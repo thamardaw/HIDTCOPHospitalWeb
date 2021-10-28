@@ -7,12 +7,16 @@ import {
   InputAdornment,
   InputLabel,
   Paper,
+  Snackbar,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
-import { useState } from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import MuiAlert from "@mui/material/Alert";
+import { useHistory } from "react-router";
 
 const Container = styled("div")(({ theme }) => ({
   width: "100vw",
@@ -28,6 +32,9 @@ const StyledBox = styled(Box)(({ theme }) => ({
   margin: "auto",
   height: "230px",
   width: "30%",
+  [theme.breakpoints.down("lg")]: {
+    width: "40%",
+  },
   [theme.breakpoints.down("md")]: {
     width: "50%",
   },
@@ -51,56 +58,125 @@ const StyledLink = styled(Link)(({ theme }) => ({
   textDecoration: "none",
 }));
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [details, setDetails] = useState({ username: "", password: "" });
+  const [openAlert, setOpenAlert] = useState(false);
+  const [message, setMessage] = useState("");
+  const history = useHistory();
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setMessage("");
+    setOpenAlert(false);
+  };
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("username", details.username);
+    formData.append("password", details.password);
+    const res = await axios.post(
+      `${process.env.REACT_APP_BASE_URL}/api/user/login`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        validateStatus: function (status) {
+          return status < 500;
+        },
+      }
+    );
+    if (res.status === 400) {
+      setMessage(res.data.detail);
+      setOpenAlert(true);
+    }
+    console.log(res);
+  };
+
   return (
-    <Container>
-      <StyledBox>
-        <StyledPaper elevation={6}>
-          <FormControl
-            fullWidth
-            required
-            variant="standard"
-            sx={{ marginBottom: "10px" }}
-          >
-            <InputLabel>Username</InputLabel>
-            <Input />
-          </FormControl>
-          <FormControl
-            fullWidth
-            required
-            variant="standard"
-            sx={{ marginBottom: "10px" }}
-          >
-            <InputLabel>Password</InputLabel>
-            <Input
-              type={showPassword ? "text" : "password"}
-              // value={values.password}
-              // onChange={handleChange("password")}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => setShowPassword(!showPassword)}
-                    //   onMouseDown={handleMouseDownPassword}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-          <Button fullWidth variant="contained" style={{ marginTop: "20px" }}>
-            Log in
-          </Button>
-          <Button size="small" style={{ marginTop: "10px" }}>
-            <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>
-              <StyledLink to="/signup">Don't have an account?</StyledLink>
-            </Typography>
-          </Button>
-        </StyledPaper>
-      </StyledBox>
-    </Container>
+    <>
+      <Container>
+        <StyledBox>
+          <StyledPaper elevation={6}>
+            <form onSubmit={submitHandler}>
+              <FormControl
+                fullWidth
+                required
+                variant="standard"
+                sx={{ marginBottom: "10px" }}
+              >
+                <InputLabel>Username</InputLabel>
+                <Input
+                  onChange={(e) =>
+                    setDetails({ ...details, username: e.target.value })
+                  }
+                />
+              </FormControl>
+              <FormControl
+                fullWidth
+                required
+                variant="standard"
+                sx={{ marginBottom: "10px" }}
+              >
+                <InputLabel>Password</InputLabel>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  onChange={(e) =>
+                    setDetails({ ...details, password: e.target.value })
+                  }
+                />
+              </FormControl>
+              {/* <Button
+                fullWidth
+                variant="contained"
+                style={{ marginTop: "20px" }}
+                type="submit"
+              >
+                Log in
+              </Button> */}
+              <Button
+                fullWidth
+                variant="contained"
+                style={{ marginTop: "20px" }}
+                onClick={() => history.push("/")}
+              >
+                Log in
+              </Button>
+            </form>
+            <Button size="small" style={{ marginTop: "10px" }}>
+              <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>
+                <StyledLink to="/signup">Don't have an account?</StyledLink>
+              </Typography>
+            </Button>
+          </StyledPaper>
+        </StyledBox>
+      </Container>
+      <Snackbar
+        open={openAlert}
+        autoHideDuration={1000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert severity="error">{message}</Alert>
+      </Snackbar>
+    </>
   );
 };
 

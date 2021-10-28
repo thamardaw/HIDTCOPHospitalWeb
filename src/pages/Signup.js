@@ -58,6 +58,9 @@ const StyledBox = styled(Box)(({ theme }) => ({
   margin: "auto",
   height: "320px",
   width: "30%",
+  [theme.breakpoints.down("lg")]: {
+    width: "40%",
+  },
   [theme.breakpoints.down("md")]: {
     width: "50%",
   },
