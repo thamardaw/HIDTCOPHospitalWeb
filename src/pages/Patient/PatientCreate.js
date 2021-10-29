@@ -18,8 +18,10 @@ const PatientCreate = () => {
       <Toolbar
         sx={{
           display: "flex",
+          paddingLeft: "12px",
         }}
         variant="dense"
+        disableGutters={true}
       >
         {/* <IconButton
           sx={{

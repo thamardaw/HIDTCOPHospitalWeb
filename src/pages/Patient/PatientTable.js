@@ -53,8 +53,18 @@ const ButtonContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-function createData(name, calories, fat, carbs, protein, protein1, protein2) {
+function createData(
+  patient_id,
+  name,
+  calories,
+  fat,
+  carbs,
+  protein,
+  protein1,
+  protein2
+) {
   return {
+    patient_id,
     name,
     calories,
     fat,
@@ -66,19 +76,96 @@ function createData(name, calories, fat, carbs, protein, protein1, protein2) {
 }
 
 const rows = [
-  createData("Cupcake", 305, 3.7, 67, 4.3, "test", "test"),
-  createData("Donut", 452, 25.0, 51, 4.9, "test", "test"),
-  createData("Eclair", 262, 16.0, 24, 6.0, "test", "test"),
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0, "test", "test"),
-  createData("Gingerbread", 356, 16.0, 49, 3.9, "test", "test"),
-  createData("Honeycomb", 408, 3.2, 87, 6.5, "test", "test"),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3, "test", "test"),
-  createData("Jelly Bean", 375, 0.0, 94, 0.0, "test", "test"),
-  createData("KitKat", 518, 26.0, 65, 7.0, "test", "test"),
-  createData("Lollipop", 392, 0.2, 98, 0.0, "test", "test"),
-  createData("Marshmallow", 318, 0, 81, 2.0, "test", "test"),
-  createData("Nougat", 360, 19.0, 9, 37.0, "test", "test"),
-  createData("Oreo", 437, 18.0, 63, 4.0, "test", "test"),
+  createData(
+    "DGL0000-2021",
+    "Ye Yint Aung",
+    "Male",
+    "2021-03-02",
+    24,
+    "Yangon, Insein Township",
+    "09798865233",
+    "A"
+  ),
+  createData(
+    "DGL0001-2021",
+    "Zay Maw",
+    "Male",
+    "2005-03-02",
+    16,
+    "Yangon, Hlaing Township",
+    "09798865233",
+    "O"
+  ),
+  createData(
+    "DGL0002-2021",
+    "Aye Hla",
+    "Female",
+    "2005-03-02",
+    16,
+    "Yangon, Tharkayta Township",
+    "09654865288",
+    "AB"
+  ),
+  createData(
+    "DGL0003-2021",
+    "Ye Yint Aung",
+    "Male",
+    "2021-03-02",
+    24,
+    "Yangon, Insein Township",
+    "09798865233",
+    "A"
+  ),
+  createData(
+    "DGL0004-2021",
+    "Zay Maw",
+    "Male",
+    "2005-03-02",
+    16,
+    "Yangon, Hlaing Township",
+    "09798865233",
+    "O"
+  ),
+  createData(
+    "DGL0005-2021",
+    "Aye Hla",
+    "Female",
+    "2005-03-02",
+    16,
+    "Yangon, Tharkayta Township",
+    "09654865288",
+    "AB"
+  ),
+  createData(
+    "DGL0006-2021",
+    "Ye Yint Aung",
+    "Male",
+    "2021-03-02",
+    24,
+    "Yangon, Insein Township",
+    "09798865233",
+    "A"
+  ),
+  createData(
+    "DGL0007-2021",
+    "Zay Maw",
+    "Male",
+    "2005-03-02",
+    16,
+    "Yangon, Hlaing Township",
+    "09798865233",
+    "O"
+  ),
+  createData(
+    "DGL0008-2021",
+    "Aye Hla",
+    "Female",
+    "2005-03-02",
+    16,
+    "Yangon, Tharkayta Township",
+    "09654865288",
+    "AB"
+  ),
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -113,44 +200,50 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: "name",
+    id: "name2",
     numeric: false,
     disablePadding: true,
+    label: "Patient ID",
+  },
+  {
+    id: "name",
+    numeric: false,
+    disablePadding: false,
     label: "Name",
   },
   {
     id: "calories",
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: "Gender",
   },
   {
     id: "fat",
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: "Date Of Birth",
   },
   {
     id: "carbs",
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: "Age",
   },
   {
     id: "protein",
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: "Address",
   },
   {
     id: "protein2",
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: "Contact Details",
   },
   {
     id: "protein3",
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: "Blood Group",
   },
@@ -307,8 +400,6 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const PatientTable = () => {
-  const history = useHistory();
-  const { url } = useRouteMatch();
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("calories");
   const [selected, setSelected] = useState([]);
@@ -324,7 +415,7 @@ const PatientTable = () => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = rows.map((n) => n.patient_id);
       setSelected(newSelecteds);
       return;
     }
@@ -416,7 +507,7 @@ const PatientTable = () => {
             <Table
               sx={{ minWidth: 100 }}
               aria-labelledby="tableTitle"
-              size={dense ? "small" : "medium"}
+              size="medium"
             >
               <EnhancedTableHead
                 numSelected={selected.length}
@@ -432,17 +523,17 @@ const PatientTable = () => {
                 {stableSort(rows, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
-                    const isItemSelected = isSelected(row.name);
+                    const isItemSelected = isSelected(row.patient_id);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
                     return (
                       <TableRow
                         hover
-                        onClick={(event) => handleClick(event, row.name)}
+                        onClick={(event) => handleClick(event, row.patient_id)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={row.name}
+                        key={row.patient_id}
                         selected={isItemSelected}
                       >
                         <TableCell padding="checkbox">
@@ -460,14 +551,15 @@ const PatientTable = () => {
                           scope="row"
                           padding="none"
                         >
-                          {row.name}
+                          {row.patient_id}
                         </TableCell>
-                        <TableCell align="right">{row.calories}</TableCell>
-                        <TableCell align="right">{row.fat}</TableCell>
-                        <TableCell align="right">{row.carbs}</TableCell>
-                        <TableCell align="right">{row.protein}</TableCell>
-                        <TableCell align="right">{row.protein1}</TableCell>
-                        <TableCell align="right">{row.protein2}</TableCell>
+                        <TableCell>{row.name}</TableCell>
+                        <TableCell>{row.calories}</TableCell>
+                        <TableCell>{row.fat}</TableCell>
+                        <TableCell>{row.carbs}</TableCell>
+                        <TableCell>{row.protein}</TableCell>
+                        <TableCell>{row.protein1}</TableCell>
+                        <TableCell>{row.protein2}</TableCell>
                       </TableRow>
                     );
                   })}
