@@ -16,10 +16,11 @@ import {
   Toolbar,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { alpha, Box } from "@mui/system";
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import { Search } from "@mui/icons-material";
 import { useHistory, useRouteMatch } from "react-router";
 import { visuallyHidden } from "@mui/utils";
@@ -80,7 +81,7 @@ const rows = [
     "DGL0000-2021",
     "Ye Yint Aung",
     "Male",
-    "2021-03-02",
+    "1997-03-02",
     24,
     "Yangon, Insein Township",
     "09798865233",
@@ -90,8 +91,8 @@ const rows = [
     "DGL0001-2021",
     "Zay Maw",
     "Male",
-    "2005-03-02",
-    16,
+    "2003-03-02",
+    18,
     "Yangon, Hlaing Township",
     "09798865233",
     "O"
@@ -108,20 +109,20 @@ const rows = [
   ),
   createData(
     "DGL0003-2021",
-    "Ye Yint Aung",
+    "Kyaw Kyaw",
     "Male",
-    "2021-03-02",
-    24,
-    "Yangon, Insein Township",
-    "09798865233",
+    "2000-03-02",
+    21,
+    "Yangon, Sanchaung Township",
+    "09798005233",
     "A"
   ),
   createData(
     "DGL0004-2021",
-    "Zay Maw",
+    "Aye Aung",
     "Male",
-    "2005-03-02",
-    16,
+    "2002-03-27",
+    19,
     "Yangon, Hlaing Township",
     "09798865233",
     "O"
@@ -355,6 +356,7 @@ const EnhancedTableToolbar = (props) => {
                 variant="contained"
                 size="small"
                 sx={{ marginRight: "5px" }}
+                onClick={() => history.push(`${url}/edit`)}
               >
                 Edit
               </Button>
@@ -362,6 +364,7 @@ const EnhancedTableToolbar = (props) => {
                 variant="contained"
                 size="small"
                 sx={{ marginRight: "5px" }}
+                onClick={() => history.push(`${url}/detail`)}
               >
                 Detail
               </Button>
@@ -401,9 +404,13 @@ EnhancedTableToolbar.propTypes = {
 
 const PatientTable = () => {
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("calories");
+  const [orderBy, setOrderBy] = useState("name");
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"), {
+    defaultMatches: true,
+  });
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -507,7 +514,7 @@ const PatientTable = () => {
             <Table
               sx={{ minWidth: 100 }}
               aria-labelledby="tableTitle"
-              size="medium"
+              size={isMobile ? "small" : "medium"}
             >
               <EnhancedTableHead
                 numSelected={selected.length}

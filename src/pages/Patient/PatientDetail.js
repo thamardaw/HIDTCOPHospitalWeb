@@ -11,7 +11,7 @@ import { Box } from "@mui/system";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory } from "react-router";
 
-const PatientCreate = () => {
+const PatientDetail = () => {
   const history = useHistory();
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -38,7 +38,7 @@ const PatientCreate = () => {
         >
           <ArrowBackIosNewIcon size="small" />
         </IconButton>
-        <Typography variant="h5">New</Typography>
+        <Typography variant="h5">Detail</Typography>
       </Toolbar>
       <Divider />
       <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
@@ -52,7 +52,13 @@ const PatientCreate = () => {
           <Box sx={{ width: "30%" }}>
             <Typography variant="p">Name</Typography>
           </Box>
-          <TextField size="small" sx={{ width: "70%" }} margin="dense" />
+          <TextField
+            size="small"
+            sx={{ width: "70%" }}
+            margin="dense"
+            defaultValue="Zay Maw"
+            disabled={true}
+          />
         </Box>
         <Box
           sx={{
@@ -72,6 +78,8 @@ const PatientCreate = () => {
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
+            defaultValue="male"
+            disabled={true}
           >
             <MenuItem value="male">Male</MenuItem>
             <MenuItem value="female">Female</MenuItem>
@@ -92,6 +100,8 @@ const PatientCreate = () => {
             sx={{ width: "70%" }}
             margin="dense"
             placeholder="YYYY-MM-DD"
+            defaultValue="2003-03-04"
+            disabled={true}
           />
         </Box>
         <Box
@@ -104,7 +114,13 @@ const PatientCreate = () => {
           <Box sx={{ width: "30%" }}>
             <Typography variant="p">Age</Typography>
           </Box>
-          <TextField size="small" sx={{ width: "70%" }} margin="dense" />
+          <TextField
+            size="small"
+            sx={{ width: "70%" }}
+            margin="dense"
+            defaultValue="18"
+            disabled={true}
+          />
         </Box>
         <Box
           sx={{
@@ -116,7 +132,13 @@ const PatientCreate = () => {
           <Box sx={{ width: "30%" }}>
             <Typography variant="p">Address</Typography>
           </Box>
-          <TextField size="small" sx={{ width: "70%" }} margin="dense" />
+          <TextField
+            size="small"
+            sx={{ width: "70%" }}
+            margin="dense"
+            defaultValue="Yangon, Haling Township"
+            disabled={true}
+          />
         </Box>
         <Box
           sx={{
@@ -128,7 +150,13 @@ const PatientCreate = () => {
           <Box sx={{ width: "30%" }}>
             <Typography variant="p">Contact Details</Typography>
           </Box>
-          <TextField size="small" sx={{ width: "70%" }} margin="dense" />
+          <TextField
+            size="small"
+            sx={{ width: "70%" }}
+            margin="dense"
+            defaultValue="09760614842"
+            disabled={true}
+          />
         </Box>
         <Box
           sx={{
@@ -140,7 +168,13 @@ const PatientCreate = () => {
           <Box sx={{ width: "30%" }}>
             <Typography variant="p">Blood Group</Typography>
           </Box>
-          <TextField size="small" sx={{ width: "70%" }} margin="dense" />
+          <TextField
+            size="small"
+            sx={{ width: "70%" }}
+            margin="dense"
+            defaultValue="O"
+            disabled={true}
+          />
         </Box>
       </Box>
       <Divider />
@@ -153,9 +187,9 @@ const PatientCreate = () => {
           padding: "20px 10px",
         }}
       >
-        <Button variant="contained" size="small" sx={{ marginRight: "5px" }}>
+        {/* <Button variant="contained" size="small" sx={{ marginRight: "5px" }}>
           Save
-        </Button>
+        </Button> */}
         {/* <Button
           variant="contained"
           size="small"
@@ -175,4 +209,4 @@ const PatientCreate = () => {
   );
 };
 
-export default PatientCreate;
+export default PatientDetail;

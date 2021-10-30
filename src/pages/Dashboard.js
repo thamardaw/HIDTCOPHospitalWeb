@@ -17,7 +17,12 @@ import { Box } from "@mui/system";
 import { useState } from "react";
 import { Logout } from "@mui/icons-material";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router";
-import { PatientCreate, PatientTable } from "./Patient";
+import {
+  PatientEdit,
+  PatientCreate,
+  PatientTable,
+  PatientDetail,
+} from "./Patient";
 
 const drawerWidth = 240;
 
@@ -143,6 +148,8 @@ function Dashboard(props) {
         <Switch>
           <Route path={`${path}`} component={PatientTable} exact />
           <Route path={`${path}/create`} component={PatientCreate} />
+          <Route path={`${path}/edit`} component={PatientEdit} />
+          <Route path={`${path}/detail`} component={PatientDetail} />
         </Switch>
       </Box>
     </Box>
