@@ -1,12 +1,4 @@
-import {
-  Button,
-  Divider,
-  IconButton,
-  MenuItem,
-  TextField,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { Divider, IconButton, Toolbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory } from "react-router";
@@ -47,31 +39,39 @@ const PatientDetail = () => {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            margin: "10px 0px",
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Name</Typography>
+            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+              Name
+            </Typography>
           </Box>
-          <TextField
+          {/* <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
             defaultValue="Zay Maw"
             disabled={true}
-          />
+          /> */}
+          <Typography variant="body2">Zay Maw</Typography>
         </Box>
+        <Divider />
         <Box
           sx={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            margin: "10px 0px",
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Gender</Typography>
+            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+              Gender
+            </Typography>
           </Box>
           {/* <TextField size="small" sx={{ width: "70%" }} margin="dense" /> */}
-          <TextField
+          {/* <TextField
             select
             fullWidth
             label="Gender"
@@ -83,98 +83,136 @@ const PatientDetail = () => {
           >
             <MenuItem value="male">Male</MenuItem>
             <MenuItem value="female">Female</MenuItem>
-          </TextField>
+          </TextField> */}
+          <Box sx={{ width: "70%" }}>
+            <Typography variant="body2">Male</Typography>
+          </Box>
         </Box>
+        <Divider />
         <Box
           sx={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            margin: "10px 0px",
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Date Of Birth</Typography>
+            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+              Date Of Birth
+            </Typography>
           </Box>
-          <TextField
+          {/* <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
             placeholder="YYYY-MM-DD"
             defaultValue="2003-03-04"
             disabled={true}
-          />
+          /> */}
+          <Box sx={{ width: "70%" }}>
+            <Typography variant="body2">2003-03-04</Typography>
+          </Box>
         </Box>
+        <Divider />
         <Box
           sx={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            margin: "10px 0px",
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Age</Typography>
+            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+              Age
+            </Typography>
           </Box>
-          <TextField
+          {/* <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
             defaultValue="18"
             disabled={true}
-          />
+          /> */}
+          <Box sx={{ width: "70%" }}>
+            <Typography variant="body2">18</Typography>
+          </Box>
         </Box>
+        <Divider />
         <Box
           sx={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            margin: "10px 0px",
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Address</Typography>
+            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+              Address
+            </Typography>
           </Box>
-          <TextField
+          {/* <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
             defaultValue="Yangon, Haling Township"
             disabled={true}
-          />
+          /> */}
+          <Box sx={{ width: "70%" }}>
+            <Typography variant="body2">Yangon, Hlaing Township</Typography>
+          </Box>
         </Box>
+        <Divider />
         <Box
           sx={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            margin: "10px 0px",
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Contact Details</Typography>
+            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+              Contact Details
+            </Typography>
           </Box>
-          <TextField
+          {/* <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
             defaultValue="09760614842"
             disabled={true}
-          />
+          /> */}
+          <Box sx={{ width: "70%" }}>
+            <Typography variant="body2">09760614842</Typography>
+          </Box>
         </Box>
+        <Divider />
         <Box
           sx={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            margin: "10px 0px",
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Blood Group</Typography>
+            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+              Blood Group
+            </Typography>
           </Box>
-          <TextField
+          {/* <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
             defaultValue="O"
             disabled={true}
-          />
+          /> */}
+          <Box sx={{ width: "70%" }}>
+            <Typography variant="body2">O</Typography>
+          </Box>
         </Box>
       </Box>
       <Divider />

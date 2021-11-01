@@ -1,8 +1,6 @@
 import {
   Button,
   Checkbox,
-  Divider,
-  IconButton,
   InputBase,
   Paper,
   Table,
@@ -14,7 +12,6 @@ import {
   TableRow,
   TableSortLabel,
   Toolbar,
-  Tooltip,
   Typography,
   useMediaQuery,
 } from "@mui/material";
@@ -24,8 +21,6 @@ import { styled, useTheme } from "@mui/material/styles";
 import { Search } from "@mui/icons-material";
 import { useHistory, useRouteMatch } from "react-router";
 import { visuallyHidden } from "@mui/utils";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import { useState } from "react";
 
 const SearchContainer = styled("div")(({ theme }) => ({
@@ -48,11 +43,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   marginLeft: theme.spacing(1),
 }));
 
-const ButtonContainer = styled(Box)(({ theme }) => ({
-  [theme.breakpoints.down("md")]: {
-    display: "none",
-  },
-}));
+// const ButtonContainer = styled(Box)(({ theme }) => ({
+//   [theme.breakpoints.down("md")]: {
+//     display: "none",
+//   },
+// }));
 
 function createData(
   patient_id,
@@ -411,7 +406,7 @@ const PatientTable = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"), {
     defaultMatches: true,
   });
-  const [dense, setDense] = useState(false);
+  // const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleRequestSort = (event, property) => {
@@ -458,9 +453,9 @@ const PatientTable = () => {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
+  // const handleChangeDense = (event) => {
+  //   setDense(event.target.checked);
+  // };
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -573,7 +568,7 @@ const PatientTable = () => {
                 {emptyRows > 0 && (
                   <TableRow
                     style={{
-                      height: (dense ? 33 : 53) * emptyRows,
+                      height: (false ? 33 : 53) * emptyRows,
                     }}
                   >
                     <TableCell colSpan={6} />
