@@ -165,6 +165,11 @@ const Login = () => {
                 <StyledLink to="/signup">Don't have an account?</StyledLink>
               </Typography>
             </Button>
+            <Button size="small" style={{ marginTop: "5px" }}>
+              <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>
+                <StyledLink to="/resetPassword">Reset password.</StyledLink>
+              </Typography>
+            </Button>
           </StyledPaper>
         </StyledBox>
       </Container>
