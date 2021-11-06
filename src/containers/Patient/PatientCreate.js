@@ -130,18 +130,6 @@ const PatientCreate = () => {
           </Box>
           <TextField size="small" sx={{ width: "70%" }} margin="dense" />
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Blood Group</Typography>
-          </Box>
-          <TextField size="small" sx={{ width: "70%" }} margin="dense" />
-        </Box>
       </Box>
       <Divider />
       <Box

@@ -189,31 +189,6 @@ const PatientDetail = () => {
             <Typography variant="body2">09760614842</Typography>
           </Box>
         </Box>
-        <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            margin: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              Blood Group
-            </Typography>
-          </Box>
-          {/* <TextField
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            defaultValue="O"
-            disabled={true}
-          /> */}
-          <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">O</Typography>
-          </Box>
-        </Box>
       </Box>
       <Divider />
       <Box

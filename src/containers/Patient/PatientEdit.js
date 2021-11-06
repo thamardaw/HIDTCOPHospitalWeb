@@ -152,23 +152,6 @@ const PatientEdit = () => {
             defaultValue="09760614842"
           />
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Blood Group</Typography>
-          </Box>
-          <TextField
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            defaultValue="O"
-          />
-        </Box>
       </Box>
       <Divider />
       <Box

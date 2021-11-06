@@ -7,25 +7,15 @@ import { CustomTable } from "../../components";
 //   },
 // }));
 
-function createData(
-  id,
-  name,
-  calories,
-  fat,
-  carbs,
-  protein1,
-  protein2,
-  protein3
-) {
+function createData(id, name, gender, dataOfBirth, age, address, phone) {
   return {
     id,
     name,
-    calories,
-    fat,
-    carbs,
-    protein1,
-    protein2,
-    protein3,
+    age,
+    phone,
+    gender,
+    dataOfBirth,
+    address,
   };
 }
 
@@ -37,8 +27,7 @@ const rows = [
     "1997-03-02",
     24,
     "Yangon, Insein Township",
-    "09798865233",
-    "A"
+    "09798865233"
   ),
   createData(
     "DGL-0002-2021",
@@ -47,8 +36,7 @@ const rows = [
     "2003-03-02",
     18,
     "Yangon, Hlaing Township",
-    "09798865233",
-    "O"
+    "09798865233"
   ),
   createData(
     "DGL-0003-2021",
@@ -57,8 +45,7 @@ const rows = [
     "2005-03-02",
     16,
     "Yangon, Tharkayta Township",
-    "09654865288",
-    "AB"
+    "09654865288"
   ),
   createData(
     "DGL-0004-2021",
@@ -67,8 +54,7 @@ const rows = [
     "2000-03-02",
     21,
     "Yangon, Sanchaung Township",
-    "09798005233",
-    "A"
+    "09798005233"
   ),
   createData(
     "DGL-0005-2021",
@@ -77,8 +63,7 @@ const rows = [
     "2002-03-27",
     19,
     "Yangon, Hlaing Township",
-    "09798865233",
-    "O"
+    "09798865233"
   ),
   createData(
     "DGL-0006-2021",
@@ -87,8 +72,7 @@ const rows = [
     "2005-03-02",
     16,
     "Yangon, Tharkayta Township",
-    "09654865288",
-    "AB"
+    "09654865288"
   ),
   createData(
     "DGL-0007-2021",
@@ -97,8 +81,7 @@ const rows = [
     "2021-03-02",
     24,
     "Yangon, Insein Township",
-    "09798865233",
-    "A"
+    "09798865233"
   ),
   createData(
     "DGL-0008-2021",
@@ -107,8 +90,7 @@ const rows = [
     "2005-03-02",
     16,
     "Yangon, Hlaing Township",
-    "09798865233",
-    "O"
+    "09798865233"
   ),
   createData(
     "DGL-0009-2021",
@@ -117,8 +99,7 @@ const rows = [
     "2005-03-02",
     16,
     "Yangon, Tharkayta Township",
-    "09654865288",
-    "AB"
+    "09654865288"
   ),
 ];
 
@@ -136,45 +117,38 @@ const headCells = [
     label: "Name",
   },
   {
-    id: "calories",
-    numeric: false,
-    disablePadding: false,
-    label: "Gender",
-  },
-  {
-    id: "fat",
-    numeric: false,
-    disablePadding: false,
-    label: "Date Of Birth",
-  },
-  {
-    id: "carbs",
+    id: "age",
     numeric: false,
     disablePadding: false,
     label: "Age",
   },
   {
-    id: "protein1",
+    id: "phone",
+    numeric: false,
+    disablePadding: false,
+    label: "Phone Number",
+  },
+  {
+    id: "gender",
+    numeric: false,
+    disablePadding: false,
+    label: "Gender",
+  },
+  {
+    id: "dataOfBirth",
+    numeric: false,
+    disablePadding: false,
+    label: "Date Of Birth",
+  },
+  {
+    id: "address",
     numeric: false,
     disablePadding: false,
     label: "Address",
   },
-  {
-    id: "protein2",
-    numeric: false,
-    disablePadding: false,
-    label: "Contact Details",
-  },
-  {
-    id: "protein3",
-    numeric: false,
-    disablePadding: false,
-    label: "Blood Group",
-  },
 ];
 const PatientTable = () => {
   return (
-    // <Paper sx={{ flexGrow: 1, height: "87.5vh" }}>
     <Box sx={{ width: "100%" }}>
       {/* <Toolbar
         sx={{
