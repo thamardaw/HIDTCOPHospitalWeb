@@ -184,7 +184,7 @@ const EnhancedTableToolbar = (props) => {
                 sx={{ marginRight: "5px" }}
                 onClick={() => history.push(`${url}/detail`)}
               >
-                Detail
+                Details
               </Button>
             </>
           )}

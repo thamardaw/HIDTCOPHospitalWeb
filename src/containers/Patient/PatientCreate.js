@@ -74,7 +74,7 @@ const PatientCreate = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Phone Number</Typography>
+            <Typography variant="p">Contact Details</Typography>
           </Box>
           <TextField size="small" sx={{ width: "70%" }} margin="dense" />
         </Box>
