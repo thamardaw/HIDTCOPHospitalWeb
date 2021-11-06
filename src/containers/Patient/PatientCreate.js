@@ -62,6 +62,30 @@ const PatientCreate = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
+            <Typography variant="p">Age</Typography>
+          </Box>
+          <TextField size="small" sx={{ width: "70%" }} margin="dense" />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Box sx={{ width: "30%" }}>
+            <Typography variant="p">Phone Number</Typography>
+          </Box>
+          <TextField size="small" sx={{ width: "70%" }} margin="dense" />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Box sx={{ width: "30%" }}>
             <Typography variant="p">Gender</Typography>
           </Box>
           {/* <TextField size="small" sx={{ width: "70%" }} margin="dense" /> */}
@@ -94,18 +118,7 @@ const PatientCreate = () => {
             placeholder="YYYY-MM-DD"
           />
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Age</Typography>
-          </Box>
-          <TextField size="small" sx={{ width: "70%" }} margin="dense" />
-        </Box>
+
         <Box
           sx={{
             display: "flex",
@@ -115,18 +128,6 @@ const PatientCreate = () => {
         >
           <Box sx={{ width: "30%" }}>
             <Typography variant="p">Address</Typography>
-          </Box>
-          <TextField size="small" sx={{ width: "70%" }} margin="dense" />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Contact Details</Typography>
           </Box>
           <TextField size="small" sx={{ width: "70%" }} margin="dense" />
         </Box>

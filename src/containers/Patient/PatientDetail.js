@@ -67,6 +67,56 @@ const PatientDetail = () => {
         >
           <Box sx={{ width: "30%" }}>
             <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+              Age
+            </Typography>
+          </Box>
+          {/* <TextField
+            size="small"
+            sx={{ width: "70%" }}
+            margin="dense"
+            defaultValue="18"
+            disabled={true}
+          /> */}
+          <Box sx={{ width: "70%" }}>
+            <Typography variant="body2">18</Typography>
+          </Box>
+        </Box>
+        <Divider />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            margin: "10px 0px",
+          }}
+        >
+          <Box sx={{ width: "30%" }}>
+            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+              Phone Number
+            </Typography>
+          </Box>
+          {/* <TextField
+            size="small"
+            sx={{ width: "70%" }}
+            margin="dense"
+            defaultValue="09760614842"
+            disabled={true}
+          /> */}
+          <Box sx={{ width: "70%" }}>
+            <Typography variant="body2">09760614842</Typography>
+          </Box>
+        </Box>
+        <Divider />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            margin: "10px 0px",
+          }}
+        >
+          <Box sx={{ width: "30%" }}>
+            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
               Gender
             </Typography>
           </Box>
@@ -114,31 +164,7 @@ const PatientDetail = () => {
             <Typography variant="body2">2003-03-04</Typography>
           </Box>
         </Box>
-        <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            margin: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              Age
-            </Typography>
-          </Box>
-          {/* <TextField
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            defaultValue="18"
-            disabled={true}
-          /> */}
-          <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">18</Typography>
-          </Box>
-        </Box>
+
         <Divider />
         <Box
           sx={{
@@ -162,31 +188,6 @@ const PatientDetail = () => {
           /> */}
           <Box sx={{ width: "70%" }}>
             <Typography variant="body2">Yangon, Hlaing Township</Typography>
-          </Box>
-        </Box>
-        <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            margin: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              Contact Details
-            </Typography>
-          </Box>
-          {/* <TextField
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            defaultValue="09760614842"
-            disabled={true}
-          /> */}
-          <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">09760614842</Typography>
           </Box>
         </Box>
       </Box>
