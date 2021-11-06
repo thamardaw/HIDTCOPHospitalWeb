@@ -5,7 +5,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
-import { Login, Signup, Dashboard, ResetPassword } from "./pages";
+import { Login, Signup, Dashboard, ResetPassword } from "./containers";
 // import PrivateRoute from "./utils/PrivateRoute";
 
 function App() {

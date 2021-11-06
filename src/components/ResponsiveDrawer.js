@@ -10,9 +10,14 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import PeopleIcon from "@mui/icons-material/People";
+import React from "react";
 
-const ResponsiveDrawer = (props) => {
-  const { window, drawerWidth, mobileOpen, handleDrawerToggle } = props;
+const ResponsiveDrawer = ({
+  window,
+  drawerWidth,
+  mobileOpen,
+  handleDrawerToggle,
+}) => {
   const container =
     window !== undefined ? () => window().document.body : undefined;
   const drawer = (
@@ -71,4 +76,4 @@ const ResponsiveDrawer = (props) => {
   );
 };
 
-export default ResponsiveDrawer;
+export default React.memo(ResponsiveDrawer);

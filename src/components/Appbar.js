@@ -2,6 +2,7 @@ import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Logout } from "@mui/icons-material";
 import { useHistory } from "react-router";
+import React from "react";
 
 const Appbar = ({ drawerWidth, handleDrawerToggle }) => {
   const history = useHistory();
@@ -38,4 +39,4 @@ const Appbar = ({ drawerWidth, handleDrawerToggle }) => {
   );
 };
 
-export default Appbar;
+export default React.memo(Appbar);
