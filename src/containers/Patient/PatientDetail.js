@@ -30,7 +30,7 @@ const PatientDetail = () => {
         >
           <ArrowBackIosNewIcon size="small" />
         </IconButton>
-        <Typography variant="h5">Detail</Typography>
+        <Typography variant="h5">Details</Typography>
       </Toolbar>
       <Divider />
       <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
@@ -92,7 +92,7 @@ const PatientDetail = () => {
         >
           <Box sx={{ width: "30%" }}>
             <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              Phone Number
+              Contact Details
             </Typography>
           </Box>
           {/* <TextField

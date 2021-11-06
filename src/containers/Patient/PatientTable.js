@@ -7,12 +7,12 @@ import { CustomTable } from "../../components";
 //   },
 // }));
 
-function createData(id, name, gender, dataOfBirth, age, address, phone) {
+function createData(id, name, gender, dataOfBirth, age, address, contact) {
   return {
     id,
     name,
     age,
-    phone,
+    contact,
     gender,
     dataOfBirth,
     address,
@@ -123,10 +123,10 @@ const headCells = [
     label: "Age",
   },
   {
-    id: "phone",
+    id: "contact",
     numeric: false,
     disablePadding: false,
-    label: "Phone Number",
+    label: "Contact Details",
   },
   {
     id: "gender",
