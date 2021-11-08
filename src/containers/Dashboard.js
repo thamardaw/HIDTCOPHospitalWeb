@@ -1,13 +1,8 @@
 import { CssBaseline, Toolbar } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
-import { Route, Switch, useRouteMatch } from "react-router";
-import {
-  PatientEdit,
-  PatientCreate,
-  PatientTable,
-  PatientDetail,
-} from "./Patient";
+import { Redirect, Route, Switch, useRouteMatch } from "react-router";
+import { Patient } from "./Patient";
 import { Appbar, ResponsiveDrawer } from "../components";
 
 const drawerWidth = 240;
@@ -42,10 +37,8 @@ function Dashboard(props) {
       >
         <Toolbar />
         <Switch>
-          <Route path={`${path}`} component={PatientTable} exact />
-          <Route path={`${path}/create`} component={PatientCreate} />
-          <Route path={`${path}/edit`} component={PatientEdit} />
-          <Route path={`${path}/detail`} component={PatientDetail} />
+          <Route path={`${path}/patient`} component={Patient} />
+          <Redirect to={`${path}/patient`} />
         </Switch>
       </Box>
     </Box>
