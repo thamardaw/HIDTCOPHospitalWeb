@@ -12,11 +12,10 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
-import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import MuiAlert from "@mui/material/Alert";
-import { useHistory } from "react-router";
+import { AuthContext } from "../contexts";
 
 const Container = styled("div")(({ theme }) => ({
   width: "100vw",
@@ -63,11 +62,11 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 const Login = () => {
+  let { loginUser } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [details, setDetails] = useState({ username: "", password: "" });
   const [openAlert, setOpenAlert] = useState(false);
   const [message, setMessage] = useState("");
-  const history = useHistory();
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -78,26 +77,7 @@ const Login = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("username", details.username);
-    formData.append("password", details.password);
-    const res = await axios.post(
-      `${process.env.REACT_APP_BASE_URL}/api/user/login`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        validateStatus: function (status) {
-          return status < 500;
-        },
-      }
-    );
-    if (res.status === 400) {
-      setMessage(res.data.detail);
-      setOpenAlert(true);
-    }
-    console.log(res);
+    await loginUser(details, setMessage, setOpenAlert);
   };
 
   return (
@@ -143,19 +123,11 @@ const Login = () => {
                   }
                 />
               </FormControl>
-              {/* <Button
-                fullWidth
-                variant="contained"
-                style={{ marginTop: "20px" }}
-                type="submit"
-              >
-                Log in
-              </Button> */}
               <Button
                 fullWidth
                 variant="contained"
                 style={{ marginTop: "20px" }}
-                onClick={() => history.push("/")}
+                type="submit"
               >
                 Log in
               </Button>
@@ -175,7 +147,7 @@ const Login = () => {
       </Container>
       <Snackbar
         open={openAlert}
-        autoHideDuration={1000}
+        autoHideDuration={1500}
         onClose={handleClose}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >

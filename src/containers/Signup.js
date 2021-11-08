@@ -87,6 +87,10 @@ const StyledLink = styled(Link)(({ theme }) => ({
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [role, setRole] = useState("");
+  const handleChange = (e) => {
+    setRole(e.target.value);
+  };
   return (
     <Container>
       <StyledBox>
@@ -149,6 +153,8 @@ const Signup = () => {
             label="Role"
             variant="standard"
             sx={{ marginBottom: "10px" }}
+            value={role}
+            onChange={handleChange}
           >
             <MenuItem value="Admin">Admin</MenuItem>
             <MenuItem value="Receptionist">Receptionist</MenuItem>
