@@ -8,13 +8,17 @@ import {
   InputLabel,
   MenuItem,
   Paper,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import MuiAlert from "@mui/material/Alert";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 // const Container = styled("div")(({ theme }) => ({
 //   display: "flex",
@@ -84,92 +88,179 @@ const StyledLink = styled(Link)(({ theme }) => ({
   textDecoration: "none",
 }));
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 const Signup = () => {
+  const history = useHistory();
+  const [details, setDetails] = useState({
+    username: "",
+    password: "",
+    confirmPassword: "",
+    role: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [role, setRole] = useState("");
-  const handleChange = (e) => {
-    setRole(e.target.value);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [message, setMessage] = useState({
+    status: "",
+    detail: "",
+  });
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenAlert(false);
+    setMessage({ status: message.status, detail: "" });
+  };
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    if (details.password !== details.confirmPassword) {
+      setMessage({ status: "error", detail: "Passwords do not match." });
+      setOpenAlert(true);
+      return;
+    }
+    const res = await axios.post(
+      `${process.env.REACT_APP_BASE_URL}/api/user`,
+      {
+        username: details.username,
+        password: details.password,
+        role: details.role,
+      },
+      {
+        validateStatus: function (status) {
+          return status < 500;
+        },
+      }
+    );
+    if (res.status === 200) {
+      setMessage({ status: res.status, detail: res.data.detail });
+      setOpenAlert(true);
+      // history.goBack();
+    } else {
+      setMessage({ status: res.status, detail: res.data.detail });
+      setOpenAlert(true);
+    }
   };
   return (
-    <Container>
-      <StyledBox>
-        <StyledPaper elevation={6}>
-          <FormControl
-            fullWidth
-            required
-            variant="standard"
-            sx={{ marginBottom: "10px" }}
-          >
-            <InputLabel>Username</InputLabel>
-            <Input />
-          </FormControl>
-          <FormControl
-            fullWidth
-            required
-            variant="standard"
-            sx={{ marginBottom: "10px" }}
-          >
-            <InputLabel>Password</InputLabel>
-            <Input
-              type={showPassword ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-          <FormControl
-            fullWidth
-            required
-            variant="standard"
-            sx={{ marginBottom: "10px" }}
-          >
-            <InputLabel>Confirm Password</InputLabel>
-            <Input
-              type={showConfirmPassword ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
-                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-          <TextField
-            select
-            required
-            fullWidth
-            label="Role"
-            variant="standard"
-            sx={{ marginBottom: "10px" }}
-            value={role}
-            onChange={handleChange}
-          >
-            <MenuItem value="Admin">Admin</MenuItem>
-            <MenuItem value="Receptionist">Receptionist</MenuItem>
-          </TextField>
-          <Button fullWidth variant="contained" style={{ marginTop: "20px" }}>
-            Sign up
-          </Button>
-          <Button size="small" style={{ marginTop: "10px" }}>
-            <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>
-              <StyledLink to="/login">Already have an account?</StyledLink>
-            </Typography>
-          </Button>
-        </StyledPaper>
-      </StyledBox>
-    </Container>
+    <>
+      <Container>
+        <StyledBox>
+          <StyledPaper elevation={6}>
+            <form onSubmit={submitHandler}>
+              <FormControl
+                fullWidth
+                required
+                variant="standard"
+                sx={{ marginBottom: "10px" }}
+              >
+                <InputLabel>Username</InputLabel>
+                <Input
+                  onChange={(e) =>
+                    setDetails({ ...details, username: e.target.value })
+                  }
+                />
+              </FormControl>
+              <FormControl
+                fullWidth
+                required
+                variant="standard"
+                sx={{ marginBottom: "10px" }}
+              >
+                <InputLabel>Password</InputLabel>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  onChange={(e) =>
+                    setDetails({ ...details, password: e.target.value })
+                  }
+                />
+              </FormControl>
+              <FormControl
+                fullWidth
+                required
+                variant="standard"
+                sx={{ marginBottom: "10px" }}
+              >
+                <InputLabel>Confirm Password</InputLabel>
+                <Input
+                  type={showConfirmPassword ? "text" : "password"}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                      >
+                        {showConfirmPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  onChange={(e) =>
+                    setDetails({ ...details, confirmPassword: e.target.value })
+                  }
+                />
+              </FormControl>
+              <TextField
+                select
+                required
+                fullWidth
+                label="Role"
+                variant="standard"
+                sx={{ marginBottom: "10px" }}
+                value={details.role}
+                onChange={(e) =>
+                  setDetails({ ...details, role: e.target.value })
+                }
+              >
+                <MenuItem value="Admin">Admin</MenuItem>
+                <MenuItem value="Receptionist">Receptionist</MenuItem>
+              </TextField>
+              <Button
+                fullWidth
+                variant="contained"
+                style={{ marginTop: "20px" }}
+                type="submit"
+              >
+                Sign up
+              </Button>
+            </form>
+            <Button size="small" style={{ marginTop: "10px" }}>
+              <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>
+                <StyledLink to="/login">Already have an account?</StyledLink>
+              </Typography>
+            </Button>
+          </StyledPaper>
+        </StyledBox>
+      </Container>
+      <Snackbar
+        open={openAlert}
+        autoHideDuration={1500}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert severity={message.status === 200 ? "success" : "error"}>
+          {message.detail}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 
