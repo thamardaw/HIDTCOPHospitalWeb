@@ -223,7 +223,7 @@ EnhancedTableToolbar.propTypes = {
 // HeadCells ID have to be match with row's object key beause they two are dependent for sorting function
 const CustomTable = ({ headCells, rows }) => {
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("name");
+  const [orderBy, setOrderBy] = useState("id");
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const theme = useTheme();

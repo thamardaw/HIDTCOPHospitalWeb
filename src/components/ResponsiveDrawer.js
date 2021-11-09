@@ -1,12 +1,10 @@
 import {
+  Button,
   Divider,
   Drawer,
   List,
   ListItem,
-  ListItemIcon,
-  ListItemText,
   Toolbar,
-  Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import PeopleIcon from "@mui/icons-material/People";
@@ -26,12 +24,9 @@ const ResponsiveDrawer = ({
       <Divider />
       <List>
         <ListItem onClick={() => console.log("here")}>
-          <ListItemIcon>
-            <PeopleIcon />
-          </ListItemIcon>
-          <ListItemText>
-            <Typography>Patient</Typography>
-          </ListItemText>
+          <Button variant="contained" fullWidth startIcon={<PeopleIcon />}>
+            Patient
+          </Button>
         </ListItem>
       </List>
     </div>

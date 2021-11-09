@@ -139,7 +139,9 @@ const Signup = () => {
     if (res.status === 200) {
       setMessage({ status: res.status, detail: res.data.detail });
       setOpenAlert(true);
-      // history.goBack();
+      setTimeout(() => {
+        history.goBack();
+      }, 1000);
     } else {
       setMessage({ status: res.status, detail: res.data.detail });
       setOpenAlert(true);
