@@ -13,6 +13,9 @@ const useAxios = () => {
   const axiosInstance = axios.create({
     baseURL,
     headers: { Authorization: `Bearer ${authTokens?.access_token}` },
+    validateStatus: function (status) {
+      return status < 500;
+    },
   });
 
   axiosInstance.interceptors.request.use(async (req) => {
@@ -21,10 +24,17 @@ const useAxios = () => {
 
     if (!isExpired) return req;
 
-    const res = await axios.post(`${baseURL}/api/refreshToken`, {
-      refresh_token: authTokens.refresh_token,
-    });
-
+    const res = await axios.post(
+      `${baseURL}/api/refreshToken`,
+      {
+        refresh_token: authTokens.refresh_token,
+      },
+      {
+        validateStatus: function (status) {
+          return status < 500;
+        },
+      }
+    );
     if (res.status === 200) {
       localStorage.setItem("authTokens", JSON.stringify(res.data));
       setAuthTokens(res.data);

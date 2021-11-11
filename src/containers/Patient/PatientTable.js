@@ -1,3 +1,11 @@
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import { useCallback, useEffect, useState } from "react";
 import { CustomTable } from "../../components";
@@ -153,24 +161,45 @@ const headCells = [
 const PatientTable = () => {
   const api = useAxios();
   const [rows, setRows] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [id, setId] = useState("");
+
+  const handleClickOpen = (id) => {
+    setId(id);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const getData = useCallback(async () => {
     const res = await api.get("/api/patients");
     console.log(res.data);
-    const data = res.data.map((row) => {
-      const ID = generateID(row.id, row.created_time);
-      return {
-        id: ID,
-        name: row.name,
-        age: row.age,
-        contactDetails: row.contact_details,
-        gender: row.gender,
-        dataOfBirth: row.date_of_birth,
-        address: row.address,
-      };
-    });
-    setRows(data);
-  }, [api]);
+    if (res.status === 200) {
+      const data = res.data.map((row) => {
+        const ID = generateID(row.id, row.created_time);
+        return {
+          id: ID,
+          name: row.name,
+          age: row.age,
+          contactDetails: row.contact_details,
+          gender: row.gender,
+          dataOfBirth: row.date_of_birth,
+          address: row.address,
+        };
+      });
+      setRows(data);
+    }
+    return;
+    // eslint-disable-next-line
+  }, []);
+
+  const deleteItem = async () => {
+    await api.delete(`/api/patients/${parseInt(id.split("-")[1])}`);
+    handleClose();
+    getData();
+  };
 
   useEffect(() => {
     getData();
@@ -215,7 +244,30 @@ const PatientTable = () => {
           </Button>
         </ButtonContainer>
       </Toolbar> */}
-      <CustomTable headCells={headCells} rows={rows} />
+      <CustomTable
+        headCells={headCells}
+        rows={rows}
+        deleteDialog={handleClickOpen}
+      />
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={deleteItem} autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
