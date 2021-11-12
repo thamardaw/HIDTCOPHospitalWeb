@@ -6,14 +6,14 @@ import {
 } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { Login, Signup, Dashboard, ResetPassword } from "./containers";
-// import PrivateRoute from "./utils/PrivateRoute";
+import PrivateRoute from "./utils/PrivateRoute";
 
 function App() {
   return (
     <Router>
       <AuthProvider>
         <Switch>
-          <Route path="/dashboard" component={Dashboard} />
+          <PrivateRoute path="/dashboard" component={Dashboard} />
           <Route path="/login" component={Login} />
           <Route path="/signup" component={Signup} />
           <Route path="/resetPassword" component={ResetPassword} />

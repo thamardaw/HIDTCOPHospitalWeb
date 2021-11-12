@@ -1,10 +1,31 @@
 import { Divider, IconButton, Toolbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { useHistory } from "react-router";
+import { useHistory, useParams } from "react-router";
+import { useAxios } from "../../hooks";
+import { useEffect, useState } from "react";
 
 const PatientDetail = () => {
   const history = useHistory();
+  const { id } = useParams();
+  const api = useAxios();
+  const [details, setDetails] = useState({});
+
+  const getData = async () => {
+    const res = await api.get(`/api/patients/${parseInt(id.split("-")[1])}`);
+    if (res.status === 200) {
+      setDetails({ ...res.data });
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      getData();
+    } else {
+      history.goBack();
+    }
+    // eslint-disable-next-line
+  }, [id]);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Toolbar
@@ -54,7 +75,7 @@ const PatientDetail = () => {
             defaultValue="Zay Maw"
             disabled={true}
           /> */}
-          <Typography variant="body2">Zay Maw</Typography>
+          <Typography variant="body2">{details?.name}</Typography>
         </Box>
         <Divider />
         <Box
@@ -78,7 +99,7 @@ const PatientDetail = () => {
             disabled={true}
           /> */}
           <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">18</Typography>
+            <Typography variant="body2">{details?.age}</Typography>
           </Box>
         </Box>
         <Divider />
@@ -103,7 +124,7 @@ const PatientDetail = () => {
             disabled={true}
           /> */}
           <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">09760614842</Typography>
+            <Typography variant="body2">{details?.contact_details}</Typography>
           </Box>
         </Box>
         <Divider />
@@ -135,7 +156,7 @@ const PatientDetail = () => {
             <MenuItem value="female">Female</MenuItem>
           </TextField> */}
           <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">Male</Typography>
+            <Typography variant="body2">{details?.gender}</Typography>
           </Box>
         </Box>
         <Divider />
@@ -161,7 +182,7 @@ const PatientDetail = () => {
             disabled={true}
           /> */}
           <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">2003-03-04</Typography>
+            <Typography variant="body2">{details.date_of_birth}</Typography>
           </Box>
         </Box>
 
@@ -187,7 +208,7 @@ const PatientDetail = () => {
             disabled={true}
           /> */}
           <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">Yangon, Hlaing Township</Typography>
+            <Typography variant="body2">{details?.address}</Typography>
           </Box>
         </Box>
       </Box>
