@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 const AuthContext = createContext();
 
@@ -12,36 +13,41 @@ export const AuthProvider = ({ children }) => {
       ? JSON.parse(localStorage.getItem("authTokens"))
       : null
   );
+
   let [user, setUser] = useState(() =>
     localStorage.getItem("authTokens")
-      ? jwt_decode(localStorage.getItem("authTokens"))
+      ? jwt_decode(JSON.parse(localStorage.getItem("authTokens")).access_token)
       : null
   );
+
   let [loading, setLoading] = useState(true);
 
   const history = useHistory();
 
-  let loginUser = async (e) => {
-    e.preventDefault();
-    let response = await fetch("http://127.0.0.1:8000/api/token/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: e.target.username.value,
-        password: e.target.password.value,
-      }),
-    });
-    let data = await response.json();
-
-    if (response.status === 200) {
-      setAuthTokens(data);
-      setUser(jwt_decode(data.access));
-      localStorage.setItem("authTokens", JSON.stringify(data));
+  let loginUser = async (details, setMessage, setOpenAlert) => {
+    const formData = new FormData();
+    formData.append("username", details.username);
+    formData.append("password", details.password);
+    const res = await axios.post(
+      `${process.env.REACT_APP_BASE_URL}/api/login`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        validateStatus: function (status) {
+          return status < 500;
+        },
+      }
+    );
+    if (res.status === 200) {
+      setAuthTokens(res.data);
+      setUser(jwt_decode(res.data.access_token));
+      localStorage.setItem("authTokens", JSON.stringify(res.data));
       history.push("/");
     } else {
-      alert("Something went wrong!");
+      setMessage(res.data.detail);
+      setOpenAlert(true);
     }
   };
 
@@ -63,7 +69,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (authTokens) {
-      setUser(jwt_decode(authTokens.access));
+      setUser(jwt_decode(authTokens.access_token));
     }
     setLoading(false);
   }, [authTokens, loading]);

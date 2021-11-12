@@ -1,11 +1,11 @@
 import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Logout } from "@mui/icons-material";
-import { useHistory } from "react-router";
-import React from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../contexts";
 
 const Appbar = ({ drawerWidth, handleDrawerToggle }) => {
-  const history = useHistory();
+  let { logoutUser } = useContext(AuthContext);
   return (
     <AppBar
       position="fixed"
@@ -28,10 +28,7 @@ const Appbar = ({ drawerWidth, handleDrawerToggle }) => {
         <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
           HIDTCOP
         </Typography>
-        <IconButton
-          sx={{ color: "white" }}
-          onClick={() => history.push("/login")}
-        >
+        <IconButton sx={{ color: "white" }} onClick={() => logoutUser()}>
           <Logout />
         </IconButton>
       </Toolbar>

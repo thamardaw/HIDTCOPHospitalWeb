@@ -132,9 +132,13 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected } = props;
+  const { numSelected, selected, deleteDialog, onSelectAllClick } = props;
   const history = useHistory();
   const { url } = useRouteMatch();
+  const handleDelete = (event) => {
+    onSelectAllClick(event);
+    deleteDialog(selected[0]);
+  };
   return (
     <Toolbar
       sx={{
@@ -174,7 +178,7 @@ const EnhancedTableToolbar = (props) => {
                 variant="contained"
                 size="small"
                 sx={{ marginRight: "5px" }}
-                onClick={() => history.push(`${url}/edit`)}
+                onClick={() => history.push(`${url}/form/${selected[0]}`)}
               >
                 Edit
               </Button>
@@ -182,20 +186,29 @@ const EnhancedTableToolbar = (props) => {
                 variant="contained"
                 size="small"
                 sx={{ marginRight: "5px" }}
-                onClick={() => history.push(`${url}/detail`)}
+                onClick={() => history.push(`${url}/details/${selected[0]}`)}
               >
                 Details
               </Button>
+              <Button
+                variant="contained"
+                color="error"
+                size="small"
+                sx={{ marginRight: "5px" }}
+                onClick={handleDelete}
+              >
+                Delete
+              </Button>
             </>
           )}
-          <Button
+          {/* <Button
             variant="contained"
             color="error"
             size="small"
             sx={{ marginRight: "5px" }}
           >
             Delete
-          </Button>
+          </Button> */}
         </>
       ) : (
         <>
@@ -206,7 +219,7 @@ const EnhancedTableToolbar = (props) => {
           <Button
             variant="outlined"
             size="small"
-            onClick={() => history.push(`${url}/create`)}
+            onClick={() => history.push(`${url}/form`)}
           >
             new
           </Button>
@@ -218,12 +231,15 @@ const EnhancedTableToolbar = (props) => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
+  selected: PropTypes.array.isRequired,
+  deleteDialog: PropTypes.func.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
 };
 
 // HeadCells ID have to be match with row's object key beause they two are dependent for sorting function
-const CustomTable = ({ headCells, rows }) => {
+const CustomTable = ({ headCells, rows, deleteDialog }) => {
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("name");
+  const [orderBy, setOrderBy] = useState("id");
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const theme = useTheme();
@@ -282,7 +298,12 @@ const CustomTable = ({ headCells, rows }) => {
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          selected={selected}
+          deleteDialog={deleteDialog}
+          onSelectAllClick={handleSelectAllClick}
+        />
         <TableContainer>
           <Table
             sx={{ minWidth: 100 }}
