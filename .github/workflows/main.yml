@@ -30,4 +30,4 @@ jobs:
           context: .
           push: true
           build-args: ["BASE_URL=http://api"]
-          tags: jasoniv/HIDTCOPHospitalWeb:latest
+          tags: user/app:latest
