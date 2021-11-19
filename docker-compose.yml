@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  nginx:
+    depends_on:
+      - client
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - 80:80
+  client:
+    container_name: client
+    build:
+      dockerfile: Dockerfile
+      context: ./
+      args:
+        - BASE_URL=http://localhost:8000
+    volumes:
+      - .:/app
+      - /app/node_modules
