@@ -29,5 +29,5 @@ jobs:
         with:
           context: .
           push: true
-          build-args: ["BASE_URL=http://api"]
+          build-args: BASE_URL=http://api
           tags: user/app:latest
