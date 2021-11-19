@@ -18,7 +18,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import { Button, InputBase, useMediaQuery } from "@mui/material";
 import { useHistory, useRouteMatch } from "react-router";
 import { Search } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const SearchContainer = styled("div")(({ theme }) => ({
   display: "flex",
@@ -132,7 +132,13 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected, selected, deleteDialog, onSelectAllClick } = props;
+  const {
+    numSelected,
+    selected,
+    deleteDialog,
+    onSelectAllClick,
+    onChangeSearch,
+  } = props;
   const history = useHistory();
   const { url } = useRouteMatch();
   const handleDelete = (event) => {
@@ -214,7 +220,10 @@ const EnhancedTableToolbar = (props) => {
         <>
           <SearchContainer>
             <Search />
-            <StyledInputBase placeholder="Search..." />
+            <StyledInputBase
+              placeholder="Search..."
+              onChange={onChangeSearch}
+            />
           </SearchContainer>
           <Button
             variant="outlined"
@@ -234,6 +243,7 @@ EnhancedTableToolbar.propTypes = {
   selected: PropTypes.array.isRequired,
   deleteDialog: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
+  onChangeSearch: PropTypes.func.isRequired,
 };
 
 // HeadCells ID have to be match with row's object key beause they two are dependent for sorting function
@@ -241,6 +251,7 @@ const CustomTable = ({ headCells, rows, deleteDialog }) => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("id");
   const [selected, setSelected] = useState([]);
+  const [dataRows, setDataRows] = useState([]);
   const [page, setPage] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"), {
@@ -248,10 +259,28 @@ const CustomTable = ({ headCells, rows, deleteDialog }) => {
   });
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const arraySearch = (array, keyword, objKeys) => {
+    const searchItem = keyword.toLowerCase();
+    return array.filter((value) => {
+      let t = objKeys.map((key) => {
+        return value[key.id].toLowerCase().includes(searchItem);
+      });
+      return t.includes(true);
+    });
+  };
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
+  };
+
+  const handleSearch = (event) => {
+    if (event.target.value.length === 0) {
+      setDataRows(rows);
+    } else {
+      setDataRows(arraySearch(rows, event.target.value, headCells));
+    }
   };
 
   const handleSelectAllClick = (event) => {
@@ -295,6 +324,10 @@ const CustomTable = ({ headCells, rows, deleteDialog }) => {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+  useEffect(() => {
+    setDataRows(rows);
+  }, [rows]);
+
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
@@ -303,6 +336,7 @@ const CustomTable = ({ headCells, rows, deleteDialog }) => {
           selected={selected}
           deleteDialog={deleteDialog}
           onSelectAllClick={handleSelectAllClick}
+          onChangeSearch={handleSearch}
         />
         <TableContainer>
           <Table
@@ -320,7 +354,7 @@ const CustomTable = ({ headCells, rows, deleteDialog }) => {
               headCells={headCells}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
+              {stableSort(dataRows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.id);
