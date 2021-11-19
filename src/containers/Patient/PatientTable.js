@@ -175,14 +175,13 @@ const PatientTable = () => {
 
   const getData = useCallback(async () => {
     const res = await api.get("/api/patients");
-    console.log(res.data);
     if (res.status === 200) {
       const data = res.data.map((row) => {
         const ID = generateID(row.id, row.created_time);
         return {
           id: ID,
           name: row.name,
-          age: row.age,
+          age: row.age.toString(),
           contactDetails: row.contact_details,
           gender: row.gender,
           dataOfBirth: row.date_of_birth,
