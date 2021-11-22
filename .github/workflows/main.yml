@@ -29,5 +29,5 @@ jobs:
         with:
           context: .
           push: true
-          build-args: BASE_URL=http://localhost:8000
+          build-args: BASE_URL=http://192.168.100.25:8000
           tags: jasoniv/hidtcophospitalweb:latest
