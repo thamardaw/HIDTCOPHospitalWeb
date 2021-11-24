@@ -174,7 +174,7 @@ const PatientTable = () => {
   };
 
   const getData = useCallback(async () => {
-    const res = await api.get("/api/patients");
+    const res = await api.get("/api/patients/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
         const ID = generateID(row.id, row.created_time);
