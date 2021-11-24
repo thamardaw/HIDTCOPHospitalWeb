@@ -52,7 +52,7 @@ const PatientForm = () => {
   };
 
   const createNew = async () => {
-    const res = await api.post(`/api/patients`, {
+    const res = await api.post(`/api/patients/`, {
       ...details,
     });
     if (res.status === 200) {
