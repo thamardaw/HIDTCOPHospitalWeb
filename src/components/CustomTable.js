@@ -138,6 +138,7 @@ const EnhancedTableToolbar = (props) => {
     deleteDialog,
     onSelectAllClick,
     onChangeSearch,
+    tableName,
   } = props;
   const history = useHistory();
   const { url } = useRouteMatch();
@@ -172,7 +173,7 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
       ) : (
         <Typography variant="h6" id="tableTitle" component="div">
-          Patient
+          {tableName}
         </Typography>
       )}
 
@@ -184,7 +185,7 @@ const EnhancedTableToolbar = (props) => {
                 variant="contained"
                 size="small"
                 sx={{ marginRight: "5px" }}
-                onClick={() => history.push(`${url}/form/${selected[0]}`)}
+                onClick={() => history.push(`${url}/form/${selected[0].id}`)}
               >
                 Edit
               </Button>
@@ -192,7 +193,7 @@ const EnhancedTableToolbar = (props) => {
                 variant="contained"
                 size="small"
                 sx={{ marginRight: "5px" }}
-                onClick={() => history.push(`${url}/details/${selected[0]}`)}
+                onClick={() => history.push(`${url}/details/${selected[0].id}`)}
               >
                 Details
               </Button>
@@ -244,10 +245,11 @@ EnhancedTableToolbar.propTypes = {
   deleteDialog: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
   onChangeSearch: PropTypes.func.isRequired,
+  tableName: PropTypes.string.isRequired,
 };
 
 // HeadCells ID have to be match with row's object key beause they two are dependent for sorting function
-const CustomTable = ({ headCells, rows, deleteDialog }) => {
+const CustomTable = ({ headCells, rows, deleteDialog, tableName }) => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("id");
   const [selected, setSelected] = useState([]);
@@ -285,8 +287,7 @@ const CustomTable = ({ headCells, rows, deleteDialog }) => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id);
-      setSelected(newSelecteds);
+      setSelected(rows);
       return;
     }
     setSelected([]);
@@ -332,6 +333,7 @@ const CustomTable = ({ headCells, rows, deleteDialog }) => {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar
+          tableName={tableName}
           numSelected={selected.length}
           selected={selected}
           deleteDialog={deleteDialog}
@@ -357,12 +359,12 @@ const CustomTable = ({ headCells, rows, deleteDialog }) => {
               {stableSort(dataRows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
+                  const isItemSelected = isSelected(row);
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.id)}
+                      onClick={(event) => handleClick(event, row)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}

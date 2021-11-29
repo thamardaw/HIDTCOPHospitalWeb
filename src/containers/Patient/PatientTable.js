@@ -244,6 +244,7 @@ const PatientTable = () => {
         </ButtonContainer>
       </Toolbar> */}
       <CustomTable
+        tableName="Patient"
         headCells={headCells}
         rows={rows}
         deleteDialog={handleClickOpen}
