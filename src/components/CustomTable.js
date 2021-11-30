@@ -144,7 +144,7 @@ const EnhancedTableToolbar = (props) => {
   const { url } = useRouteMatch();
   const handleDelete = (event) => {
     onSelectAllClick(event);
-    deleteDialog(selected[0]);
+    deleteDialog(selected[0].id);
   };
   return (
     <Toolbar
