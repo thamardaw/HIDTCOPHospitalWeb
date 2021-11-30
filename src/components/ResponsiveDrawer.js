@@ -9,6 +9,7 @@ import {
 import { Box } from "@mui/system";
 import PeopleIcon from "@mui/icons-material/People";
 import React from "react";
+import { useHistory, useLocation, useRouteMatch } from "react-router";
 
 const ResponsiveDrawer = ({
   window,
@@ -18,14 +19,46 @@ const ResponsiveDrawer = ({
 }) => {
   const container =
     window !== undefined ? () => window().document.body : undefined;
+  const location = useLocation();
+  const history = useHistory();
+  const { url } = useRouteMatch();
   const drawer = (
     <div>
       <Toolbar />
       <Divider />
       <List>
-        <ListItem onClick={() => console.log("here")}>
-          <Button variant="contained" fullWidth startIcon={<PeopleIcon />}>
+        <ListItem>
+          <Button
+            variant={
+              location.pathname.includes("/patient") ? "contained" : "text"
+            }
+            fullWidth
+            startIcon={<PeopleIcon />}
+            onClick={() => history.push(`${url}/patients`)}
+            sx={{
+              display: "flex",
+              justifyContent: location.pathname.includes("/patient")
+                ? "flex-end"
+                : "flex-start",
+            }}
+          >
             Patient
+          </Button>
+        </ListItem>
+        <ListItem>
+          <Button
+            variant={location.pathname.includes("/uom") ? "contained" : "text"}
+            fullWidth
+            startIcon={<PeopleIcon />}
+            onClick={() => history.push(`${url}/uom`)}
+            sx={{
+              display: "flex",
+              justifyContent: location.pathname.includes("/uom")
+                ? "flex-end"
+                : "flex-start",
+            }}
+          >
+            UOM
           </Button>
         </ListItem>
       </List>

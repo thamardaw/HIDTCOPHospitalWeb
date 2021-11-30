@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router";
 import { Patient } from "./Patient";
 import { Appbar, ResponsiveDrawer } from "../components";
+import { Uom } from "./Billing/Uom";
 
 const drawerWidth = 240;
 
@@ -38,6 +39,7 @@ function Dashboard(props) {
         <Toolbar />
         <Switch>
           <Route path={`${path}/patient`} component={Patient} />
+          <Route path={`${path}/uom`} component={Uom} />
           <Redirect to={`${path}/patient`} />
         </Switch>
       </Box>
