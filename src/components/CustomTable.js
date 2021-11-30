@@ -19,6 +19,7 @@ import { Button, InputBase, useMediaQuery } from "@mui/material";
 import { useHistory, useRouteMatch } from "react-router";
 import { Search } from "@mui/icons-material";
 import { useEffect, useState } from "react";
+import { CSVLink } from "react-csv";
 
 const SearchContainer = styled("div")(({ theme }) => ({
   display: "flex",
@@ -139,13 +140,21 @@ const EnhancedTableToolbar = (props) => {
     onSelectAllClick,
     onChangeSearch,
     tableName,
+    headCells,
   } = props;
   const history = useHistory();
   const { url } = useRouteMatch();
+  const [CSV, setCSV] = useState({});
   const handleDelete = (event) => {
     onSelectAllClick(event);
     deleteDialog(selected[0].id);
   };
+  useEffect(() => {
+    const h = headCells.map((headCell) => {
+      return { label: headCell.label, key: headCell.id };
+    });
+    setCSV({ data: selected, headers: h, filename: `${tableName}.csv` });
+  }, [headCells, selected, tableName]);
   return (
     <Toolbar
       sx={{
@@ -165,6 +174,7 @@ const EnhancedTableToolbar = (props) => {
       {numSelected > 0 ? (
         <Typography
           sx={{ flex: "1 1 100%" }}
+          // sx={{ flex: "1 1 100%", display: { xs: "none" } }}
           color="inherit"
           variant="subtitle1"
           component="div"
@@ -179,7 +189,7 @@ const EnhancedTableToolbar = (props) => {
 
       {numSelected > 0 ? (
         <>
-          {numSelected === 1 && (
+          {numSelected === 1 ? (
             <>
               <Button
                 variant="contained"
@@ -207,15 +217,20 @@ const EnhancedTableToolbar = (props) => {
                 Delete
               </Button>
             </>
+          ) : (
+            <Button
+              variant="contained"
+              size="small"
+              sx={{ marginRight: "5px" }}
+            >
+              <CSVLink
+                {...CSV}
+                style={{ color: "inherit", textDecoration: "inherit" }}
+              >
+                CSV
+              </CSVLink>
+            </Button>
           )}
-          {/* <Button
-            variant="contained"
-            color="error"
-            size="small"
-            sx={{ marginRight: "5px" }}
-          >
-            Delete
-          </Button> */}
         </>
       ) : (
         <>
@@ -246,6 +261,7 @@ EnhancedTableToolbar.propTypes = {
   onSelectAllClick: PropTypes.func.isRequired,
   onChangeSearch: PropTypes.func.isRequired,
   tableName: PropTypes.string.isRequired,
+  headCells: PropTypes.array.isRequired,
 };
 
 // HeadCells ID have to be match with row's object key beause they two are dependent for sorting function
@@ -287,7 +303,7 @@ const CustomTable = ({ headCells, rows, deleteDialog, tableName }) => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      setSelected(rows);
+      setSelected(dataRows);
       return;
     }
     setSelected([]);
@@ -339,6 +355,7 @@ const CustomTable = ({ headCells, rows, deleteDialog, tableName }) => {
           deleteDialog={deleteDialog}
           onSelectAllClick={handleSelectAllClick}
           onChangeSearch={handleSearch}
+          headCells={headCells}
         />
         <TableContainer>
           <Table
@@ -352,7 +369,7 @@ const CustomTable = ({ headCells, rows, deleteDialog, tableName }) => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={dataRows.length}
               headCells={headCells}
             />
             <TableBody>
