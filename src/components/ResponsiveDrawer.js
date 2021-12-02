@@ -8,6 +8,8 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import PeopleIcon from "@mui/icons-material/People";
+import SquareFootIcon from "@mui/icons-material/SquareFoot";
+import CategoryIcon from "@mui/icons-material/Category";
 import React from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 
@@ -49,7 +51,7 @@ const ResponsiveDrawer = ({
           <Button
             variant={location.pathname.includes("/uom") ? "contained" : "text"}
             fullWidth
-            startIcon={<PeopleIcon />}
+            startIcon={<SquareFootIcon />}
             onClick={() => history.push(`${url}/uom`)}
             sx={{
               display: "flex",
@@ -59,6 +61,24 @@ const ResponsiveDrawer = ({
             }}
           >
             UOM
+          </Button>
+        </ListItem>
+        <ListItem>
+          <Button
+            variant={
+              location.pathname.includes("/category") ? "contained" : "text"
+            }
+            fullWidth
+            startIcon={<CategoryIcon />}
+            onClick={() => history.push(`${url}/category`)}
+            sx={{
+              display: "flex",
+              justifyContent: location.pathname.includes("/category")
+                ? "flex-end"
+                : "flex-start",
+            }}
+          >
+            Category
           </Button>
         </ListItem>
       </List>

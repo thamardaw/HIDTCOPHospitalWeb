@@ -218,18 +218,18 @@ const EnhancedTableToolbar = (props) => {
               </Button>
             </>
           ) : (
-            <Button
-              variant="contained"
-              size="small"
-              sx={{ marginRight: "5px" }}
+            <CSVLink
+              {...CSV}
+              style={{ color: "inherit", textDecoration: "inherit" }}
             >
-              <CSVLink
-                {...CSV}
-                style={{ color: "inherit", textDecoration: "inherit" }}
+              <Button
+                variant="contained"
+                size="small"
+                sx={{ marginRight: "5px" }}
               >
                 CSV
-              </CSVLink>
-            </Button>
+              </Button>
+            </CSVLink>
           )}
         </>
       ) : (

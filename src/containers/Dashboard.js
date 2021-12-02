@@ -5,6 +5,7 @@ import { Redirect, Route, Switch, useRouteMatch } from "react-router";
 import { Patient } from "./Patient";
 import { Appbar, ResponsiveDrawer } from "../components";
 import { Uom } from "./Billing/Uom";
+import { Category } from "./Billing/Category";
 
 const drawerWidth = 240;
 
@@ -40,6 +41,7 @@ function Dashboard(props) {
         <Switch>
           <Route path={`${path}/patient`} component={Patient} />
           <Route path={`${path}/uom`} component={Uom} />
+          <Route path={`${path}/category`} component={Category} />
           <Redirect to={`${path}/patient`} />
         </Switch>
       </Box>
