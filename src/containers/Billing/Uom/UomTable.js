@@ -17,7 +17,7 @@ const headCells = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Patient ID",
+    label: "UOM ID",
   },
   {
     id: "name",
@@ -32,7 +32,7 @@ const headCells = [
     label: "Description",
   },
 ];
-const PatientTable = () => {
+const UomTable = () => {
   const api = useAxios();
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
@@ -106,4 +106,4 @@ const PatientTable = () => {
   );
 };
 
-export default PatientTable;
+export default UomTable;
