@@ -6,6 +6,7 @@ import { Patient } from "./Patient";
 import { Appbar, ResponsiveDrawer } from "../components";
 import { Uom } from "./Billing/Uom";
 import { Category } from "./Billing/Category";
+import { SalesServiceItem } from "./Billing/SalesServiceItem";
 
 const drawerWidth = 240;
 
@@ -42,6 +43,10 @@ function Dashboard(props) {
           <Route path={`${path}/patient`} component={Patient} />
           <Route path={`${path}/uom`} component={Uom} />
           <Route path={`${path}/category`} component={Category} />
+          <Route
+            path={`${path}/salesServiceItem`}
+            component={SalesServiceItem}
+          />
           <Redirect to={`${path}/patient`} />
         </Switch>
       </Box>

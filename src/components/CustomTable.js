@@ -182,7 +182,12 @@ const EnhancedTableToolbar = (props) => {
           {numSelected} selected
         </Typography>
       ) : (
-        <Typography variant="h6" id="tableTitle" component="div">
+        <Typography
+          variant="h6"
+          id="tableTitle"
+          component="div"
+          sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+        >
           {tableName}
         </Typography>
       )}

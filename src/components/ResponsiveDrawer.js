@@ -10,6 +10,7 @@ import { Box } from "@mui/system";
 import PeopleIcon from "@mui/icons-material/People";
 import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import CategoryIcon from "@mui/icons-material/Category";
+import EventNoteIcon from "@mui/icons-material/EventNote";
 import React from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 
@@ -31,6 +32,7 @@ const ResponsiveDrawer = ({
       <List>
         <ListItem>
           <Button
+            size="small"
             variant={
               location.pathname.includes("/patient") ? "contained" : "text"
             }
@@ -49,6 +51,7 @@ const ResponsiveDrawer = ({
         </ListItem>
         <ListItem>
           <Button
+            size="small"
             variant={location.pathname.includes("/uom") ? "contained" : "text"}
             fullWidth
             startIcon={<SquareFootIcon />}
@@ -65,6 +68,7 @@ const ResponsiveDrawer = ({
         </ListItem>
         <ListItem>
           <Button
+            size="small"
             variant={
               location.pathname.includes("/category") ? "contained" : "text"
             }
@@ -79,6 +83,27 @@ const ResponsiveDrawer = ({
             }}
           >
             Category
+          </Button>
+        </ListItem>
+        <ListItem>
+          <Button
+            size="small"
+            variant={
+              location.pathname.includes("/salesServiceItem")
+                ? "contained"
+                : "text"
+            }
+            fullWidth
+            startIcon={<EventNoteIcon />}
+            onClick={() => history.push(`${url}/salesServiceItem`)}
+            sx={{
+              display: "flex",
+              justifyContent: location.pathname.includes("/salesServiceItem")
+                ? "flex-end"
+                : "flex-start",
+            }}
+          >
+            Sales & Service Item
           </Button>
         </ListItem>
       </List>
