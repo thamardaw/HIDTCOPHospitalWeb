@@ -142,6 +142,25 @@ const ResponsiveDrawer = ({
                 Sales & Service Item
               </Button>
             </ListItem>
+            <ListItem>
+              <Button
+                size="small"
+                variant={
+                  location.pathname.includes("/bill") ? "contained" : "text"
+                }
+                fullWidth
+                startIcon={<EventNoteIcon />}
+                onClick={() => history.push(`${url}/bill`)}
+                sx={{
+                  display: "flex",
+                  justifyContent: location.pathname.includes("/bill")
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              >
+                Bills
+              </Button>
+            </ListItem>
           </List>
         </Collapse>
       </List>

@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import { useState } from "react";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router";
 import { Patient } from "./Patient";
-import { Appbar, ResponsiveDrawer } from "../components";
+import { Appbar, Footer, ResponsiveDrawer } from "../components";
 import { Uom } from "./Billing/Uom";
 import { Category } from "./Billing/Category";
 import { SalesServiceItem } from "./Billing/SalesServiceItem";
@@ -49,6 +49,7 @@ function Dashboard(props) {
           />
           <Redirect to={`${path}/patient`} />
         </Switch>
+        <Footer />
       </Box>
     </Box>
   );
