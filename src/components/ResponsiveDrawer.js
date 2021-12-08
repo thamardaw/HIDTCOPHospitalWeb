@@ -13,6 +13,7 @@ import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import CategoryIcon from "@mui/icons-material/Category";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
+import ReceiptIcon from "@mui/icons-material/Receipt";
 import React from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
@@ -146,14 +147,14 @@ const ResponsiveDrawer = ({
               <Button
                 size="small"
                 variant={
-                  location.pathname.includes("/bill") ? "contained" : "text"
+                  location.pathname.includes("/bills") ? "contained" : "text"
                 }
                 fullWidth
-                startIcon={<EventNoteIcon />}
-                onClick={() => history.push(`${url}/bill`)}
+                startIcon={<ReceiptIcon />}
+                onClick={() => history.push(`${url}/bills`)}
                 sx={{
                   display: "flex",
-                  justifyContent: location.pathname.includes("/bill")
+                  justifyContent: location.pathname.includes("/bills")
                     ? "flex-end"
                     : "flex-start",
                 }}
