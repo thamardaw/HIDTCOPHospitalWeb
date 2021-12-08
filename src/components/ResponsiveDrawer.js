@@ -65,7 +65,8 @@ const ResponsiveDrawer = ({
             variant={
               location.pathname.includes("/salesServiceItem") |
               location.pathname.includes("/uom") |
-              location.pathname.includes("/category")
+              location.pathname.includes("/category") |
+              location.pathname.includes("/bills")
                 ? "contained"
                 : "text"
             }

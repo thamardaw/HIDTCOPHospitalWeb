@@ -2,11 +2,26 @@ import {
   Button,
   Container,
   Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
+
+function createData(name, calories, fat, carbs, protein) {
+  return { name, calories, fat, carbs, protein };
+}
+
+const rows = [
+  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
+  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
+];
 
 const Bills = () => {
   return (
@@ -46,7 +61,7 @@ const Bills = () => {
             }}
           >
             <Box sx={{ width: "100%" }}>
-              <Typography variant="p">Pateint Reg</Typography>
+              <Typography variant="p">Pateint ID</Typography>
             </Box>
             <TextField size="small" sx={{ width: "90%" }} margin="normal" />
           </Box>
@@ -91,7 +106,7 @@ const Bills = () => {
         >
           <Box
             sx={{
-              flex: 0.35,
+              width: { xs: "100%", md: "35%" },
             }}
           >
             <Box
@@ -144,7 +159,7 @@ const Bills = () => {
           </Box>
           <Box
             sx={{
-              flex: 0.65,
+              width: { xs: "100%", md: "65%" },
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
@@ -172,6 +187,48 @@ const Bills = () => {
                   Total : 0MMK
                 </Typography>
               </Box>
+            </Container>
+            <Container sx={{ paddingTop: "10px" }}>
+              <TableContainer sx={{ maxHeight: 240 }}>
+                <Table
+                  sx={{ minWidth: 450 }}
+                  aria-label="simple table"
+                  stickyHeader
+                  size="small"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>No</TableCell>
+                      <TableCell align="right">Name</TableCell>
+                      <TableCell align="right">Charge</TableCell>
+                      <TableCell align="right">Quantity</TableCell>
+                      <TableCell align="right">Unit</TableCell>
+                      <TableCell align="right">SubTotal</TableCell>
+                      <TableCell align="right">Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rows.map((row) => (
+                      <TableRow
+                        key={row.name}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {row.name}
+                        </TableCell>
+                        <TableCell align="right">{row.calories}</TableCell>
+                        <TableCell align="right">{row.fat}</TableCell>
+                        <TableCell align="right">{row.carbs}</TableCell>
+                        <TableCell align="right">{row.protein}</TableCell>
+                        <TableCell align="right">{row.carbs}</TableCell>
+                        <TableCell align="right">{row.protein}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Container>
           </Box>
         </Box>
