@@ -1,6 +1,8 @@
 import {
+  Autocomplete,
   Button,
   Container,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -12,6 +14,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/system";
 
 function createData(name, calories, fat, carbs, protein) {
@@ -19,9 +22,12 @@ function createData(name, calories, fat, carbs, protein) {
 }
 
 const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
+  createData("Asprin", 159, 6.0, 24, 4.0),
+  createData("Decolgen", 159, 6.0, 24, 4.0),
 ];
+
+const patient = ["Mg Mg", "Aung Aung"];
+const medicine = ["Asprin", "Decolgen"];
 
 const Bills = () => {
   return (
@@ -32,7 +38,7 @@ const Bills = () => {
           component="div"
           sx={{ fontSize: { xs: "14px", sm: "16px" } }}
         >
-          Patient Info
+          Patient Info (UI Only)
         </Typography>
       </Toolbar>
       <Container>
@@ -50,7 +56,25 @@ const Bills = () => {
             <Box sx={{ width: "100%" }}>
               <Typography variant="p">Patient Name</Typography>
             </Box>
-            <TextField size="small" sx={{ width: "90%" }} margin="normal" />
+            {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
+            <Autocomplete
+              value={null}
+              options={patient}
+              getOptionLabel={(option) => option}
+              style={{ width: "90%" }}
+              onChange={(event, newValue) => {
+                console.log("hello");
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  margin="normal"
+                />
+              )}
+            />
           </Box>
           <Box
             sx={{
@@ -127,7 +151,26 @@ const Bills = () => {
                 <Box sx={{ width: "100%" }}>
                   <Typography variant="p">Sales & Service Item</Typography>
                 </Box>
-                <TextField size="small" fullWidth margin="dense" />
+                {/* <TextField size="small" fullWidth margin="dense" />
+                 */}
+                <Autocomplete
+                  value={null}
+                  options={medicine}
+                  fullWidth
+                  getOptionLabel={(option) => option}
+                  onChange={(event, newValue) => {
+                    console.log("hello");
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      fullWidth
+                      size="small"
+                      margin="normal"
+                    />
+                  )}
+                />
               </Box>
               <Box
                 sx={{
@@ -191,7 +234,7 @@ const Bills = () => {
             <Container sx={{ paddingTop: "10px" }}>
               <TableContainer sx={{ maxHeight: 240 }}>
                 <Table
-                  sx={{ minWidth: 450 }}
+                  sx={{ minWidth: 350 }}
                   aria-label="simple table"
                   stickyHeader
                   size="small"
@@ -223,7 +266,11 @@ const Bills = () => {
                         <TableCell align="right">{row.carbs}</TableCell>
                         <TableCell align="right">{row.protein}</TableCell>
                         <TableCell align="right">{row.carbs}</TableCell>
-                        <TableCell align="right">{row.protein}</TableCell>
+                        <TableCell align="right">
+                          <IconButton aria-label="delete" color="error">
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
