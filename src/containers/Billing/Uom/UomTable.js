@@ -81,7 +81,7 @@ const UomTable = () => {
         tableName="UOM"
         headCells={headCells}
         rows={rows}
-        deleteDialog={handleClickOpen}
+        onDelete={handleClickOpen}
       />
       <Dialog
         open={open}

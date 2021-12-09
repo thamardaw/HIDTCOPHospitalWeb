@@ -247,7 +247,7 @@ const PatientTable = () => {
         tableName="Patient"
         headCells={headCells}
         rows={rows}
-        deleteDialog={handleClickOpen}
+        onDelete={handleClickOpen}
       />
       <Dialog
         open={open}

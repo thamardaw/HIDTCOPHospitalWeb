@@ -136,19 +136,53 @@ const EnhancedTableToolbar = (props) => {
   const {
     numSelected,
     selected,
-    deleteDialog,
     onSelectAllClick,
     onChangeSearch,
     tableName,
     headCells,
+    onCreate,
+    onEdit,
+    onDetail,
+    onDelete,
+    addCreate,
+    addDelete,
+    addDetail,
+    addEdit,
+    addcsv,
+    createBtnName,
+    editBtnName,
+    deleteBtnName,
+    detailBtnName,
   } = props;
   const history = useHistory();
   const { url } = useRouteMatch();
   const [CSV, setCSV] = useState({});
-  const handleDelete = (event) => {
+  const deleteItem = (event) => {
     onSelectAllClick(event);
-    deleteDialog(selected[0].id);
+    onDelete(selected[0].id);
   };
+  const createItem = () => {
+    if (onCreate) {
+      onCreate();
+    } else {
+      history.push(`${url}/form`);
+    }
+  };
+  const updateItem = () => {
+    if (onEdit) {
+      onEdit();
+    } else {
+      history.push(`${url}/form/${selected[0].id}`);
+    }
+  };
+  const readItem = () => {
+    if (onDetail) {
+      onDetail();
+    } else {
+      history.push(`${url}/details/${selected[0].id}`);
+    }
+  };
+  console.log(onCreate);
   useEffect(() => {
     const h = headCells.map((headCell) => {
       return { label: headCell.label, key: headCell.id };
@@ -196,45 +230,53 @@ const EnhancedTableToolbar = (props) => {
         <>
           {numSelected === 1 ? (
             <>
-              <Button
-                variant="contained"
-                size="small"
-                sx={{ marginRight: "5px" }}
-                onClick={() => history.push(`${url}/form/${selected[0].id}`)}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="contained"
-                size="small"
-                sx={{ marginRight: "5px" }}
-                onClick={() => history.push(`${url}/details/${selected[0].id}`)}
-              >
-                Details
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                size="small"
-                sx={{ marginRight: "5px" }}
-                onClick={handleDelete}
-              >
-                Delete
-              </Button>
+              {addEdit && (
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{ marginRight: "5px" }}
+                  onClick={updateItem}
+                >
+                  {editBtnName}
+                </Button>
+              )}
+              {addDetail && (
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{ marginRight: "5px" }}
+                  onClick={readItem}
+                >
+                  {detailBtnName}
+                </Button>
+              )}
+              {addDelete && (
+                <Button
+                  variant="contained"
+                  color="error"
+                  size="small"
+                  sx={{ marginRight: "5px" }}
+                  onClick={deleteItem}
+                >
+                  {deleteBtnName}
+                </Button>
+              )}
             </>
           ) : (
-            <CSVLink
-              {...CSV}
-              style={{ color: "inherit", textDecoration: "inherit" }}
-            >
-              <Button
-                variant="contained"
-                size="small"
-                sx={{ marginRight: "5px" }}
+            addcsv && (
+              <CSVLink
+                {...CSV}
+                style={{ color: "inherit", textDecoration: "inherit" }}
               >
-                CSV
-              </Button>
-            </CSVLink>
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{ marginRight: "5px" }}
+                >
+                  CSV
+                </Button>
+              </CSVLink>
+            )
           )}
         </>
       ) : (
@@ -246,13 +288,13 @@ const EnhancedTableToolbar = (props) => {
               onChange={onChangeSearch}
             />
           </SearchContainer>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={() => history.push(`${url}/form`)}
-          >
-            new
-          </Button>
+          {addCreate ? (
+            <Button variant="outlined" size="small" onClick={createItem}>
+              {createBtnName}
+            </Button>
+          ) : (
+            <Box></Box>
+          )}
         </>
       )}
     </Toolbar>
@@ -262,15 +304,44 @@ const EnhancedTableToolbar = (props) => {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   selected: PropTypes.array.isRequired,
-  deleteDialog: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
   onChangeSearch: PropTypes.func.isRequired,
   tableName: PropTypes.string.isRequired,
   headCells: PropTypes.array.isRequired,
+  onCreate: PropTypes.func,
+  onEdit: PropTypes.func,
+  onDetail: PropTypes.func,
+  onDelete: PropTypes.func,
+  addCreate: PropTypes.bool,
+  addDelete: PropTypes.bool,
+  addDetail: PropTypes.bool,
+  addEdit: PropTypes.bool,
+  addcsv: PropTypes.bool,
+  createBtnName: PropTypes.string,
+  editBtnName: PropTypes.string,
+  deleteBtnName: PropTypes.string,
+  detailBtnName: PropTypes.string,
 };
 
 // HeadCells ID have to be match with row's object key beause they two are dependent for sorting function
-const CustomTable = ({ headCells, rows, deleteDialog, tableName }) => {
+const CustomTable = ({
+  headCells,
+  rows,
+  tableName,
+  onCreate,
+  onDetail,
+  onEdit,
+  onDelete,
+  addCreate = true,
+  addEdit = true,
+  addDelete = true,
+  addDetail = true,
+  addcsv = true,
+  createBtnName = "New",
+  editBtnName = "Edit",
+  detailBtnName = "Details",
+  deleteBtnName = "Delete",
+}) => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("id");
   const [selected, setSelected] = useState([]);
@@ -357,10 +428,22 @@ const CustomTable = ({ headCells, rows, deleteDialog, tableName }) => {
           tableName={tableName}
           numSelected={selected.length}
           selected={selected}
-          deleteDialog={deleteDialog}
           onSelectAllClick={handleSelectAllClick}
           onChangeSearch={handleSearch}
           headCells={headCells}
+          onCreate={onCreate}
+          onEdit={onEdit}
+          onDetail={onDetail}
+          onDelete={onDelete}
+          addCreate={addCreate}
+          addDelete={addDelete}
+          addDetail={addDetail}
+          addEdit={addEdit}
+          addcsv={addcsv}
+          createBtnName={createBtnName}
+          editBtnName={editBtnName}
+          deleteBtnName={deleteBtnName}
+          detailBtnName={detailBtnName}
         />
         <TableContainer>
           <Table

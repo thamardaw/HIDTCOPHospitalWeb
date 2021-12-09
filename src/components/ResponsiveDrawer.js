@@ -14,6 +14,7 @@ import CategoryIcon from "@mui/icons-material/Category";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import React from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
@@ -63,10 +64,11 @@ const ResponsiveDrawer = ({
           <Button
             size="small"
             variant={
-              location.pathname.includes("/salesServiceItem") |
-              location.pathname.includes("/uom") |
-              location.pathname.includes("/category") |
-              location.pathname.includes("/bills")
+              location.pathname.includes("/salesServiceItem") ||
+              location.pathname.includes("/uom") ||
+              location.pathname.includes("/category") ||
+              location.pathname.includes("/bills") ||
+              location.pathname.includes("/payment")
                 ? "contained"
                 : "text"
             }
@@ -161,6 +163,25 @@ const ResponsiveDrawer = ({
                 }}
               >
                 Bills
+              </Button>
+            </ListItem>
+            <ListItem>
+              <Button
+                size="small"
+                variant={
+                  location.pathname.includes("/payment") ? "contained" : "text"
+                }
+                fullWidth
+                startIcon={<AttachMoneyIcon />}
+                onClick={() => history.push(`${url}/payment`)}
+                sx={{
+                  display: "flex",
+                  justifyContent: location.pathname.includes("/payment")
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              >
+                Payment
               </Button>
             </ListItem>
           </List>

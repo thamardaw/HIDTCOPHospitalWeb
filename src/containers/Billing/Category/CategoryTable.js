@@ -81,7 +81,7 @@ const CategoryTable = () => {
         tableName="Category"
         headCells={headCells}
         rows={rows}
-        deleteDialog={handleClickOpen}
+        onDelete={handleClickOpen}
       />
       <Dialog
         open={open}

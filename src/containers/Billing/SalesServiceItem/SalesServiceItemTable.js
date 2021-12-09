@@ -95,7 +95,7 @@ const SalesServiceItemTable = () => {
         tableName="Sales & Service Item "
         headCells={headCells}
         rows={rows}
-        deleteDialog={handleClickOpen}
+        onDelete={handleClickOpen}
       />
       <Dialog
         open={open}

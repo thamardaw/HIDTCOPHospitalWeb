@@ -22,8 +22,8 @@ function createData(name, calories, fat, carbs, protein) {
 }
 
 const rows = [
-  createData("Asprin", 159, 6.0, 24, 4.0),
-  createData("Decolgen", 159, 6.0, 24, 4.0),
+  createData(159, "Asprin", 6.0, 24, 4.0),
+  createData(159, "Decolgen", 6.0, 24, 4.0),
 ];
 
 const patient = ["Mg Mg", "Aung Aung"];
@@ -242,7 +242,7 @@ const Bills = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell>No</TableCell>
-                      <TableCell align="right">Name</TableCell>
+                      <TableCell>Name</TableCell>
                       <TableCell align="right">Charge</TableCell>
                       <TableCell align="right">Quantity</TableCell>
                       <TableCell align="right">Unit</TableCell>
@@ -261,7 +261,7 @@ const Bills = () => {
                         <TableCell component="th" scope="row">
                           {row.name}
                         </TableCell>
-                        <TableCell align="right">{row.calories}</TableCell>
+                        <TableCell>{row.calories}</TableCell>
                         <TableCell align="right">{row.fat}</TableCell>
                         <TableCell align="right">{row.carbs}</TableCell>
                         <TableCell align="right">{row.protein}</TableCell>
