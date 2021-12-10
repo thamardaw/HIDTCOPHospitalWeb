@@ -3,7 +3,11 @@ import { Box } from "@mui/system";
 import { useState } from "react";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router";
 import { Patient } from "./Patient";
-import { Appbar, ResponsiveDrawer } from "../components";
+import { Appbar, Footer, ResponsiveDrawer } from "../components";
+import { Uom } from "./Billing/Uom";
+import { Category } from "./Billing/Category";
+import { SalesServiceItem } from "./Billing/SalesServiceItem";
+import { Bills } from "./Billing/Bills";
 
 const drawerWidth = 240;
 
@@ -38,8 +42,16 @@ function Dashboard(props) {
         <Toolbar />
         <Switch>
           <Route path={`${path}/patient`} component={Patient} />
+          <Route path={`${path}/uom`} component={Uom} />
+          <Route path={`${path}/category`} component={Category} />
+          <Route
+            path={`${path}/salesServiceItem`}
+            component={SalesServiceItem}
+          />
+          <Route path={`${path}/bills`} component={Bills} />
           <Redirect to={`${path}/patient`} />
         </Switch>
+        <Footer />
       </Box>
     </Box>
   );
