@@ -17,7 +17,6 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/system";
 import { useHistory } from "react-router-dom";
-import { useRouteMatch } from "react-router-dom/cjs/react-router-dom.min";
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
