@@ -5,50 +5,55 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Tab,
+  Tabs,
 } from "@mui/material";
-import { Box } from "@mui/system";
-import { useCallback, useEffect, useState } from "react";
-import { CustomTable } from "../../../components";
-import { useAxios } from "../../../hooks";
-import { generateID } from "../../../utils/generateID";
+import { Box } from "@mui/material";
+import { useState } from "react";
+import { CustomTable, TabPanel } from "../../../components";
 
 const headCells = [
   {
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Sales & Service Item ID",
+    label: "Bill ID",
   },
   {
     id: "name",
     numeric: false,
     disablePadding: false,
-    label: "Name",
+    label: "Patient Name",
   },
   {
-    id: "price",
+    id: "phone",
     numeric: false,
     disablePadding: false,
-    label: "Price",
+    label: "Patient Phone",
   },
   {
-    id: "uom",
+    id: "address",
     numeric: false,
     disablePadding: false,
-    label: "UOM",
+    label: "Patient Address",
   },
   {
-    id: "category",
+    id: "totalAmount",
     numeric: false,
     disablePadding: false,
-    label: "Category",
+    label: "Total Amount",
   },
 ];
-const SalesServiceItemTable = () => {
-  const api = useAxios();
+
+const PaymentTable = () => {
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
+  const [tab, setTab] = useState(0);
+
+  const handleTabChange = (event, newTab) => {
+    setTab(newTab);
+  };
 
   const handleClickOpen = (id) => {
     setId(id);
@@ -59,44 +64,35 @@ const SalesServiceItemTable = () => {
     setOpen(false);
   };
 
-  const getData = useCallback(async () => {
-    const res = await api.get("/api/salesServiceItem/");
-    if (res.status === 200) {
-      const data = res.data.map((row) => {
-        const ID = generateID(row.id, row.created_time);
-        return {
-          id: ID,
-          name: row.name,
-          price: row.price.toString(),
-          uom: row.uom.name,
-          category: row.category.name,
-        };
-      });
-      setRows(data);
-    }
-    return;
-    // eslint-disable-next-line
-  }, []);
-
-  const deleteItem = async () => {
-    await api.delete(`/api/salesServiceItem/${parseInt(id.split("-")[1])}`);
-    handleClose();
-    getData();
-  };
-
-  useEffect(() => {
-    getData();
-    // eslint-disable-next-line
-  }, []);
-
+  const deleteItem = async () => {};
   return (
     <Box sx={{ width: "100%" }}>
-      <CustomTable
-        tableName="Item"
-        headCells={headCells}
-        rows={rows}
-        onDelete={handleClickOpen}
-      />
+      <Tabs value={tab} onChange={handleTabChange} centered>
+        <Tab label="Outstanding" />
+        <Tab label="Complete" />
+      </Tabs>
+      <TabPanel value={tab} index={0}>
+        <CustomTable
+          tableName="Payment"
+          headCells={headCells}
+          rows={rows}
+          onDelete={handleClickOpen}
+          addDelete={false}
+          addCreate={false}
+          addEdit={false}
+        />
+      </TabPanel>
+      <TabPanel value={tab} index={1}>
+        <CustomTable
+          tableName="Payment"
+          headCells={headCells}
+          rows={rows}
+          onDelete={handleClickOpen}
+          addDelete={false}
+          addCreate={false}
+          addEdit={false}
+        />
+      </TabPanel>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -120,4 +116,4 @@ const SalesServiceItemTable = () => {
   );
 };
 
-export default SalesServiceItemTable;
+export default PaymentTable;

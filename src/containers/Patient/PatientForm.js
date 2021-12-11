@@ -48,6 +48,8 @@ const PatientForm = () => {
     const res = await api.get(`/api/patients/${parseInt(id.split("-")[1])}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
+    } else {
+      history.goBack();
     }
   };
 

@@ -43,6 +43,8 @@ const UomForm = () => {
     const res = await api.get(`/api/uom/${parseInt(id.split("-")[1])}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
+    } else {
+      history.goBack();
     }
   };
 

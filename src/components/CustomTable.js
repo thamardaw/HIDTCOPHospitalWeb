@@ -382,6 +382,7 @@ const CustomTable = ({
       setSelected(dataRows);
       return;
     }
+    setDataRows(rows);
     setSelected([]);
   };
 
@@ -399,6 +400,9 @@ const CustomTable = ({
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1)
       );
+    }
+    if (newSelected.length === 0) {
+      setDataRows(rows);
     }
     setSelected(newSelected);
   };

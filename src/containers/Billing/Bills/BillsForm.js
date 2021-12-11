@@ -17,6 +17,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/system";
 import { useHistory } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom/cjs/react-router-dom.min";
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -197,7 +198,11 @@ const BillsForm = () => {
               </Box>
             </Box>
             <Box sx={{ paddingTop: "10px" }}>
-              <Button variant="contained" fullWidth>
+              <Button
+                variant="contained"
+                fullWidth
+                onClick={() => history.push("/dashboard/payment/details/test")}
+              >
                 Print Invoice
               </Button>
             </Box>
@@ -247,10 +252,9 @@ const BillsForm = () => {
                 <Table
                   sx={{ minWidth: 380 }}
                   aria-label="simple table"
-                  stickyHeader
                   size="small"
                 >
-                  <TableHead>
+                  <TableHead stickyHeader sx={{ backgroundColor: "#EBEBEB" }}>
                     <TableRow>
                       <TableCell>No</TableCell>
                       <TableCell>Name</TableCell>
