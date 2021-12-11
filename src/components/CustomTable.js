@@ -182,7 +182,7 @@ const EnhancedTableToolbar = (props) => {
       history.push(`${url}/details/${selected[0].id}`);
     }
   };
-  console.log(onCreate);
+
   useEffect(() => {
     const h = headCells.map((headCell) => {
       return { label: headCell.label, key: headCell.id };
