@@ -88,6 +88,7 @@ const BillsTable = () => {
           rows={rows}
           onDelete={handleClickOpen}
           addDelete={false}
+          addEdit={false}
         />
       </TabPanel>
       <Dialog

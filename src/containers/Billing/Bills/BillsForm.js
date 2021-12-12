@@ -15,6 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/system";
 import { useHistory } from "react-router-dom";
 
@@ -29,6 +30,7 @@ const rows = [
 
 const patient = ["Mg Mg", "Aung Aung"];
 const medicine = ["Asprin", "Decolgen"];
+const patient_id = ["DGL-0001-2021", "DGL-0002-2021"];
 
 const BillsForm = () => {
   const history = useHistory();
@@ -59,9 +61,56 @@ const BillsForm = () => {
               <Typography variant="p">Patient Name</Typography>
             </Box>
             {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Autocomplete
+                value={null}
+                options={patient}
+                getOptionLabel={(option) => option}
+                style={{ width: "80%" }}
+                onChange={(event, newValue) => {
+                  console.log("hello");
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    margin="normal"
+                  />
+                )}
+              />
+              <IconButton
+                size="small"
+                color="primary"
+                sx={{ marginTop: "5px" }}
+                onClick={() => history.push("/dashboard/patient/form")}
+              >
+                <AddIcon fontSize="large" />
+              </IconButton>
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              flex: 0.5,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+            }}
+          >
+            <Box sx={{ width: "100%" }}>
+              <Typography variant="p">Pateint ID</Typography>
+            </Box>
+            {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
             <Autocomplete
               value={null}
-              options={patient}
+              options={patient_id}
               getOptionLabel={(option) => option}
               style={{ width: "90%" }}
               onChange={(event, newValue) => {
@@ -77,19 +126,6 @@ const BillsForm = () => {
                 />
               )}
             />
-          </Box>
-          <Box
-            sx={{
-              flex: 0.5,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
-          >
-            <Box sx={{ width: "100%" }}>
-              <Typography variant="p">Pateint ID</Typography>
-            </Box>
-            <TextField size="small" sx={{ width: "90%" }} margin="normal" />
           </Box>
         </Box>
         <Box
@@ -155,24 +191,42 @@ const BillsForm = () => {
                 </Box>
                 {/* <TextField size="small" fullWidth margin="dense" />
                  */}
-                <Autocomplete
-                  value={null}
-                  options={medicine}
-                  fullWidth
-                  getOptionLabel={(option) => option}
-                  onChange={(event, newValue) => {
-                    console.log("hello");
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
                   }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      fullWidth
-                      size="small"
-                      margin="normal"
-                    />
-                  )}
-                />
+                >
+                  <Autocomplete
+                    value={null}
+                    options={medicine}
+                    style={{ width: "90%" }}
+                    getOptionLabel={(option) => option}
+                    onChange={(event, newValue) => {
+                      console.log("hello");
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        fullWidth
+                        size="small"
+                        margin="normal"
+                      />
+                    )}
+                  />
+                  <IconButton
+                    size="small"
+                    color="primary"
+                    sx={{ marginTop: "5px" }}
+                    onClick={() =>
+                      history.push("/dashboard/salesServiceItem/form")
+                    }
+                  >
+                    <AddIcon fontSize="large" />
+                  </IconButton>
+                </Box>
               </Box>
               <Box
                 sx={{
@@ -202,7 +256,7 @@ const BillsForm = () => {
                 fullWidth
                 onClick={() => history.push("/dashboard/payment/details/test")}
               >
-                Print Invoice
+                Create Bill
               </Button>
             </Box>
             <Box sx={{ paddingTop: "10px" }}>
@@ -257,7 +311,7 @@ const BillsForm = () => {
                     <TableRow>
                       <TableCell>No</TableCell>
                       <TableCell>Name</TableCell>
-                      <TableCell align="right">Charge</TableCell>
+                      <TableCell align="right">Price</TableCell>
                       <TableCell align="right">Quantity</TableCell>
                       <TableCell align="right">UOM</TableCell>
                       <TableCell align="right">SubTotal</TableCell>

@@ -89,7 +89,7 @@ const PaymentDetail = () => {
                 <TableRow>
                   <TableCell>No</TableCell>
                   <TableCell>Name</TableCell>
-                  <TableCell>Charge</TableCell>
+                  <TableCell>Price</TableCell>
                   <TableCell>Quantity</TableCell>
                   <TableCell>UOM</TableCell>
                   <TableCell>SubTotal</TableCell>
@@ -120,11 +120,6 @@ const PaymentDetail = () => {
         <Box sx={{ paddingBottom: "25px" }}>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant="body">Total : </Typography>
-            <Typography variant="body">1000</Typography>
-          </Box>
-          <Divider sx={{ my: "6px" }} />
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography variant="body">Deposit : </Typography>
             <Typography variant="body">1000</Typography>
           </Box>
           <Divider sx={{ my: "6px" }} />
