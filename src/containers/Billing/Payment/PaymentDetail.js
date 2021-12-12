@@ -91,7 +91,7 @@ const PaymentDetail = () => {
                   <TableCell>Name</TableCell>
                   <TableCell>Charge</TableCell>
                   <TableCell>Quantity</TableCell>
-                  <TableCell>Unit</TableCell>
+                  <TableCell>UOM</TableCell>
                   <TableCell>SubTotal</TableCell>
                 </TableRow>
               </TableHead>

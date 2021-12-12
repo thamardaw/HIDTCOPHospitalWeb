@@ -259,7 +259,7 @@ const BillsForm = () => {
                       <TableCell>Name</TableCell>
                       <TableCell align="right">Charge</TableCell>
                       <TableCell align="right">Quantity</TableCell>
-                      <TableCell align="right">Unit</TableCell>
+                      <TableCell align="right">UOM</TableCell>
                       <TableCell align="right">SubTotal</TableCell>
                       <TableCell align="right">Actions</TableCell>
                     </TableRow>
