@@ -168,6 +168,7 @@ const EnhancedTableToolbar = (props) => {
       history.push(`${url}/form`);
     }
   };
+
   const updateItem = () => {
     if (onEdit) {
       onEdit();
@@ -182,7 +183,6 @@ const EnhancedTableToolbar = (props) => {
       history.push(`${url}/details/${selected[0].id}`);
     }
   };
-  console.log(onCreate);
   useEffect(() => {
     const h = headCells.map((headCell) => {
       return { label: headCell.label, key: headCell.id };
@@ -382,6 +382,7 @@ const CustomTable = ({
       setSelected(dataRows);
       return;
     }
+    setDataRows(rows);
     setSelected([]);
   };
 
@@ -399,6 +400,9 @@ const CustomTable = ({
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1)
       );
+    }
+    if (newSelected.length === 0) {
+      setDataRows(rows);
     }
     setSelected(newSelected);
   };

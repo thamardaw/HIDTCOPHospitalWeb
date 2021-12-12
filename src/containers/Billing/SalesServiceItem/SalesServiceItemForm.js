@@ -64,6 +64,8 @@ const SalesServiceItemForm = () => {
     );
     if (res.status === 200) {
       setDetails({ ...res.data });
+    } else {
+      history.goBack();
     }
   };
 

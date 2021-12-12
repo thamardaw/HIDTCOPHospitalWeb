@@ -92,7 +92,7 @@ const SalesServiceItemTable = () => {
   return (
     <Box sx={{ width: "100%" }}>
       <CustomTable
-        tableName="Sales & Service Item "
+        tableName="Item"
         headCells={headCells}
         rows={rows}
         onDelete={handleClickOpen}

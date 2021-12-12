@@ -43,6 +43,8 @@ const CategoryForm = () => {
     const res = await api.get(`/api/category/${parseInt(id.split("-")[1])}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
+    } else {
+      history.goBack();
     }
   };
 
