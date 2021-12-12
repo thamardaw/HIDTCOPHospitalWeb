@@ -46,9 +46,10 @@ const headCells = [
 ];
 
 const BillsTable = () => {
-  const [rows, setRows] = useState([]);
+  // const [rows, setRows] = useState([]);
+  const rows = [];
   const [open, setOpen] = useState(false);
-  const [id, setId] = useState("");
+  // const [id, setId] = useState("");
   const [tab, setTab] = useState(0);
 
   const handleTabChange = (event, newTab) => {
@@ -56,7 +57,7 @@ const BillsTable = () => {
   };
 
   const handleClickOpen = (id) => {
-    setId(id);
+    // setId(id);
     setOpen(true);
   };
 
