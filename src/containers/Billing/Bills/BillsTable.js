@@ -1,16 +1,10 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Tab,
-  Tabs,
-} from "@mui/material";
+import { Tab, Tabs } from "@mui/material";
 import { Box } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { CustomTable, TabPanel } from "../../../components";
+import { useAxios } from "../../../hooks";
+import { generateID } from "../../../utils/generateID";
 
 const headCells = [
   {
@@ -46,26 +40,65 @@ const headCells = [
 ];
 
 const BillsTable = () => {
-  // const [rows, setRows] = useState([]);
-  const rows = [];
-  const [open, setOpen] = useState(false);
-  // const [id, setId] = useState("");
+  const api = useAxios();
+  const history = useHistory();
+  const [draftedRows, setDraftedRows] = useState([]);
+  const [printedRows, setPrintedRows] = useState([]);
   const [tab, setTab] = useState(0);
 
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
   };
 
-  const handleClickOpen = (id) => {
-    // setId(id);
-    setOpen(true);
+  const handleClickOpen = (id) => {};
+
+  const toDetail = (id) => {
+    history.push(`/dashboard/payment/details/${id}`);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const getDraftedData = useCallback(async () => {
+    const res = await api.get("/api/bill/drafted");
+    if (res.status === 200) {
+      const data = res.data.map((row) => {
+        const ID = generateID(row.id, row.created_time);
+        return {
+          id: ID,
+          name: row.patient_name,
+          phone: row.patient_phone,
+          address: row.patient_age,
+          totalAmount: row.total_amount,
+        };
+      });
+      setDraftedRows(data);
+    }
+    return;
+    // eslint-disable-next-line
+  }, []);
 
-  const deleteItem = async () => {};
+  const getPrintedData = useCallback(async () => {
+    const res = await api.get("/api/bill/printed");
+    if (res.status === 200) {
+      const data = res.data.map((row) => {
+        const ID = generateID(row.id, row.created_time);
+        return {
+          id: ID,
+          name: row.patient_name,
+          phone: row.patient_phone,
+          address: row.patient_age,
+          totalAmount: row.total_amount.toString(),
+        };
+      });
+      setPrintedRows(data);
+    }
+    return;
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    getDraftedData();
+    getPrintedData();
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -77,8 +110,9 @@ const BillsTable = () => {
         <CustomTable
           tableName="Drafted Bills"
           headCells={headCells}
-          rows={rows}
+          rows={draftedRows}
           onDelete={handleClickOpen}
+          onDetail={toDetail}
           addDelete={false}
         />
       </TabPanel>
@@ -86,31 +120,13 @@ const BillsTable = () => {
         <CustomTable
           tableName="Printed Bills"
           headCells={headCells}
-          rows={rows}
+          rows={printedRows}
           onDelete={handleClickOpen}
+          onDetail={toDetail}
           addDelete={false}
           addEdit={false}
         />
       </TabPanel>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={deleteItem} autoFocus>
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };

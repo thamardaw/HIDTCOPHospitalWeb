@@ -6,7 +6,7 @@ const Bills = () => {
   return (
     <Switch>
       <Route path={`${path}`} component={BillsTable} exact />
-      <Route path={`${path}/form/:id?`} component={BillsForm} />
+      <Route path={`${path}/form`} component={BillsForm} />
       {/* <Route path={`${path}/details/:id`} component={CategoryDetail} /> */}
       <Redirect to={`${path}`} />
     </Switch>

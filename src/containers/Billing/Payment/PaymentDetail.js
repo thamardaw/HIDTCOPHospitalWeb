@@ -14,27 +14,56 @@ import {
   Typography,
 } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { Box } from "@mui/system";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData(159, "Asprin", 6.0, 24, 4.0),
-  createData(150, "Decolgen", 6.0, 24, 4.0),
-];
+import { useAxios } from "../../../hooks";
+import { useState } from "react";
+import { generateID } from "../../../utils/generateID";
 
 const PaymentDetail = () => {
+  const api = useAxios();
   const history = useHistory();
   const receiptRef = useRef();
+  const { id, stage } = useParams();
+  const [showPay, setShowPay] = useState(true);
+  const [details, setDetails] = useState({});
 
   const handlePrint = useReactToPrint({
     content: () => receiptRef.current,
+    // onAfterPrint:()=>{}
   });
+
+  const getData = async () => {
+    const res = await api.get(`/api/bill/${parseInt(id.split("-")[1])}`);
+    if (res.status === 200) {
+      setDetails({ ...res.data });
+    } else {
+      history.goBack();
+    }
+    return;
+  };
+
+  const make_payment = async () => {
+    console.log(details);
+    const res = await api.post(`/api/payment/`, {
+      patient_id: details.patient_id,
+      bill_id: details.id,
+    });
+    if (res.status === 200) {
+      history.goBack();
+    }
+    return;
+  };
+
+  useEffect(() => {
+    if (stage) {
+      setShowPay(false);
+    }
+    getData();
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <Paper sx={{ width: "100%", mb: 2 }}>
@@ -54,7 +83,12 @@ const PaymentDetail = () => {
         >
           <ArrowBackIosNewIcon size="small" sx={{ fontSize: "1.4rem" }} />
         </IconButton>
-        <Button variant="contained" size="small" sx={{ marginRight: "5px" }}>
+        <Button
+          variant="contained"
+          size="small"
+          sx={{ marginRight: "5px", display: showPay ? "block" : "none" }}
+          onClick={make_payment}
+        >
           Pay
         </Button>
         <Button
@@ -73,13 +107,13 @@ const PaymentDetail = () => {
           </Typography>
           <Box sx={{ height: "15px" }} />
           <Typography variant="body" component="div">
-            Name : Aung Aung
+            Name : {details?.patient_name}
           </Typography>
           <Typography variant="body" component="div">
-            Phone : 09760614842
+            Phone : {details?.patient_phone}
           </Typography>
           <Typography variant="body" component="div">
-            Address : Yangon, Kamayut
+            Address : {details?.patient_age}
           </Typography>
         </Box>
         <Box sx={{ my: "15px" }}>
@@ -96,23 +130,24 @@ const PaymentDetail = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
-                  <TableRow
-                    key={row.name}
-                    sx={{
-                      "&:last-child td, &:last-child th": { border: 0 },
-                    }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                    </TableCell>
-                    <TableCell>{row.calories}</TableCell>
-                    <TableCell>{row.fat}</TableCell>
-                    <TableCell>{row.carbs}</TableCell>
-                    <TableCell>{row.protein}</TableCell>
-                    <TableCell>{row.carbs}</TableCell>
-                  </TableRow>
-                ))}
+                {details?.bill_items &&
+                  details.bill_items.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {generateID(row.id, row.created_time)}
+                      </TableCell>
+                      <TableCell>{row?.name}</TableCell>
+                      <TableCell>{row?.price}</TableCell>
+                      <TableCell>{row?.quantity}</TableCell>
+                      <TableCell>{row?.uom}</TableCell>
+                      <TableCell>{row?.subtotal}</TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
@@ -120,12 +155,12 @@ const PaymentDetail = () => {
         <Box sx={{ paddingBottom: "25px" }}>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant="body">Total : </Typography>
-            <Typography variant="body">1000</Typography>
+            <Typography variant="body">{details?.total_amount}</Typography>
           </Box>
           <Divider sx={{ my: "6px" }} />
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant="body">Unpaid : </Typography>
-            <Typography variant="body">1000</Typography>
+            <Typography variant="body">{details?.total_amount}</Typography>
           </Box>
         </Box>
       </Container>

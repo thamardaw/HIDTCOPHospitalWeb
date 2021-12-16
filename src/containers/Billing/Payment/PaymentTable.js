@@ -1,16 +1,10 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Tab,
-  Tabs,
-} from "@mui/material";
+import { Tab, Tabs } from "@mui/material";
 import { Box } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { CustomTable, TabPanel } from "../../../components";
+import { useAxios } from "../../../hooks";
+import { generateID } from "../../../utils/generateID";
 
 const headCells = [
   {
@@ -46,26 +40,66 @@ const headCells = [
 ];
 
 const PaymentTable = () => {
-  // const [rows, setRows] = useState([]);
-  const rows = [];
-  const [open, setOpen] = useState(false);
-  // const [id, setId] = useState("");
+  const api = useAxios();
+  const history = useHistory();
+  const [outstandingRows, setOutstandingRows] = useState([]);
+  const [completedRows, setCompletedRows] = useState([]);
   const [tab, setTab] = useState(0);
 
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
   };
 
-  const handleClickOpen = (id) => {
-    // setId(id);
-    setOpen(true);
+  const handleClickOpen = (id) => {};
+
+  const toDetail = (id) => {
+    history.push(`/dashboard/payment/details/${id}/completed`);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const getOutstandingData = useCallback(async () => {
+    const res = await api.get("/api/payment/outstanding");
+    if (res.status === 200) {
+      const data = res.data.map((row) => {
+        const ID = generateID(row.id, row.created_time);
+        return {
+          id: ID,
+          name: row.patient_name,
+          phone: row.patient_phone,
+          address: row.patient_age,
+          totalAmount: row.total_amount,
+        };
+      });
+      setOutstandingRows(data);
+    }
+    return;
+    // eslint-disable-next-line
+  }, []);
 
-  const deleteItem = async () => {};
+  const getCompletedData = useCallback(async () => {
+    const res = await api.get("/api/payment/completed");
+    if (res.status === 200) {
+      const data = res.data.map((row) => {
+        const ID = generateID(row.id, row.created_time);
+        return {
+          id: ID,
+          name: row.patient_name,
+          phone: row.patient_phone,
+          address: row.patient_age,
+          totalAmount: row.total_amount,
+        };
+      });
+      setCompletedRows(data);
+    }
+    return;
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    getOutstandingData();
+    getCompletedData();
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <Box sx={{ width: "100%" }}>
       <Tabs value={tab} onChange={handleTabChange} centered>
@@ -76,7 +110,7 @@ const PaymentTable = () => {
         <CustomTable
           tableName="Payment"
           headCells={headCells}
-          rows={rows}
+          rows={outstandingRows}
           onDelete={handleClickOpen}
           addDelete={false}
           addCreate={false}
@@ -87,32 +121,14 @@ const PaymentTable = () => {
         <CustomTable
           tableName="Payment"
           headCells={headCells}
-          rows={rows}
+          rows={completedRows}
           onDelete={handleClickOpen}
+          onDetail={toDetail}
           addDelete={false}
           addCreate={false}
           addEdit={false}
         />
       </TabPanel>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={deleteItem} autoFocus>
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };
