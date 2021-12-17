@@ -171,14 +171,14 @@ const EnhancedTableToolbar = (props) => {
 
   const updateItem = () => {
     if (onEdit) {
-      onEdit();
+      onEdit(selected[0].id);
     } else {
       history.push(`${url}/form/${selected[0].id}`);
     }
   };
   const readItem = () => {
     if (onDetail) {
-      onDetail();
+      onDetail(selected[0].id);
     } else {
       history.push(`${url}/details/${selected[0].id}`);
     }

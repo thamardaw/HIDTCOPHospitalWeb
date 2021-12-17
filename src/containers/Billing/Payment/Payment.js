@@ -7,7 +7,7 @@ const Payment = () => {
     <Switch>
       <Route path={`${path}`} component={PaymentTable} exact />
       {/* <Route path={`${path}/form/:id?`} component={PaymentForm} /> */}
-      <Route path={`${path}/details/:id`} component={PaymentDetail} />
+      <Route path={`${path}/details/:id/:stage?`} component={PaymentDetail} />
       <Redirect to={`${path}`} />
     </Switch>
   );
