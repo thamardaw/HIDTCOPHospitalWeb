@@ -56,6 +56,10 @@ const BillsTable = () => {
     history.push(`/dashboard/payment/details/${id}`);
   };
 
+  const toDetailFromDrafted = (id) => {
+    history.push(`/dashboard/payment/details/${id}/drafted`);
+  };
+
   const getDraftedData = useCallback(async () => {
     const res = await api.get("/api/bill/drafted");
     if (res.status === 200) {
@@ -65,7 +69,7 @@ const BillsTable = () => {
           id: ID,
           name: row.patient_name,
           phone: row.patient_phone,
-          address: row.patient_age,
+          address: row.patient_address,
           totalAmount: row.total_amount,
         };
       });
@@ -84,7 +88,7 @@ const BillsTable = () => {
           id: ID,
           name: row.patient_name,
           phone: row.patient_phone,
-          address: row.patient_age,
+          address: row.patient_address,
           totalAmount: row.total_amount.toString(),
         };
       });
@@ -112,7 +116,7 @@ const BillsTable = () => {
           headCells={headCells}
           rows={draftedRows}
           onDelete={handleClickOpen}
-          onDetail={toDetail}
+          onDetail={toDetailFromDrafted}
           addDelete={false}
         />
       </TabPanel>

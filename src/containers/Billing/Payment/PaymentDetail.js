@@ -32,13 +32,16 @@ const PaymentDetail = () => {
 
   const handlePrint = useReactToPrint({
     content: () => receiptRef.current,
-    // onAfterPrint:()=>{}
+    onAfterPrint: () => {
+      to_print();
+    },
   });
 
   const getData = async () => {
     const res = await api.get(`/api/bill/${parseInt(id.split("-")[1])}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
+      console.log(res.data);
     } else {
       history.goBack();
     }
@@ -46,11 +49,18 @@ const PaymentDetail = () => {
   };
 
   const make_payment = async () => {
-    console.log(details);
     const res = await api.post(`/api/payment/`, {
       patient_id: details.patient_id,
       bill_id: details.id,
     });
+    if (res.status === 200) {
+      history.goBack();
+    }
+    return;
+  };
+
+  const to_print = async () => {
+    const res = await api.put(`/api/bill/print/${parseInt(id.split("-")[1])}`);
     if (res.status === 200) {
       history.goBack();
     }
@@ -113,7 +123,7 @@ const PaymentDetail = () => {
             Phone : {details?.patient_phone}
           </Typography>
           <Typography variant="body" component="div">
-            Address : {details?.patient_age}
+            Address : {details?.patient_address}
           </Typography>
         </Box>
         <Box sx={{ my: "15px" }}>

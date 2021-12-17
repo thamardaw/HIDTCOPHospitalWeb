@@ -65,7 +65,7 @@ const PaymentTable = () => {
           id: ID,
           name: row.patient_name,
           phone: row.patient_phone,
-          address: row.patient_age,
+          address: row.patient_address,
           totalAmount: row.total_amount,
         };
       });
@@ -84,7 +84,7 @@ const PaymentTable = () => {
           id: ID,
           name: row.patient_name,
           phone: row.patient_phone,
-          address: row.patient_age,
+          address: row.patient_address,
           totalAmount: row.total_amount,
         };
       });
@@ -115,6 +115,7 @@ const PaymentTable = () => {
           addDelete={false}
           addCreate={false}
           addEdit={false}
+          detailBtnName="Pay"
         />
       </TabPanel>
       <TabPanel value={tab} index={1}>

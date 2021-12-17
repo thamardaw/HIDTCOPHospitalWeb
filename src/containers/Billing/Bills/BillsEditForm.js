@@ -17,99 +17,82 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/system";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useAxios } from "../../../hooks";
 import { useState, useEffect } from "react";
 import { generateID } from "../../../utils/generateID";
 
-const BillsForm = () => {
+const BillsEditForm = () => {
   const history = useHistory();
   const api = useAxios();
-  const [patient, setPatient] = useState([]);
+  const { id } = useParams();
+  const [details, setDetails] = useState([]);
   const [salesServiceItem, setSalesServiceItem] = useState([]);
-  const [currentPatient, setCurrectPatient] = useState(null);
   const [currentSSI, setCurrentSSI] = useState(null);
   const [currentQuantity, setCurrentQuantity] = useState(0);
-  const [billItems, setBillItems] = useState([]);
-  const [totalAmount, setTotalAmount] = useState(0);
 
-  const getPatientAndSalesServiceItem = async () => {
-    const [patient, salesServiceItem] = await Promise.all([
-      api.get("/api/patients/"),
-      api.get("/api/salesServiceItem/"),
-    ]);
-    if (patient.status === 200 && salesServiceItem.status === 200) {
-      const p = patient.data.map((row) => {
+  const getSalesServiceItem = async () => {
+    const res = await api.get("/api/salesServiceItem/");
+    if (res.status === 200) {
+      const data = res.data.map((row) => {
         const ID = generateID(row.id, row.created_time);
         return {
-          id: ID,
-          name: row.name,
-          age: row.age.toString(),
-          contactDetails: row.contact_details,
-          gender: row.gender,
-          dataOfBirth: row.date_of_birth,
-          address: row.address,
-        };
-      });
-      setPatient(p);
-      const s = salesServiceItem.data.map((row) => {
-        return {
-          sales_service_item_id: row.id,
+          sales_service_item_id: ID,
           name: row.name,
           price: row.price,
           uom: row.uom.name,
         };
       });
-      setSalesServiceItem(s);
+      setSalesServiceItem(data);
     } else {
       history.goBack();
     }
-  };
-
-  const calculateTotal = () => {
-    let total = 0;
-    billItems.forEach((item) => {
-      total += item.price * item.quantity;
-    });
-    setTotalAmount(total);
-  };
-
-  const addItem = () => {
-    if (currentSSI) {
-      billItems.push({
-        ...currentSSI,
-        quantity: parseInt(currentQuantity),
-        remark: "",
-      });
-      setCurrentSSI(null);
-      setCurrentQuantity(0);
-      calculateTotal();
-    }
-  };
-
-  const removeItem = (i) => {
-    billItems.splice(i, 1);
-    setBillItems([...billItems]);
-    calculateTotal();
-  };
-
-  useEffect(() => {
-    getPatientAndSalesServiceItem();
+    return;
     // eslint-disable-next-line
-  }, []);
+  };
 
-  const createBill = async () => {
-    if (currentPatient) {
-      const res = await api.post(`/api/bill/`, {
-        patient_id: parseInt(currentPatient.id.split("-")[1]),
-        bill_items: billItems,
-      });
-      if (res.status === 200) {
-        history.goBack();
-      }
+  const getData = async () => {
+    const res = await api.get(`/api/bill/${parseInt(id.split("-")[1])}`);
+    if (res.status === 200) {
+      setDetails({ ...res.data });
+    } else {
+      history.goBack();
     }
     return;
   };
+
+  const addItem = async () => {
+    const res = await api.post(
+      `/api/bill/${parseInt(id.split("-")[1])}/billItem/`,
+      {
+        ...currentSSI,
+        sales_service_item_id: parseInt(
+          currentSSI.sales_service_item_id.split("-")[1]
+        ),
+        quantity: parseInt(currentQuantity),
+        remark: "",
+      }
+    );
+    if (res.status === 200) {
+      getData();
+    }
+  };
+
+  const removeItem = async (itemId) => {
+    console.log(parseInt(id.split("-")[1]), itemId);
+    const res = await api.delete(
+      `/api/bill/${parseInt(id.split("-")[1])}/billItem/${itemId}`
+    );
+    if (res.status === 200) {
+      getData();
+    }
+  };
+
+  useEffect(() => {
+    getSalesServiceItem();
+    getData();
+    // eslint-disable-next-line
+  }, [id]);
 
   return (
     <Paper sx={{ width: "100%", mb: 2 }}>
@@ -135,7 +118,9 @@ const BillsForm = () => {
             }}
           >
             <Box sx={{ width: "100%" }}>
-              <Typography variant="p">Patient Name</Typography>
+              <Typography variant="p" fontWeight={500}>
+                Patient Name
+              </Typography>
             </Box>
             {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
             <Box
@@ -143,41 +128,10 @@ const BillsForm = () => {
                 width: "100%",
                 display: "flex",
                 alignItems: "center",
+                margin: "20px 0px",
               }}
             >
-              <Autocomplete
-                value={currentPatient}
-                options={patient}
-                getOptionLabel={(option) => option.name}
-                renderOption={(props, option) => {
-                  return (
-                    <Box {...props} key={option.id}>
-                      {option.name}
-                    </Box>
-                  );
-                }}
-                style={{ width: "80%" }}
-                onChange={(event, newValue) => {
-                  setCurrectPatient(newValue);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    fullWidth
-                    size="small"
-                    margin="normal"
-                  />
-                )}
-              />
-              <IconButton
-                size="small"
-                color="primary"
-                sx={{ marginTop: "5px" }}
-                onClick={() => history.push("/dashboard/patient/form")}
-              >
-                <AddIcon fontSize="large" />
-              </IconButton>
+              <Typography variant="body2">{details?.patient_name}</Typography>
             </Box>
           </Box>
           <Box
@@ -189,27 +143,24 @@ const BillsForm = () => {
             }}
           >
             <Box sx={{ width: "100%" }}>
-              <Typography variant="p">Pateint ID</Typography>
+              <Typography variant="p" fontWeight={500}>
+                Pateint ID
+              </Typography>
             </Box>
             {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
-            <Autocomplete
-              value={currentPatient}
-              options={patient}
-              getOptionLabel={(option) => option.id}
-              style={{ width: "90%" }}
-              onChange={(event, newValue) => {
-                setCurrectPatient(newValue);
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                margin: "20px 0px",
               }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  fullWidth
-                  size="small"
-                  margin="normal"
-                />
-              )}
-            />
+            >
+              <Typography variant="body2">
+                {details?.patient_id &&
+                  generateID(details?.patient_id, details?.created_time)}
+              </Typography>
+            </Box>
           </Box>
         </Box>
         <Box
@@ -224,15 +175,20 @@ const BillsForm = () => {
             }}
           >
             <Box sx={{ width: "100%" }}>
-              <Typography variant="p">Phone</Typography>
+              <Typography variant="p" fontWeight={500}>
+                Phone
+              </Typography>
             </Box>
-            <TextField
-              size="small"
-              sx={{ width: "90%" }}
-              margin="normal"
-              disabled
-              value={currentPatient ? currentPatient?.contactDetails : ""}
-            />
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                margin: "20px 0px",
+              }}
+            >
+              <Typography variant="body2">{details?.patient_phone}</Typography>
+            </Box>
           </Box>
           <Box
             sx={{
@@ -243,15 +199,22 @@ const BillsForm = () => {
             }}
           >
             <Box sx={{ width: "100%" }}>
-              <Typography variant="p">Address</Typography>
+              <Typography variant="p" fontWeight={500}>
+                Address
+              </Typography>
             </Box>
-            <TextField
-              size="small"
-              sx={{ width: "90%" }}
-              margin="normal"
-              disabled
-              value={currentPatient ? currentPatient?.address : ""}
-            />
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                margin: "20px 0px",
+              }}
+            >
+              <Typography variant="body2">
+                {details?.patient_address}
+              </Typography>
+            </Box>
           </Box>
         </Box>
       </Container>
@@ -366,17 +329,12 @@ const BillsForm = () => {
               </Box>
             </Box>
             <Box sx={{ paddingTop: "10px" }}>
-              <Button variant="contained" fullWidth onClick={createBill}>
-                Create Bill
-              </Button>
-            </Box>
-            <Box sx={{ paddingTop: "10px" }}>
               <Button
-                variant="outlined"
+                variant="contained"
                 fullWidth
                 onClick={() => history.goBack()}
               >
-                Cancel
+                Done
               </Button>
             </Box>
           </Box>
@@ -407,12 +365,12 @@ const BillsForm = () => {
                   component="div"
                   sx={{ fontSize: { xs: "14px", sm: "16px" } }}
                 >
-                  Total : {totalAmount}MMK
+                  Total : {details?.total_amount}MMK
                 </Typography>
               </Box>
             </Container>
             <Container sx={{ paddingTop: "10px" }}>
-              <TableContainer sx={{ maxHeight: 300 }}>
+              <TableContainer sx={{ maxHeight: 260 }}>
                 <Table
                   sx={{ minWidth: 380 }}
                   aria-label="simple table"
@@ -431,34 +389,33 @@ const BillsForm = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {billItems.map((row, index) => (
-                      <TableRow
-                        key={index}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {index + 1}
-                        </TableCell>
-                        <TableCell>{row.name}</TableCell>
-                        <TableCell align="right">{row.price}</TableCell>
-                        <TableCell align="right">{row.quantity}</TableCell>
-                        <TableCell align="right">{row.uom}</TableCell>
-                        <TableCell align="right">
-                          {row.price * row.quantity}
-                        </TableCell>
-                        <TableCell align="right">
-                          <IconButton
-                            aria-label="delete"
-                            color="error"
-                            onClick={() => removeItem(index)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {details?.bill_items &&
+                      details?.bill_items.map((row, index) => (
+                        <TableRow
+                          key={row.id}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {index + 1}
+                          </TableCell>
+                          <TableCell>{row?.name}</TableCell>
+                          <TableCell align="right">{row?.price}</TableCell>
+                          <TableCell align="right">{row?.quantity}</TableCell>
+                          <TableCell align="right">{row?.uom}</TableCell>
+                          <TableCell align="right">{row?.subtotal}</TableCell>
+                          <TableCell align="right">
+                            <IconButton
+                              aria-label="delete"
+                              color="error"
+                              onClick={() => removeItem(row.id)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -470,4 +427,4 @@ const BillsForm = () => {
   );
 };
 
-export default BillsForm;
+export default BillsEditForm;
