@@ -195,7 +195,11 @@ const PatientTable = () => {
   }, []);
 
   const deleteItem = async () => {
-    await api.delete(`/api/patients/${parseInt(id.split("-")[1])}`);
+    try {
+      await api.delete(`/api/patients/${parseInt(id.split("-")[1])}`);
+    } catch (e) {
+      console.log(e.response.data.detail);
+    }
     handleClose();
     getData();
   };
