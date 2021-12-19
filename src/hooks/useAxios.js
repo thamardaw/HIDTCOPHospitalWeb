@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useContext } from "react";
-import { AuthContext } from "../contexts";
+import { AuthContext, SnackbarContext } from "../contexts";
 import jwt_decode from "jwt-decode";
 import dayjs from "dayjs";
 
@@ -9,7 +9,7 @@ const baseURL = process.env.REACT_APP_BASE_URL;
 const useAxios = () => {
   const { authTokens, setUser, setAuthTokens, logoutUser } =
     useContext(AuthContext);
-  // let { openAlert, message } = useContext(SnackbarContext);
+  let { openAlert, message } = useContext(SnackbarContext);
 
   const axiosInstance = axios.create({
     baseURL,
@@ -47,21 +47,23 @@ const useAxios = () => {
     return req;
   });
 
-  // axiosInstance.interceptors.response.use((res) => {
-  //   if (res.status === 200) {
-  //     message({ status: res.status, detail: res.data.detail });
-  //     openAlert(true);
-  //   } else {
-  //     if (res.status === 422) {
-  //       message({ status: res.status, detail: res.data.detail[0].msg });
-  //       openAlert(true);
-  //     } else {
-  //       message({ status: res.status, detail: res.data.detail });
-  //       openAlert(true);
-  //     }
-  //   }
-  //   return res;
-  // });
+  axiosInstance.interceptors.response.use((res) => {
+    if (res.config.method !== "get") {
+      if (res.status === 200) {
+        message({ status: res.status, detail: res.data.detail });
+        openAlert(true);
+      } else {
+        if (res.status === 422) {
+          message({ status: res.status, detail: res.data.detail[0].msg });
+          openAlert(true);
+        } else {
+          message({ status: res.status, detail: res.data.detail });
+          openAlert(true);
+        }
+      }
+    }
+    return res;
+  });
   return axiosInstance;
 };
 

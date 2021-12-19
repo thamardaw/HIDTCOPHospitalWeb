@@ -74,19 +74,7 @@ const SalesServiceItemForm = () => {
       ...details,
     });
     if (res.status === 200) {
-      setMessage({ status: res.status, detail: res.data.detail });
-      setOpenAlert(true);
-      setTimeout(() => {
-        history.goBack();
-      }, 1000);
-    } else {
-      if (res.status === 422) {
-        setMessage({ status: res.status, detail: res.data.detail[0].msg });
-        setOpenAlert(true);
-      } else {
-        setMessage({ status: res.status, detail: res.data.detail });
-        setOpenAlert(true);
-      }
+      history.goBack();
     }
   };
 
@@ -101,19 +89,7 @@ const SalesServiceItemForm = () => {
       }
     );
     if (res.status === 200) {
-      setMessage({ status: res.status, detail: res.data.detail });
-      setOpenAlert(true);
-      setTimeout(() => {
-        history.goBack();
-      }, 1000);
-    } else {
-      if (res.status === 422) {
-        setMessage({ status: res.status, detail: res.data.detail[0].msg });
-        setOpenAlert(true);
-      } else {
-        setMessage({ status: res.status, detail: res.data.detail });
-        setOpenAlert(true);
-      }
+      history.goBack();
     }
   };
 
