@@ -14,8 +14,7 @@ import CategoryIcon from "@mui/icons-material/Category";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import ReceiptIcon from "@mui/icons-material/Receipt";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import React from "react";
+import React, { useState } from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
@@ -30,7 +29,7 @@ const ResponsiveDrawer = ({
   const location = useLocation();
   const history = useHistory();
   const { url } = useRouteMatch();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
 
   const handleClick = () => {
     setOpen(!open);
@@ -85,6 +84,25 @@ const ResponsiveDrawer = ({
         </ListItem>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
+            <ListItem>
+              <Button
+                size="small"
+                variant={
+                  location.pathname.includes("/bills") ? "contained" : "text"
+                }
+                fullWidth
+                startIcon={<ReceiptIcon />}
+                onClick={() => history.push(`${url}/bills`)}
+                sx={{
+                  display: "flex",
+                  justifyContent: location.pathname.includes("/bills")
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              >
+                Bills
+              </Button>
+            </ListItem>
             <ListItem>
               <Button
                 size="small"
@@ -144,44 +162,6 @@ const ResponsiveDrawer = ({
                 }}
               >
                 Sales & Service Item
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
-                size="small"
-                variant={
-                  location.pathname.includes("/bills") ? "contained" : "text"
-                }
-                fullWidth
-                startIcon={<ReceiptIcon />}
-                onClick={() => history.push(`${url}/bills`)}
-                sx={{
-                  display: "flex",
-                  justifyContent: location.pathname.includes("/bills")
-                    ? "flex-end"
-                    : "flex-start",
-                }}
-              >
-                Bills
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
-                size="small"
-                variant={
-                  location.pathname.includes("/payment") ? "contained" : "text"
-                }
-                fullWidth
-                startIcon={<AttachMoneyIcon />}
-                onClick={() => history.push(`${url}/payment`)}
-                sx={{
-                  display: "flex",
-                  justifyContent: location.pathname.includes("/payment")
-                    ? "flex-end"
-                    : "flex-start",
-                }}
-              >
-                Payment
               </Button>
             </ListItem>
           </List>
