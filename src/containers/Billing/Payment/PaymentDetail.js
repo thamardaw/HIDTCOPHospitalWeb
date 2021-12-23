@@ -49,10 +49,7 @@ const PaymentDetail = () => {
   };
 
   const make_payment = async () => {
-    const res = await api.post(`/api/payment/`, {
-      patient_id: details.patient_id,
-      bill_id: details.id,
-    });
+    const res = await api.put(`/api/payment/${parseInt(id.split("-")[1])}`);
     if (res.status === 200) {
       history.goBack();
     }

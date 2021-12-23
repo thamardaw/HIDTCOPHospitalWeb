@@ -9,6 +9,7 @@ import { Category } from "./Billing/Category";
 import { SalesServiceItem } from "./Billing/SalesServiceItem";
 import { Bills } from "./Billing/Bills";
 import { Payment } from "./Billing/Payment";
+import { Deposit } from "./Billing/Deposit";
 
 const drawerWidth = 240;
 
@@ -51,6 +52,7 @@ function Dashboard(props) {
           />
           <Route path={`${path}/bills`} component={Bills} />
           <Route path={`${path}/payment`} component={Payment} />
+          <Route path={`${path}/deposit`} component={Deposit} />
           <Redirect to={`${path}/patient`} />
         </Switch>
         <Footer />

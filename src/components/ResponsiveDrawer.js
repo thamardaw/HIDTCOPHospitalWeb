@@ -13,6 +13,7 @@ import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import CategoryIcon from "@mui/icons-material/Category";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import React, { useState } from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
@@ -67,7 +68,8 @@ const ResponsiveDrawer = ({
               location.pathname.includes("/uom") ||
               location.pathname.includes("/category") ||
               location.pathname.includes("/bills") ||
-              location.pathname.includes("/payment")
+              location.pathname.includes("/payment") ||
+              location.pathname.includes("/deposit")
                 ? "contained"
                 : "text"
             }
@@ -101,6 +103,25 @@ const ResponsiveDrawer = ({
                 }}
               >
                 Bills
+              </Button>
+            </ListItem>
+            <ListItem>
+              <Button
+                size="small"
+                variant={
+                  location.pathname.includes("/deposit") ? "contained" : "text"
+                }
+                fullWidth
+                startIcon={<AccountBalanceIcon />}
+                onClick={() => history.push(`${url}/deposit`)}
+                sx={{
+                  display: "flex",
+                  justifyContent: location.pathname.includes("/deposit")
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              >
+                Deposit
               </Button>
             </ListItem>
             <ListItem>
