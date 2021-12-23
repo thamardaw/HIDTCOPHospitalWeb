@@ -53,8 +53,8 @@ const BillsTable = () => {
 
   const handleClickOpen = (id) => {};
 
-  const toDetail = (id) => {
-    history.push(`/dashboard/payment/details/${id}`);
+  const toDetailFromOutstanding = (id) => {
+    history.push(`/dashboard/payment/details/${id}/outstanding`);
   };
 
   const toDetailFromDrafted = (id) => {
@@ -152,7 +152,7 @@ const BillsTable = () => {
           headCells={headCells}
           rows={outstandingRows}
           onDelete={handleClickOpen}
-          onDetail={toDetail}
+          onDetail={toDetailFromOutstanding}
           addDelete={false}
           addCreate={false}
           addEdit={false}

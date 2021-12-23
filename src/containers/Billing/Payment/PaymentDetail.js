@@ -27,8 +27,9 @@ const PaymentDetail = () => {
   const history = useHistory();
   const receiptRef = useRef();
   const { id, stage } = useParams();
-  const [showPay, setShowPay] = useState(true);
-  const [details, setDetails] = useState({});
+  const [showPay, setShowPay] = useState(false);
+  const [bill, setBill] = useState({});
+  const [payment, setPayment] = useState({});
 
   const handlePrint = useReactToPrint({
     content: () => receiptRef.current,
@@ -37,11 +38,25 @@ const PaymentDetail = () => {
     },
   });
 
-  const getData = async () => {
+  const getBillAndPayment = async () => {
+    const [bill, payment] = await Promise.all([
+      api.get(`/api/bill/${parseInt(id.split("-")[1])}`),
+      api.get(`/api/payment/${parseInt(id.split("-")[1])}`),
+    ]);
+    if (bill.status === 200 && payment.status === 200) {
+      setBill(bill.data);
+      setPayment(payment.data);
+      setShowPay(payment.data.is_outstanding);
+    } else {
+      history.goBack();
+    }
+    return;
+  };
+
+  const getBill = async () => {
     const res = await api.get(`/api/bill/${parseInt(id.split("-")[1])}`);
     if (res.status === 200) {
-      setDetails({ ...res.data });
-      console.log(res.data);
+      setBill({ ...res.data });
     } else {
       history.goBack();
     }
@@ -65,10 +80,12 @@ const PaymentDetail = () => {
   };
 
   useEffect(() => {
-    if (stage) {
+    if (stage === "drafted") {
+      getBill();
       setShowPay(false);
+    } else {
+      getBillAndPayment();
     }
-    getData();
     // eslint-disable-next-line
   }, []);
 
@@ -114,13 +131,13 @@ const PaymentDetail = () => {
           </Typography>
           <Box sx={{ height: "15px" }} />
           <Typography variant="body" component="div">
-            Name : {details?.patient_name}
+            Name : {bill?.patient_name}
           </Typography>
           <Typography variant="body" component="div">
-            Phone : {details?.patient_phone}
+            Phone : {bill?.patient_phone}
           </Typography>
           <Typography variant="body" component="div">
-            Address : {details?.patient_address}
+            Address : {bill?.patient_address}
           </Typography>
         </Box>
         <Box sx={{ my: "15px" }}>
@@ -137,8 +154,8 @@ const PaymentDetail = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {details?.bill_items &&
-                  details.bill_items.map((row) => (
+                {bill?.bill_items &&
+                  bill.bill_items.map((row) => (
                     <TableRow
                       key={row.id}
                       sx={{
@@ -162,12 +179,23 @@ const PaymentDetail = () => {
         <Box sx={{ paddingBottom: "25px" }}>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant="body">Total : </Typography>
-            <Typography variant="body">{details?.total_amount}</Typography>
+            <Typography variant="body">{bill?.total_amount}</Typography>
+          </Box>
+          <Divider sx={{ my: "6px" }} />
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography variant="body">Deposit : </Typography>
+            <Typography variant="body">
+              {payment?.total_deposit_amount}
+            </Typography>
           </Box>
           <Divider sx={{ my: "6px" }} />
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant="body">Unpaid : </Typography>
-            <Typography variant="body">{details?.total_amount}</Typography>
+            <Typography variant="body">
+              {stage === "drafted"
+                ? bill?.total_amount
+                : payment?.unpaid_amount}
+            </Typography>
           </Box>
         </Box>
       </Container>
