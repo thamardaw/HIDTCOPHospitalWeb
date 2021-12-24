@@ -34,7 +34,9 @@ const PaymentDetail = () => {
   const handlePrint = useReactToPrint({
     content: () => receiptRef.current,
     onAfterPrint: () => {
-      to_print();
+      if (stage === "drafted") {
+        to_print();
+      }
     },
   });
 
