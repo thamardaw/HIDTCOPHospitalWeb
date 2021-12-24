@@ -138,7 +138,7 @@ const BillsTable = () => {
       </Tabs>
       <TabPanel value={tab} index={0}>
         <CustomTable
-          tableName="Drafted"
+          tableName="Bills"
           headCells={headCells}
           rows={draftedRows}
           onDelete={handleClickOpen}
@@ -148,7 +148,7 @@ const BillsTable = () => {
       </TabPanel>
       <TabPanel value={tab} index={1}>
         <CustomTable
-          tableName="Outstanding"
+          tableName="Bills"
           headCells={headCells}
           rows={outstandingRows}
           onDelete={handleClickOpen}
@@ -161,7 +161,7 @@ const BillsTable = () => {
       </TabPanel>
       <TabPanel value={tab} index={2}>
         <CustomTable
-          tableName="Completed"
+          tableName="Bills"
           headCells={headCells}
           rows={completedRows}
           onDelete={handleClickOpen}

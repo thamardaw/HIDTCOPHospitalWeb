@@ -182,7 +182,12 @@ const PaymentDetail = () => {
             <Typography variant="body">{bill?.total_amount}</Typography>
           </Box>
           <Divider sx={{ my: "6px" }} />
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Box
+            sx={{
+              display: stage === "drafted" ? "none" : "flex",
+              justifyContent: "space-between",
+            }}
+          >
             <Typography variant="body">Deposit : </Typography>
             <Typography variant="body">
               {payment?.total_deposit_amount}

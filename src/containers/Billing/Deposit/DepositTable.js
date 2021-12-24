@@ -5,10 +5,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Tab,
+  Tabs,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useCallback, useEffect, useState } from "react";
-import { CustomTable } from "../../../components";
+import { CustomTable, TabPanel } from "../../../components";
 import { useAxios } from "../../../hooks";
 import { generateID } from "../../../utils/generateID";
 
@@ -34,9 +36,15 @@ const headCells = [
 ];
 const DepositTable = () => {
   const api = useAxios();
-  const [rows, setRows] = useState([]);
+  const [activeRows, setActiveRows] = useState([]);
+  const [usedRows, setUsedRows] = useState([]);
   const [open, setOpen] = useState(false);
   //   const [id, setId] = useState("");
+  const [tab, setTab] = useState(0);
+
+  const handleTabChange = (event, newTab) => {
+    setTab(newTab);
+  };
 
   const handleClickOpen = (id) => {
     // setId(id);
@@ -47,18 +55,35 @@ const DepositTable = () => {
     setOpen(false);
   };
 
-  const getData = useCallback(async () => {
-    const res = await api.get("/api/deposit/");
+  const getActiveDeposit = useCallback(async () => {
+    const res = await api.get("/api/deposit/active");
     if (res.status === 200) {
       const data = res.data.map((row) => {
         const ID = generateID(row.id, row.created_time);
         return {
           id: ID,
-          patient_id: generateID(row.patient_id, row.created_time),
+          patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount.toString(),
         };
       });
-      setRows(data);
+      setActiveRows(data);
+    }
+    return;
+    // eslint-disable-next-line
+  }, []);
+
+  const getUsedDeposit = useCallback(async () => {
+    const res = await api.get("/api/deposit/used");
+    if (res.status === 200) {
+      const data = res.data.map((row) => {
+        const ID = generateID(row.id, row.created_time);
+        return {
+          id: ID,
+          patient_id: generateID(row.patient_id, row.patient.created_time),
+          amount: row.amount.toString(),
+        };
+      });
+      setUsedRows(data);
     }
     return;
     // eslint-disable-next-line
@@ -67,24 +92,42 @@ const DepositTable = () => {
   const deleteItem = async () => {
     // await api.delete(`/api/deposit/${parseInt(id.split("-")[1])}`);
     // handleClose();
-    // getData();
+    // getActiveDeposit();
   };
 
   useEffect(() => {
-    getData();
+    getActiveDeposit();
+    getUsedDeposit();
     // eslint-disable-next-line
   }, []);
 
   return (
     <Box sx={{ width: "100%" }}>
-      <CustomTable
-        tableName="Deposit"
-        headCells={headCells}
-        rows={rows}
-        onDelete={handleClickOpen}
-        addDelete={false}
-        addEdit={false}
-      />
+      <Tabs value={tab} onChange={handleTabChange} centered>
+        <Tab label="Active" />
+        <Tab label="Used" />
+      </Tabs>
+      <TabPanel value={tab} index={0}>
+        <CustomTable
+          tableName="Deposit"
+          headCells={headCells}
+          rows={activeRows}
+          onDelete={handleClickOpen}
+          addDelete={false}
+          addEdit={false}
+        />
+      </TabPanel>
+      <TabPanel value={tab} index={1}>
+        <CustomTable
+          tableName="Deposit"
+          headCells={headCells}
+          rows={usedRows}
+          onDelete={handleClickOpen}
+          addDelete={false}
+          addEdit={false}
+          addCreate={false}
+        />
+      </TabPanel>
       <Dialog
         open={open}
         onClose={handleClose}
