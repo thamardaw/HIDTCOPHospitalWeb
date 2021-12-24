@@ -79,7 +79,6 @@ const BillsEditForm = () => {
   };
 
   const removeItem = async (itemId) => {
-    console.log(parseInt(id.split("-")[1]), itemId);
     const res = await api.delete(
       `/api/bill/${parseInt(id.split("-")[1])}/billItem/${itemId}`
     );
@@ -264,7 +263,7 @@ const BillsEditForm = () => {
                     getOptionLabel={(option) => option.name}
                     renderOption={(props, option) => {
                       return (
-                        <Box {...props} key={option.id}>
+                        <Box {...props} key={option.sales_service_item_id}>
                           {option.name}
                         </Box>
                       );

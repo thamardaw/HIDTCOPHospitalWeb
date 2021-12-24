@@ -301,7 +301,7 @@ const BillsForm = () => {
                     getOptionLabel={(option) => option.name}
                     renderOption={(props, option) => {
                       return (
-                        <Box {...props} key={option.id}>
+                        <Box {...props} key={option.sales_service_item_id}>
                           {option.name}
                         </Box>
                       );
