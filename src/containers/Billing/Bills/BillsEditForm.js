@@ -157,7 +157,10 @@ const BillsEditForm = () => {
             >
               <Typography variant="body2">
                 {details?.patient_id &&
-                  generateID(details?.patient_id, details?.created_time)}
+                  generateID(
+                    details?.patient_id,
+                    details?.patient.created_time
+                  )}
               </Typography>
             </Box>
           </Box>

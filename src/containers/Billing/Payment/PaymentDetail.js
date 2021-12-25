@@ -133,6 +133,12 @@ const PaymentDetail = () => {
           </Typography>
           <Box sx={{ height: "15px" }} />
           <Typography variant="body" component="div">
+            ID : {bill?.id && generateID(bill?.id, bill?.created_time)}
+          </Typography>
+          <Typography variant="body" component="div">
+            Date : {bill?.created_time && bill?.created_time.split("T")[0]}
+          </Typography>
+          <Typography variant="body" component="div">
             Name : {bill?.patient_name}
           </Typography>
           <Typography variant="body" component="div">
