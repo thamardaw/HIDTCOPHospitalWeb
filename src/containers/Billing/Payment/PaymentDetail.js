@@ -163,15 +163,16 @@ const PaymentDetail = () => {
               </TableHead>
               <TableBody>
                 {bill?.bill_items &&
-                  bill.bill_items.map((row) => (
+                  bill.bill_items.map((row, index) => (
                     <TableRow
-                      key={row.id}
+                      key={index}
                       sx={{
                         "&:last-child td, &:last-child th": { border: 0 },
                       }}
                     >
                       <TableCell component="th" scope="row">
-                        {generateID(row.id, row.created_time)}
+                        {index + 1}
+                        {/* {generateID(row.id, row.created_time)} */}
                       </TableCell>
                       <TableCell>{row?.name}</TableCell>
                       <TableCell>{row?.price}</TableCell>

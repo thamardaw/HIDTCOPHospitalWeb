@@ -71,7 +71,8 @@ const CategoryDetail = () => {
           </Box>
 
           <Typography variant="body2">
-            {generateID(details?.patient_id, details.created_time)}
+            {details?.patient_id &&
+              generateID(details?.patient_id, details.created_time)}
           </Typography>
         </Box>
         <Divider />
