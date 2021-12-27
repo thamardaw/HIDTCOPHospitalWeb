@@ -10,7 +10,6 @@ import { Box } from "@mui/system";
 import { useCallback, useEffect, useState } from "react";
 import { CustomTable } from "../../../components";
 import { useAxios } from "../../../hooks";
-import { generateID } from "../../../utils/generateID";
 
 const headCells = [
   {
@@ -63,9 +62,8 @@ const SalesServiceItemTable = () => {
     const res = await api.get("/api/salesServiceItem/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
-        const ID = generateID(row.id, row.created_time);
         return {
-          id: ID,
+          id: row.id,
           name: row.name,
           price: row.price.toString(),
           uom: row.uom.name,
@@ -79,7 +77,7 @@ const SalesServiceItemTable = () => {
   }, []);
 
   const deleteItem = async () => {
-    await api.delete(`/api/salesServiceItem/${parseInt(id.split("-")[1])}`);
+    await api.delete(`/api/salesServiceItem/${parseInt(id)}`);
     handleClose();
     getData();
   };

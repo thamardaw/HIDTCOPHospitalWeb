@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { CustomTable, TabPanel } from "../../../components";
 import { useAxios } from "../../../hooks";
-import { generateID } from "../../../utils/generateID";
 
 const headCells = [
   {
@@ -69,9 +68,8 @@ const BillsTable = () => {
     const res = await api.get("/api/bill/drafted");
     if (res.status === 200) {
       const data = res.data.map((row) => {
-        const ID = generateID(row.id, row.created_time);
         return {
-          id: ID,
+          id: row.id,
           name: row.patient_name,
           phone: row.patient_phone,
           address: row.patient_address,
@@ -88,9 +86,8 @@ const BillsTable = () => {
     const res = await api.get("/api/payment/outstanding");
     if (res.status === 200) {
       const data = res.data.map((row) => {
-        const ID = generateID(row.id, row.created_time);
         return {
-          id: ID,
+          id: row.id,
           name: row.patient_name,
           phone: row.patient_phone,
           address: row.patient_address,
@@ -107,9 +104,8 @@ const BillsTable = () => {
     const res = await api.get("/api/payment/completed");
     if (res.status === 200) {
       const data = res.data.map((row) => {
-        const ID = generateID(row.id, row.created_time);
         return {
-          id: ID,
+          id: row.id,
           name: row.patient_name,
           phone: row.patient_phone,
           address: row.patient_address,

@@ -59,9 +59,7 @@ const SalesServiceItemForm = () => {
   };
 
   const getData = async () => {
-    const res = await api.get(
-      `/api/salesServiceItem/${parseInt(id.split("-")[1])}`
-    );
+    const res = await api.get(`/api/salesServiceItem/${parseInt(id)}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
     } else {
@@ -79,15 +77,12 @@ const SalesServiceItemForm = () => {
   };
 
   const update = async () => {
-    const res = await api.put(
-      `/api/salesServiceItem/${parseInt(id.split("-")[1])}`,
-      {
-        name: details.name,
-        price: details.price,
-        uom_id: details.uom_id,
-        category_id: details.category_id,
-      }
-    );
+    const res = await api.put(`/api/salesServiceItem/${parseInt(id)}`, {
+      name: details.name,
+      price: details.price,
+      uom_id: details.uom_id,
+      category_id: details.category_id,
+    });
     if (res.status === 200) {
       history.goBack();
     }

@@ -59,9 +59,8 @@ const DepositTable = () => {
     const res = await api.get("/api/deposit/active");
     if (res.status === 200) {
       const data = res.data.map((row) => {
-        const ID = generateID(row.id, row.created_time);
         return {
-          id: ID,
+          id: row.id,
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount.toString(),
         };
@@ -76,9 +75,8 @@ const DepositTable = () => {
     const res = await api.get("/api/deposit/used");
     if (res.status === 200) {
       const data = res.data.map((row) => {
-        const ID = generateID(row.id, row.created_time);
         return {
-          id: ID,
+          id: row.id,
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount.toString(),
         };

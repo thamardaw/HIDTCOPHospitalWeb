@@ -12,9 +12,7 @@ const SalesServiceItemDetail = () => {
   const [details, setDetails] = useState({});
 
   const getData = async () => {
-    const res = await api.get(
-      `/api/salesServiceItem/${parseInt(id.split("-")[1])}`
-    );
+    const res = await api.get(`/api/salesServiceItem/${parseInt(id)}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
     }

@@ -35,9 +35,8 @@ const BillsEditForm = () => {
     const res = await api.get("/api/salesServiceItem/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
-        const ID = generateID(row.id, row.created_time);
         return {
-          sales_service_item_id: ID,
+          sales_service_item_id: row.id,
           name: row.name,
           price: row.price,
           uom: row.uom.name,
@@ -52,7 +51,7 @@ const BillsEditForm = () => {
   };
 
   const getData = async () => {
-    const res = await api.get(`/api/bill/${parseInt(id.split("-")[1])}`);
+    const res = await api.get(`/api/bill/${parseInt(id)}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
     } else {
@@ -62,17 +61,12 @@ const BillsEditForm = () => {
   };
 
   const addItem = async () => {
-    const res = await api.post(
-      `/api/bill/${parseInt(id.split("-")[1])}/billItem/`,
-      {
-        ...currentSSI,
-        sales_service_item_id: parseInt(
-          currentSSI.sales_service_item_id.split("-")[1]
-        ),
-        quantity: parseInt(currentQuantity),
-        remark: "",
-      }
-    );
+    const res = await api.post(`/api/bill/${parseInt(id)}/billItem/`, {
+      ...currentSSI,
+      sales_service_item_id: parseInt(currentSSI.sales_service_item_id),
+      quantity: parseInt(currentQuantity),
+      remark: "",
+    });
     if (res.status === 200) {
       getData();
     }
@@ -80,7 +74,7 @@ const BillsEditForm = () => {
 
   const removeItem = async (itemId) => {
     const res = await api.delete(
-      `/api/bill/${parseInt(id.split("-")[1])}/billItem/${itemId}`
+      `/api/bill/${parseInt(id)}/billItem/${itemId}`
     );
     if (res.status === 200) {
       getData();

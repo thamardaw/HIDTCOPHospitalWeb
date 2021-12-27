@@ -22,7 +22,7 @@ const UomForm = () => {
   });
 
   const getData = async () => {
-    const res = await api.get(`/api/uom/${parseInt(id.split("-")[1])}`);
+    const res = await api.get(`/api/uom/${parseInt(id)}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
     } else {
@@ -40,7 +40,7 @@ const UomForm = () => {
   };
 
   const update = async () => {
-    const res = await api.put(`/api/uom/${parseInt(id.split("-")[1])}`, {
+    const res = await api.put(`/api/uom/${parseInt(id)}`, {
       name: details.name,
       description: details.description,
     });

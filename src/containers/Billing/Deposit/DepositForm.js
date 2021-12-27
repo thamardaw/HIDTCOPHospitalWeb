@@ -15,7 +15,7 @@ import React, { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { generateID } from "../../../utils/generateID";
 
-const SalesServiceItemForm = () => {
+const DepositForm = () => {
   const history = useHistory();
   const api = useAxios();
   const [details, setDetails] = useState({
@@ -182,4 +182,4 @@ const SalesServiceItemForm = () => {
   );
 };
 
-export default SalesServiceItemForm;
+export default DepositForm;

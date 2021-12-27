@@ -42,8 +42,8 @@ const PaymentDetail = () => {
 
   const getBillAndPayment = async () => {
     const [bill, payment] = await Promise.all([
-      api.get(`/api/bill/${parseInt(id.split("-")[1])}`),
-      api.get(`/api/payment/${parseInt(id.split("-")[1])}`),
+      api.get(`/api/bill/${parseInt(id)}`),
+      api.get(`/api/payment/${parseInt(id)}`),
     ]);
     if (bill.status === 200 && payment.status === 200) {
       setBill(bill.data);
@@ -56,7 +56,7 @@ const PaymentDetail = () => {
   };
 
   const getBill = async () => {
-    const res = await api.get(`/api/bill/${parseInt(id.split("-")[1])}`);
+    const res = await api.get(`/api/bill/${parseInt(id)}`);
     if (res.status === 200) {
       setBill({ ...res.data });
     } else {
@@ -66,7 +66,7 @@ const PaymentDetail = () => {
   };
 
   const make_payment = async () => {
-    const res = await api.put(`/api/payment/${parseInt(id.split("-")[1])}`);
+    const res = await api.put(`/api/payment/${parseInt(id)}`);
     if (res.status === 200) {
       history.goBack();
     }
@@ -74,7 +74,7 @@ const PaymentDetail = () => {
   };
 
   const to_print = async () => {
-    const res = await api.put(`/api/bill/print/${parseInt(id.split("-")[1])}`);
+    const res = await api.put(`/api/bill/print/${parseInt(id)}`);
     if (res.status === 200) {
       history.goBack();
     }
