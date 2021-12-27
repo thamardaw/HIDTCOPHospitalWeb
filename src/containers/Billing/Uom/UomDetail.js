@@ -68,7 +68,6 @@ const UomDetail = () => {
               Name
             </Typography>
           </Box>
-
           <Typography variant="body2">{details?.name}</Typography>
         </Box>
         <Divider />

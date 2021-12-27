@@ -119,7 +119,7 @@ const BillsForm = () => {
           component="div"
           //   sx={{ fontSize: { xs: "14px", sm: "16px" } }}
         >
-          Patient Info
+          Patient Information
         </Typography>
       </Toolbar>
       <Container>
