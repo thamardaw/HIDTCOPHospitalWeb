@@ -14,6 +14,7 @@ import CategoryIcon from "@mui/icons-material/Category";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import React, { useState } from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
@@ -85,7 +86,7 @@ const ResponsiveDrawer = ({
           </Button>
         </ListItem>
         <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
+          <List component="div" disablePadding sx={{ paddingLeft: "8px" }}>
             <ListItem>
               <Button
                 size="small"
@@ -187,6 +188,25 @@ const ResponsiveDrawer = ({
             </ListItem>
           </List>
         </Collapse>
+        <ListItem>
+          <Button
+            size="small"
+            variant={
+              location.pathname.includes("/dailyClosing") ? "contained" : "text"
+            }
+            fullWidth
+            startIcon={<AnalyticsIcon />}
+            onClick={() => history.push(`${url}/dailyClosing`)}
+            sx={{
+              display: "flex",
+              justifyContent: location.pathname.includes("/dailyClosing")
+                ? "flex-end"
+                : "flex-start",
+            }}
+          >
+            Daily Closing
+          </Button>
+        </ListItem>
       </List>
     </div>
   );
