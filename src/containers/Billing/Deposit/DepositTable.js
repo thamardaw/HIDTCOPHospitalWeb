@@ -19,7 +19,7 @@ const headCells = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Deposit ID",
+    label: "ID",
   },
   {
     id: "patient_id",

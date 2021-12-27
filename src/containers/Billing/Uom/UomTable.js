@@ -17,7 +17,7 @@ const headCells = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "UOM ID",
+    label: "ID",
   },
   {
     id: "name",

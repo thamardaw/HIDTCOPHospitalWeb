@@ -11,7 +11,7 @@ const headCells = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Bill ID",
+    label: "ID",
   },
   {
     id: "name",

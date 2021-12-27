@@ -119,7 +119,7 @@ const headCells = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Patient ID",
+    label: "ID",
   },
   {
     id: "name",
