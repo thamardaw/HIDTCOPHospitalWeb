@@ -14,17 +14,24 @@ import {
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router-dom";
 import { Box } from "@mui/system";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAxios } from "../../hooks";
 import { generateID } from "../../utils/generateID";
+import { useReactToPrint } from "react-to-print";
 
 const DailyClosingDetail = () => {
   const history = useHistory();
   const { id } = useParams();
   const api = useAxios();
   const [details, setDetails] = useState({});
-  const [bills, setBills] = useState({});
-  const [deposits, setDeposits] = useState({});
+  const [bills, setBills] = useState([]);
+  const [deposits, setDeposits] = useState([]);
+  const dailyClosingRef = useRef();
+
+  const handlePrint = useReactToPrint({
+    content: () => dailyClosingRef.current,
+  });
+
   const getData = async () => {
     const [detail, bill, deposit] = await Promise.all([
       api.get(`/api/dailyClosing/${id}`),
@@ -107,12 +114,15 @@ const DailyClosingDetail = () => {
         <Typography variant="h5" sx={{ flexGrow: 1 }}>
           Detail
         </Typography>
-        <Button variant="contained" size="small">
+        <Button variant="contained" size="small" onClick={handlePrint}>
           Print
         </Button>
       </Toolbar>
       <Divider />
-      <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
+      <Box
+        sx={{ flexDirection: "column", padding: "20px 10px" }}
+        ref={dailyClosingRef}
+      >
         <Box
           sx={{
             display: "flex",
@@ -122,7 +132,9 @@ const DailyClosingDetail = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">In Charge Name</Typography>
+            <Typography variant="p" sx={{ fontWeight: "bold" }}>
+              In Charge Name
+            </Typography>
           </Box>
           <Typography variant="p">{details?.created_user?.username}</Typography>
         </Box>
@@ -136,13 +148,15 @@ const DailyClosingDetail = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Opening Balance</Typography>
+            <Typography variant="p" sx={{ fontWeight: "bold" }}>
+              Opening Balance
+            </Typography>
           </Box>
           <Typography variant="p">{details?.opening_balance}</Typography>
         </Box>
-        <TableContainer sx={{ maxHeight: 300, marginTop: "15px" }}>
+        <TableContainer sx={{ marginTop: "15px" }}>
           <Table sx={{ minWidth: 380 }} size="small">
-            <TableHead stickyHeader sx={{ backgroundColor: "#EBEBEB" }}>
+            <TableHead sx={{ backgroundColor: "#EBEBEB" }}>
               <TableRow>
                 <TableCell>Bill ID</TableCell>
                 <TableCell>Patient ID</TableCell>
@@ -153,31 +167,30 @@ const DailyClosingDetail = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {bills?.[0] &&
-                bills.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    sx={{
-                      "&:last-child td, &:last-child th": { border: 0 },
-                    }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.bill_id}
-                    </TableCell>
-                    <TableCell>{row.patient_id}</TableCell>
-                    <TableCell>{row.patient_name}</TableCell>
-                    <TableCell>{row.total_amount}</TableCell>
-                    <TableCell>{row.deposit_amount}</TableCell>
-                    <TableCell>{row.collected_amount}</TableCell>
-                  </TableRow>
-                ))}
+              {bills.map((row) => (
+                <TableRow
+                  key={row.id}
+                  sx={{
+                    "&:last-child td, &:last-child th": { border: 0 },
+                  }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.bill_id}
+                  </TableCell>
+                  <TableCell>{row.patient_id}</TableCell>
+                  <TableCell>{row.patient_name}</TableCell>
+                  <TableCell>{row.total_amount}</TableCell>
+                  <TableCell>{row.deposit_amount}</TableCell>
+                  <TableCell>{row.collected_amount}</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
 
-        <TableContainer sx={{ maxHeight: 300, marginTop: "15px" }}>
+        <TableContainer sx={{ marginTop: "15px" }}>
           <Table sx={{ minWidth: 380 }} size="small">
-            <TableHead stickyHeader sx={{ backgroundColor: "#EBEBEB" }}>
+            <TableHead sx={{ backgroundColor: "#EBEBEB" }}>
               <TableRow>
                 <TableCell>Deposit ID</TableCell>
                 <TableCell>Patient ID</TableCell>
@@ -186,22 +199,21 @@ const DailyClosingDetail = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {deposits?.[0] &&
-                deposits.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    sx={{
-                      "&:last-child td, &:last-child th": { border: 0 },
-                    }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.deposit_id}
-                    </TableCell>
-                    <TableCell>{row.patient_id}</TableCell>
-                    <TableCell>{row.patient_name}</TableCell>
-                    <TableCell>{row.deposit_amount}</TableCell>
-                  </TableRow>
-                ))}
+              {deposits.map((row) => (
+                <TableRow
+                  key={row.id}
+                  sx={{
+                    "&:last-child td, &:last-child th": { border: 0 },
+                  }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.deposit_id}
+                  </TableCell>
+                  <TableCell>{row.patient_id}</TableCell>
+                  <TableCell>{row.patient_name}</TableCell>
+                  <TableCell>{row.deposit_amount}</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -215,7 +227,9 @@ const DailyClosingDetail = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Total</Typography>
+            <Typography variant="p" sx={{ fontWeight: "bold" }}>
+              Total
+            </Typography>
           </Box>
           <Typography variant="p">{details?.grand_total}</Typography>
         </Box>
@@ -229,7 +243,9 @@ const DailyClosingDetail = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Actual Amount</Typography>
+            <Typography variant="p" sx={{ fontWeight: "bold" }}>
+              Actual Amount
+            </Typography>
           </Box>
           <Typography variant="p">{details?.actual_amount}</Typography>
         </Box>
@@ -243,7 +259,9 @@ const DailyClosingDetail = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Adjustment</Typography>
+            <Typography variant="p" sx={{ fontWeight: "bold" }}>
+              Adjustment
+            </Typography>
           </Box>
           <Typography variant="p">{details?.adjusted_amount}</Typography>
         </Box>
@@ -257,7 +275,9 @@ const DailyClosingDetail = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Remark</Typography>
+            <Typography variant="p" sx={{ fontWeight: "bold" }}>
+              Remark
+            </Typography>
           </Box>
           <Typography variant="p">{details?.adjusted_reason}</Typography>
         </Box>

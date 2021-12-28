@@ -7,6 +7,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  tableCellClasses,
   TableContainer,
   TableHead,
   TableRow,
@@ -21,6 +22,13 @@ import { useHistory, useParams } from "react-router-dom";
 import { useAxios } from "../../../hooks";
 import { useState, useEffect } from "react";
 import { generateID } from "../../../utils/generateID";
+import { styled } from "@mui/material/styles";
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#EBEBEB",
+  },
+}));
 
 const BillsEditForm = () => {
   const history = useHistory();
@@ -373,15 +381,15 @@ const BillsEditForm = () => {
                   size="small"
                   stickyHeader
                 >
-                  <TableHead sx={{ backgroundColor: "#EBEBEB" }}>
+                  <TableHead>
                     <TableRow>
-                      <TableCell>No</TableCell>
-                      <TableCell>Name</TableCell>
-                      <TableCell align="right">Price</TableCell>
-                      <TableCell align="right">Quantity</TableCell>
-                      <TableCell align="right">UOM</TableCell>
-                      <TableCell align="right">SubTotal</TableCell>
-                      <TableCell align="right">Actions</TableCell>
+                      <StyledTableCell>No</StyledTableCell>
+                      <StyledTableCell>Name</StyledTableCell>
+                      <StyledTableCell align="right">Price</StyledTableCell>
+                      <StyledTableCell align="right">Quantity</StyledTableCell>
+                      <StyledTableCell align="right">UOM</StyledTableCell>
+                      <StyledTableCell align="right">SubTotal</StyledTableCell>
+                      <StyledTableCell align="right">Actions</StyledTableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
