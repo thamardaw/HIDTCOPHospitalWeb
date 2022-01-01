@@ -7,6 +7,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  tableCellClasses,
   TableContainer,
   TableHead,
   TableRow,
@@ -21,6 +22,13 @@ import { useHistory } from "react-router-dom";
 import { useAxios } from "../../../hooks";
 import { useState, useEffect } from "react";
 import { generateID } from "../../../utils/generateID";
+import { styled } from "@mui/material/styles";
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#EBEBEB",
+  },
+}));
 
 const BillsForm = () => {
   const history = useHistory();
@@ -119,7 +127,7 @@ const BillsForm = () => {
           component="div"
           //   sx={{ fontSize: { xs: "14px", sm: "16px" } }}
         >
-          Patient Info
+          Patient Information
         </Typography>
       </Toolbar>
       <Container>
@@ -301,7 +309,7 @@ const BillsForm = () => {
                     getOptionLabel={(option) => option.name}
                     renderOption={(props, option) => {
                       return (
-                        <Box {...props} key={option.id}>
+                        <Box {...props} key={option.sales_service_item_id}>
                           {option.name}
                         </Box>
                       );
@@ -419,15 +427,15 @@ const BillsForm = () => {
                   size="small"
                   stickyHeader
                 >
-                  <TableHead sx={{ backgroundColor: "#EBEBEB" }}>
+                  <TableHead>
                     <TableRow>
-                      <TableCell>No</TableCell>
-                      <TableCell>Name</TableCell>
-                      <TableCell align="right">Price</TableCell>
-                      <TableCell align="right">Quantity</TableCell>
-                      <TableCell align="right">UOM</TableCell>
-                      <TableCell align="right">SubTotal</TableCell>
-                      <TableCell align="right">Actions</TableCell>
+                      <StyledTableCell>No</StyledTableCell>
+                      <StyledTableCell>Name</StyledTableCell>
+                      <StyledTableCell align="right">Price</StyledTableCell>
+                      <StyledTableCell align="right">Quantity</StyledTableCell>
+                      <StyledTableCell align="right">UOM</StyledTableCell>
+                      <StyledTableCell align="right">SubTotal</StyledTableCell>
+                      <StyledTableCell align="right">Actions</StyledTableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>

@@ -12,7 +12,7 @@ const UomDetail = () => {
   const [details, setDetails] = useState({});
 
   const getData = async () => {
-    const res = await api.get(`/api/uom/${parseInt(id.split("-")[1])}`);
+    const res = await api.get(`/api/uom/${parseInt(id)}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
     }
@@ -68,7 +68,6 @@ const UomDetail = () => {
               Name
             </Typography>
           </Box>
-
           <Typography variant="body2">{details?.name}</Typography>
         </Box>
         <Divider />

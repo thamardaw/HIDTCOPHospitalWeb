@@ -27,21 +27,38 @@ const PaymentDetail = () => {
   const history = useHistory();
   const receiptRef = useRef();
   const { id, stage } = useParams();
-  const [showPay, setShowPay] = useState(true);
-  const [details, setDetails] = useState({});
+  const [showPay, setShowPay] = useState(false);
+  const [bill, setBill] = useState({});
+  const [payment, setPayment] = useState({});
 
   const handlePrint = useReactToPrint({
     content: () => receiptRef.current,
     onAfterPrint: () => {
-      to_print();
+      if (stage === "drafted") {
+        to_print();
+      }
     },
   });
 
-  const getData = async () => {
-    const res = await api.get(`/api/bill/${parseInt(id.split("-")[1])}`);
+  const getBillAndPayment = async () => {
+    const [bill, payment] = await Promise.all([
+      api.get(`/api/bill/${parseInt(id)}`),
+      api.get(`/api/payment/${parseInt(id)}`),
+    ]);
+    if (bill.status === 200 && payment.status === 200) {
+      setBill(bill.data);
+      setPayment(payment.data);
+      setShowPay(payment.data.is_outstanding);
+    } else {
+      history.goBack();
+    }
+    return;
+  };
+
+  const getBill = async () => {
+    const res = await api.get(`/api/bill/${parseInt(id)}`);
     if (res.status === 200) {
-      setDetails({ ...res.data });
-      console.log(res.data);
+      setBill({ ...res.data });
     } else {
       history.goBack();
     }
@@ -49,10 +66,7 @@ const PaymentDetail = () => {
   };
 
   const make_payment = async () => {
-    const res = await api.post(`/api/payment/`, {
-      patient_id: details.patient_id,
-      bill_id: details.id,
-    });
+    const res = await api.put(`/api/payment/${parseInt(id)}`);
     if (res.status === 200) {
       history.goBack();
     }
@@ -60,7 +74,7 @@ const PaymentDetail = () => {
   };
 
   const to_print = async () => {
-    const res = await api.put(`/api/bill/print/${parseInt(id.split("-")[1])}`);
+    const res = await api.put(`/api/bill/print/${parseInt(id)}`);
     if (res.status === 200) {
       history.goBack();
     }
@@ -68,10 +82,12 @@ const PaymentDetail = () => {
   };
 
   useEffect(() => {
-    if (stage) {
+    if (stage === "drafted") {
+      getBill();
       setShowPay(false);
+    } else {
+      getBillAndPayment();
     }
-    getData();
     // eslint-disable-next-line
   }, []);
 
@@ -117,13 +133,19 @@ const PaymentDetail = () => {
           </Typography>
           <Box sx={{ height: "15px" }} />
           <Typography variant="body" component="div">
-            Name : {details?.patient_name}
+            ID : {bill?.id && generateID(bill?.id, bill?.created_time)}
           </Typography>
           <Typography variant="body" component="div">
-            Phone : {details?.patient_phone}
+            Date : {bill?.created_time && bill?.created_time.split("T")[0]}
           </Typography>
           <Typography variant="body" component="div">
-            Address : {details?.patient_address}
+            Name : {bill?.patient_name}
+          </Typography>
+          <Typography variant="body" component="div">
+            Phone : {bill?.patient_phone}
+          </Typography>
+          <Typography variant="body" component="div">
+            Address : {bill?.patient_address}
           </Typography>
         </Box>
         <Box sx={{ my: "15px" }}>
@@ -140,16 +162,17 @@ const PaymentDetail = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {details?.bill_items &&
-                  details.bill_items.map((row) => (
+                {bill?.bill_items &&
+                  bill.bill_items.map((row, index) => (
                     <TableRow
-                      key={row.id}
+                      key={index}
                       sx={{
                         "&:last-child td, &:last-child th": { border: 0 },
                       }}
                     >
                       <TableCell component="th" scope="row">
-                        {generateID(row.id, row.created_time)}
+                        {index + 1}
+                        {/* {generateID(row.id, row.created_time)} */}
                       </TableCell>
                       <TableCell>{row?.name}</TableCell>
                       <TableCell>{row?.price}</TableCell>
@@ -165,12 +188,28 @@ const PaymentDetail = () => {
         <Box sx={{ paddingBottom: "25px" }}>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant="body">Total : </Typography>
-            <Typography variant="body">{details?.total_amount}</Typography>
+            <Typography variant="body">{bill?.total_amount}</Typography>
+          </Box>
+          <Divider sx={{ my: "6px" }} />
+          <Box
+            sx={{
+              display: stage === "drafted" ? "none" : "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography variant="body">Deposit : </Typography>
+            <Typography variant="body">
+              {payment?.total_deposit_amount}
+            </Typography>
           </Box>
           <Divider sx={{ my: "6px" }} />
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant="body">Unpaid : </Typography>
-            <Typography variant="body">{details?.total_amount}</Typography>
+            <Typography variant="body">
+              {stage === "drafted"
+                ? bill?.total_amount
+                : payment?.unpaid_amount}
+            </Typography>
           </Box>
         </Box>
       </Container>

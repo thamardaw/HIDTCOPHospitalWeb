@@ -7,6 +7,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  tableCellClasses,
   TableContainer,
   TableHead,
   TableRow,
@@ -21,6 +22,13 @@ import { useHistory, useParams } from "react-router-dom";
 import { useAxios } from "../../../hooks";
 import { useState, useEffect } from "react";
 import { generateID } from "../../../utils/generateID";
+import { styled } from "@mui/material/styles";
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#EBEBEB",
+  },
+}));
 
 const BillsEditForm = () => {
   const history = useHistory();
@@ -35,9 +43,8 @@ const BillsEditForm = () => {
     const res = await api.get("/api/salesServiceItem/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
-        const ID = generateID(row.id, row.created_time);
         return {
-          sales_service_item_id: ID,
+          sales_service_item_id: row.id,
           name: row.name,
           price: row.price,
           uom: row.uom.name,
@@ -52,7 +59,7 @@ const BillsEditForm = () => {
   };
 
   const getData = async () => {
-    const res = await api.get(`/api/bill/${parseInt(id.split("-")[1])}`);
+    const res = await api.get(`/api/bill/${parseInt(id)}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
     } else {
@@ -62,26 +69,20 @@ const BillsEditForm = () => {
   };
 
   const addItem = async () => {
-    const res = await api.post(
-      `/api/bill/${parseInt(id.split("-")[1])}/billItem/`,
-      {
-        ...currentSSI,
-        sales_service_item_id: parseInt(
-          currentSSI.sales_service_item_id.split("-")[1]
-        ),
-        quantity: parseInt(currentQuantity),
-        remark: "",
-      }
-    );
+    const res = await api.post(`/api/bill/${parseInt(id)}/billItem/`, {
+      ...currentSSI,
+      sales_service_item_id: parseInt(currentSSI.sales_service_item_id),
+      quantity: parseInt(currentQuantity),
+      remark: "",
+    });
     if (res.status === 200) {
       getData();
     }
   };
 
   const removeItem = async (itemId) => {
-    console.log(parseInt(id.split("-")[1]), itemId);
     const res = await api.delete(
-      `/api/bill/${parseInt(id.split("-")[1])}/billItem/${itemId}`
+      `/api/bill/${parseInt(id)}/billItem/${itemId}`
     );
     if (res.status === 200) {
       getData();
@@ -158,7 +159,10 @@ const BillsEditForm = () => {
             >
               <Typography variant="body2">
                 {details?.patient_id &&
-                  generateID(details?.patient_id, details?.created_time)}
+                  generateID(
+                    details?.patient_id,
+                    details?.patient.created_time
+                  )}
               </Typography>
             </Box>
           </Box>
@@ -264,7 +268,7 @@ const BillsEditForm = () => {
                     getOptionLabel={(option) => option.name}
                     renderOption={(props, option) => {
                       return (
-                        <Box {...props} key={option.id}>
+                        <Box {...props} key={option.sales_service_item_id}>
                           {option.name}
                         </Box>
                       );
@@ -377,15 +381,15 @@ const BillsEditForm = () => {
                   size="small"
                   stickyHeader
                 >
-                  <TableHead sx={{ backgroundColor: "#EBEBEB" }}>
+                  <TableHead>
                     <TableRow>
-                      <TableCell>No</TableCell>
-                      <TableCell>Name</TableCell>
-                      <TableCell align="right">Price</TableCell>
-                      <TableCell align="right">Quantity</TableCell>
-                      <TableCell align="right">UOM</TableCell>
-                      <TableCell align="right">SubTotal</TableCell>
-                      <TableCell align="right">Actions</TableCell>
+                      <StyledTableCell>No</StyledTableCell>
+                      <StyledTableCell>Name</StyledTableCell>
+                      <StyledTableCell align="right">Price</StyledTableCell>
+                      <StyledTableCell align="right">Quantity</StyledTableCell>
+                      <StyledTableCell align="right">UOM</StyledTableCell>
+                      <StyledTableCell align="right">SubTotal</StyledTableCell>
+                      <StyledTableCell align="right">Actions</StyledTableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>

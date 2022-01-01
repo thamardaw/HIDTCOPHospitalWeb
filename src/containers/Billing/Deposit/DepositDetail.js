@@ -4,15 +4,16 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
 import { useEffect, useState } from "react";
+import { generateID } from "../../../utils/generateID";
 
-const SalesServiceItemDetail = () => {
+const CategoryDetail = () => {
   const history = useHistory();
   const { id } = useParams();
   const api = useAxios();
   const [details, setDetails] = useState({});
 
   const getData = async () => {
-    const res = await api.get(`/api/salesServiceItem/${parseInt(id)}`);
+    const res = await api.get(`/api/deposit/${parseInt(id)}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
     }
@@ -65,11 +66,14 @@ const SalesServiceItemDetail = () => {
         >
           <Box sx={{ width: "30%" }}>
             <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              Name
+              Patient ID
             </Typography>
           </Box>
 
-          <Typography variant="body2">{details?.name}</Typography>
+          <Typography variant="body2">
+            {details?.patient_id &&
+              generateID(details?.patient_id, details.created_time)}
+          </Typography>
         </Box>
         <Divider />
         <Box
@@ -82,47 +86,11 @@ const SalesServiceItemDetail = () => {
         >
           <Box sx={{ width: "30%" }}>
             <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              Price
+              Amount
             </Typography>
           </Box>
           <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">{details?.price}</Typography>
-          </Box>
-        </Box>
-        <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            margin: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              UOM
-            </Typography>
-          </Box>
-          <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">{details?.uom?.name}</Typography>
-          </Box>
-        </Box>
-        <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            margin: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              Category
-            </Typography>
-          </Box>
-          <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">{details?.category?.name}</Typography>
+            <Typography variant="body2">{details?.amount}</Typography>
           </Box>
         </Box>
       </Box>
@@ -140,4 +108,4 @@ const SalesServiceItemDetail = () => {
   );
 };
 
-export default SalesServiceItemDetail;
+export default CategoryDetail;

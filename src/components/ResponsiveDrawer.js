@@ -13,9 +13,10 @@ import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import CategoryIcon from "@mui/icons-material/Category";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
 import ReceiptIcon from "@mui/icons-material/Receipt";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import React from "react";
+import React, { useState } from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
@@ -30,7 +31,7 @@ const ResponsiveDrawer = ({
   const location = useLocation();
   const history = useHistory();
   const { url } = useRouteMatch();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
 
   const handleClick = () => {
     setOpen(!open);
@@ -68,7 +69,8 @@ const ResponsiveDrawer = ({
               location.pathname.includes("/uom") ||
               location.pathname.includes("/category") ||
               location.pathname.includes("/bills") ||
-              location.pathname.includes("/payment")
+              location.pathname.includes("/payment") ||
+              location.pathname.includes("/deposit")
                 ? "contained"
                 : "text"
             }
@@ -84,7 +86,45 @@ const ResponsiveDrawer = ({
           </Button>
         </ListItem>
         <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
+          <List component="div" disablePadding sx={{ paddingLeft: "8px" }}>
+            <ListItem>
+              <Button
+                size="small"
+                variant={
+                  location.pathname.includes("/bills") ? "contained" : "text"
+                }
+                fullWidth
+                startIcon={<ReceiptIcon />}
+                onClick={() => history.push(`${url}/bills`)}
+                sx={{
+                  display: "flex",
+                  justifyContent: location.pathname.includes("/bills")
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              >
+                Bills
+              </Button>
+            </ListItem>
+            <ListItem>
+              <Button
+                size="small"
+                variant={
+                  location.pathname.includes("/deposit") ? "contained" : "text"
+                }
+                fullWidth
+                startIcon={<AccountBalanceIcon />}
+                onClick={() => history.push(`${url}/deposit`)}
+                sx={{
+                  display: "flex",
+                  justifyContent: location.pathname.includes("/deposit")
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              >
+                Deposit
+              </Button>
+            </ListItem>
             <ListItem>
               <Button
                 size="small"
@@ -146,46 +186,27 @@ const ResponsiveDrawer = ({
                 Sales & Service Item
               </Button>
             </ListItem>
-            <ListItem>
-              <Button
-                size="small"
-                variant={
-                  location.pathname.includes("/bills") ? "contained" : "text"
-                }
-                fullWidth
-                startIcon={<ReceiptIcon />}
-                onClick={() => history.push(`${url}/bills`)}
-                sx={{
-                  display: "flex",
-                  justifyContent: location.pathname.includes("/bills")
-                    ? "flex-end"
-                    : "flex-start",
-                }}
-              >
-                Bills
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
-                size="small"
-                variant={
-                  location.pathname.includes("/payment") ? "contained" : "text"
-                }
-                fullWidth
-                startIcon={<AttachMoneyIcon />}
-                onClick={() => history.push(`${url}/payment`)}
-                sx={{
-                  display: "flex",
-                  justifyContent: location.pathname.includes("/payment")
-                    ? "flex-end"
-                    : "flex-start",
-                }}
-              >
-                Payment
-              </Button>
-            </ListItem>
           </List>
         </Collapse>
+        <ListItem>
+          <Button
+            size="small"
+            variant={
+              location.pathname.includes("/dailyClosing") ? "contained" : "text"
+            }
+            fullWidth
+            startIcon={<AnalyticsIcon />}
+            onClick={() => history.push(`${url}/dailyClosing`)}
+            sx={{
+              display: "flex",
+              justifyContent: location.pathname.includes("/dailyClosing")
+                ? "flex-end"
+                : "flex-start",
+            }}
+          >
+            Daily Closing
+          </Button>
+        </ListItem>
       </List>
     </div>
   );

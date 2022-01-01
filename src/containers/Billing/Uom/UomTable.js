@@ -10,14 +10,13 @@ import { Box } from "@mui/system";
 import { useCallback, useEffect, useState } from "react";
 import { CustomTable } from "../../../components";
 import { useAxios } from "../../../hooks";
-import { generateID } from "../../../utils/generateID";
 
 const headCells = [
   {
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "UOM ID",
+    label: "ID",
   },
   {
     id: "name",
@@ -51,9 +50,8 @@ const UomTable = () => {
     const res = await api.get("/api/uom/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
-        const ID = generateID(row.id, row.created_time);
         return {
-          id: ID,
+          id: row.id,
           name: row.name,
           description: row.description,
         };
@@ -65,7 +63,7 @@ const UomTable = () => {
   }, []);
 
   const deleteItem = async () => {
-    await api.delete(`/api/uom/${parseInt(id.split("-")[1])}`);
+    await api.delete(`/api/uom/${parseInt(id)}`);
     handleClose();
     getData();
   };

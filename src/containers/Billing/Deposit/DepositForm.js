@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Button,
   Divider,
   IconButton,
@@ -8,30 +9,46 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { useHistory, useParams } from "react-router";
+import { useHistory } from "react-router";
 import { useAxios } from "../../../hooks";
 import React, { useEffect, useState } from "react";
+import { useCallback } from "react";
+import { generateID } from "../../../utils/generateID";
 
-const UomForm = () => {
+const DepositForm = () => {
   const history = useHistory();
-  const { id } = useParams();
   const api = useAxios();
   const [details, setDetails] = useState({
-    name: "",
-    description: "",
+    patient_id: null,
+    patient: null,
+    amount: "",
   });
+  const [patient, setPatient] = useState([]);
 
-  const getData = async () => {
-    const res = await api.get(`/api/uom/${parseInt(id)}`);
+  const getPatient = useCallback(async () => {
+    const res = await api.get("/api/patients/");
     if (res.status === 200) {
-      setDetails({ ...res.data });
-    } else {
-      history.goBack();
+      const data = res.data.map((row) => {
+        const ID = generateID(row.id, row.created_time);
+        return {
+          id: ID,
+          name: row.name,
+          age: row.age.toString(),
+          contactDetails: row.contact_details,
+          gender: row.gender,
+          dataOfBirth: row.date_of_birth,
+          address: row.address,
+        };
+      });
+      setPatient(data);
     }
-  };
+    return;
+    // eslint-disable-next-line
+  }, []);
 
   const createNew = async () => {
-    const res = await api.post(`/api/uom/`, {
+    console.log(details);
+    const res = await api.post(`/api/deposit/`, {
       ...details,
     });
     if (res.status === 200) {
@@ -39,22 +56,10 @@ const UomForm = () => {
     }
   };
 
-  const update = async () => {
-    const res = await api.put(`/api/uom/${parseInt(id)}`, {
-      name: details.name,
-      description: details.description,
-    });
-    if (res.status === 200) {
-      history.goBack();
-    }
-  };
-
   useEffect(() => {
-    if (id) {
-      getData();
-    }
+    getPatient();
     // eslint-disable-next-line
-  }, [id]);
+  }, []);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Toolbar
@@ -80,7 +85,7 @@ const UomForm = () => {
         >
           <ArrowBackIosNewIcon size="small" />
         </IconButton>
-        <Typography variant="h5">{id ? "Edit" : "New"}</Typography>
+        <Typography variant="h5">New</Typography>
       </Toolbar>
       <Divider />
       <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
@@ -92,14 +97,47 @@ const UomForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Name</Typography>
+            <Typography variant="p">Patient ID</Typography>
           </Box>
-          <TextField
+          {/* <TextField
+            select
+            fullWidth
+            label="Patient"
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.name || ""}
-            onChange={(e) => setDetails({ ...details, name: e.target.value })}
+            value={details?.patient_id || ""}
+            onChange={(e) =>
+              setDetails({ ...details, patient_id: e.target.value })
+            }
+          >
+            {patient.map((p) => (
+              <MenuItem key={p.id} value={p.id}>
+                {p.id}
+              </MenuItem>
+            ))}
+          </TextField> */}
+          <Autocomplete
+            value={details?.patient}
+            options={patient}
+            getOptionLabel={(option) => option.id}
+            style={{ width: "70%" }}
+            onChange={(event, newValue) => {
+              setDetails({
+                ...details,
+                patient: newValue,
+                patient_id: parseInt(newValue.id.split("-")[1]),
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                fullWidth
+                size="small"
+                margin="normal"
+              />
+            )}
           />
         </Box>
         <Box
@@ -110,16 +148,14 @@ const UomForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Description</Typography>
+            <Typography variant="p">Amount</Typography>
           </Box>
           <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.description || ""}
-            onChange={(e) =>
-              setDetails({ ...details, description: e.target.value })
-            }
+            value={details?.amount || ""}
+            onChange={(e) => setDetails({ ...details, amount: e.target.value })}
           />
         </Box>
       </Box>
@@ -137,7 +173,7 @@ const UomForm = () => {
           variant="contained"
           size="small"
           sx={{ marginRight: "5px" }}
-          onClick={id ? update : createNew}
+          onClick={createNew}
         >
           Save
         </Button>
@@ -146,4 +182,4 @@ const UomForm = () => {
   );
 };
 
-export default UomForm;
+export default DepositForm;

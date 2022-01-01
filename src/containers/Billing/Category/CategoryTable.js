@@ -10,14 +10,13 @@ import { Box } from "@mui/system";
 import { useCallback, useEffect, useState } from "react";
 import { CustomTable } from "../../../components";
 import { useAxios } from "../../../hooks";
-import { generateID } from "../../../utils/generateID";
 
 const headCells = [
   {
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Category ID",
+    label: "ID",
   },
   {
     id: "name",
@@ -51,9 +50,8 @@ const CategoryTable = () => {
     const res = await api.get("/api/category/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
-        const ID = generateID(row.id, row.created_time);
         return {
-          id: ID,
+          id: row.id,
           name: row.name,
           description: row.description,
         };
@@ -65,7 +63,7 @@ const CategoryTable = () => {
   }, []);
 
   const deleteItem = async () => {
-    await api.delete(`/api/category/${parseInt(id.split("-")[1])}`);
+    await api.delete(`/api/category/${parseInt(id)}`);
     handleClose();
     getData();
   };

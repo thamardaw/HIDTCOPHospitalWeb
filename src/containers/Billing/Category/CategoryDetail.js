@@ -12,7 +12,7 @@ const CategoryDetail = () => {
   const [details, setDetails] = useState({});
 
   const getData = async () => {
-    const res = await api.get(`/api/category/${parseInt(id.split("-")[1])}`);
+    const res = await api.get(`/api/category/${parseInt(id)}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
     }
