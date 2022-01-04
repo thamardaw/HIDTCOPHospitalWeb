@@ -8,7 +8,6 @@ import { Uom } from "./Billing/Uom";
 import { Category } from "./Billing/Category";
 import { SalesServiceItem } from "./Billing/SalesServiceItem";
 import { Bills } from "./Billing/Bills";
-import { Payment } from "./Billing/Payment";
 import { Deposit } from "./Billing/Deposit";
 import { DailyClosing } from "./DailyClosing";
 
@@ -52,7 +51,7 @@ function Dashboard(props) {
             component={SalesServiceItem}
           />
           <Route path={`${path}/bills`} component={Bills} />
-          <Route path={`${path}/payment`} component={Payment} />
+          {/* <Route path={`${path}/payment`} component={Payment} /> */}
           <Route path={`${path}/deposit`} component={Deposit} />
           <Route path={`${path}/dailyClosing`} component={DailyClosing} />
           <Redirect to={`${path}/patient`} />
