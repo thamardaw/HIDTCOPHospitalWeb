@@ -65,7 +65,7 @@ const BillsForm = () => {
           sales_service_item_id: row.id,
           name: row.name,
           price: row.price,
-          uom: row.uom.name,
+          uom: row.uom?.name,
         };
       });
       setSalesServiceItem(s);
