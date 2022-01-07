@@ -76,7 +76,7 @@ const DepositTable = () => {
     if (res.status === 200) {
       const data = res.data.map((row) => {
         return {
-          id: row.id,
+          id: row.id.toString(),
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount.toString(),
         };
