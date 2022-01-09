@@ -66,8 +66,8 @@ const SalesServiceItemTable = () => {
           id: row.id.toString(),
           name: row.name,
           price: row.price.toString(),
-          uom: row.uom.name,
-          category: row.category.name,
+          uom: row.uom?.name,
+          category: row.category?.name,
         };
       });
       setRows(data);
