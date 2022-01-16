@@ -22,7 +22,7 @@ import { useAxios } from "../../../hooks";
 import { useState } from "react";
 import { generateID } from "../../../utils/generateID";
 
-const PaymentDetail = () => {
+const BillsDetail = () => {
   const api = useAxios();
   const history = useHistory();
   const receiptRef = useRef();
@@ -40,34 +40,14 @@ const PaymentDetail = () => {
     },
   });
 
-  const getBillAndPayment = async () => {
-    // const [bill, payment] = await Promise.all([
-    //   api.get(`/api/bill/${parseInt(id)}`),
-    //   api.get(`/api/payment/${parseInt(id)}`),
-    // ]);
-    // if (bill.status === 200 && payment.status === 200) {
-    //   setBill(bill.data);
-    //   setPayment(payment.data);
-    //   setShowPay(payment.data.is_outstanding);
-    // } else {
-    //   history.goBack();
-    // }
-    // return;
-    const [bill] = await Promise.all([api.get(`/api/bill/${parseInt(id)}`)]);
-    if (bill.status === 200) {
-      setBill(bill.data);
-      setPayment(bill.data.payment[0]);
-      setShowPay(bill.data.payment[0].is_outstanding);
-    } else {
-      history.goBack();
-    }
-    return;
-  };
-
   const getBill = async () => {
     const res = await api.get(`/api/bill/${parseInt(id)}`);
     if (res.status === 200) {
       setBill({ ...res.data });
+      if (res.data.payment.length !== 0) {
+        setPayment({ ...res.data.payment[0] });
+        setShowPay(res.data.payment[0].is_outstanding);
+      }
     } else {
       history.goBack();
     }
@@ -91,12 +71,7 @@ const PaymentDetail = () => {
   };
 
   useEffect(() => {
-    if (stage === "drafted") {
-      getBill();
-      setShowPay(false);
-    } else {
-      getBillAndPayment();
-    }
+    getBill();
     // eslint-disable-next-line
   }, []);
 
@@ -226,4 +201,4 @@ const PaymentDetail = () => {
   );
 };
 
-export default PaymentDetail;
+export default BillsDetail;

@@ -22,6 +22,7 @@ const DepositForm = () => {
     patient_id: null,
     patient: null,
     amount: "",
+    remark: "",
   });
   const [patient, setPatient] = useState([]);
 

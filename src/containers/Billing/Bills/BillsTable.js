@@ -53,15 +53,15 @@ const BillsTable = () => {
   const handleClickOpen = (id) => {};
 
   const toDetailFromOutstanding = (id) => {
-    history.push(`/dashboard/payment/details/${id}/outstanding`);
+    history.push(`/dashboard/bills/details/${id}/outstanding`);
   };
 
   const toDetailFromDrafted = (id) => {
-    history.push(`/dashboard/payment/details/${id}/drafted`);
+    history.push(`/dashboard/bills/details/${id}/drafted`);
   };
 
   const toDetailFromCompleted = (id) => {
-    history.push(`/dashboard/payment/details/${id}/completed`);
+    history.push(`/dashboard/bills/details/${id}/completed`);
   };
 
   const getDraftedData = useCallback(async () => {
@@ -83,7 +83,7 @@ const BillsTable = () => {
   }, []);
 
   const getOutstandingData = useCallback(async () => {
-    const res = await api.get("/api/payment/outstanding");
+    const res = await api.get("/api/bill/outstanding");
     if (res.status === 200) {
       const data = res.data.map((row) => {
         return {
@@ -101,7 +101,7 @@ const BillsTable = () => {
   }, []);
 
   const getCompletedData = useCallback(async () => {
-    const res = await api.get("/api/payment/completed");
+    const res = await api.get("/api/bill/completed");
     if (res.status === 200) {
       const data = res.data.map((row) => {
         return {

@@ -9,6 +9,7 @@ import { Category } from "./Billing/Category";
 import { SalesServiceItem } from "./Billing/SalesServiceItem";
 import { Bills } from "./Billing/Bills";
 import { Deposit } from "./Billing/Deposit";
+// import { Payment } from "./Billing/Payment";
 import { DailyClosing } from "./DailyClosing";
 
 const drawerWidth = 240;
