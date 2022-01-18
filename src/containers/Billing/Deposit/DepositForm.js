@@ -48,7 +48,6 @@ const DepositForm = () => {
   }, []);
 
   const createNew = async () => {
-    console.log(details);
     const res = await api.post(`/api/deposit/`, {
       ...details,
     });
@@ -124,11 +123,60 @@ const DepositForm = () => {
             getOptionLabel={(option) => option.id}
             style={{ width: "70%" }}
             onChange={(event, newValue) => {
-              setDetails({
-                ...details,
-                patient: newValue,
-                patient_id: parseInt(newValue.id.split("-")[1]),
-              });
+              if (newValue) {
+                setDetails({
+                  ...details,
+                  patient: newValue,
+                  patient_id: parseInt(newValue.id.split("-")[1]),
+                });
+              } else {
+                setDetails({
+                  ...details,
+                  patient: newValue,
+                  patient_id: null,
+                });
+              }
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                fullWidth
+                size="small"
+                margin="normal"
+              />
+            )}
+          />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Box sx={{ width: "30%" }}>
+            <Typography variant="p">Patient Name</Typography>
+          </Box>
+          <Autocomplete
+            value={details?.patient}
+            options={patient}
+            getOptionLabel={(option) => option.name}
+            style={{ width: "70%" }}
+            onChange={(event, newValue) => {
+              if (newValue) {
+                setDetails({
+                  ...details,
+                  patient: newValue,
+                  patient_id: parseInt(newValue.id.split("-")[1]),
+                });
+              } else {
+                setDetails({
+                  ...details,
+                  patient: newValue,
+                  patient_id: null,
+                });
+              }
             }}
             renderInput={(params) => (
               <TextField

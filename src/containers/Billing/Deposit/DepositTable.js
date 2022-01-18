@@ -28,6 +28,12 @@ const headCells = [
     label: "Patient ID",
   },
   {
+    id: "patient_name",
+    numeric: false,
+    disablePadding: false,
+    label: "Patient Name",
+  },
+  {
     id: "amount",
     numeric: false,
     disablePadding: false,
@@ -61,6 +67,7 @@ const DepositTable = () => {
       const data = res.data.map((row) => {
         return {
           id: row.id,
+          patient_name: row.patient.name,
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount.toString(),
         };
@@ -77,6 +84,7 @@ const DepositTable = () => {
       const data = res.data.map((row) => {
         return {
           id: row.id.toString(),
+          patient_name: row.patient.name,
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount.toString(),
         };

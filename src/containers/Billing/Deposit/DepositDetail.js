@@ -69,10 +69,27 @@ const CategoryDetail = () => {
               Patient ID
             </Typography>
           </Box>
-
           <Typography variant="body2">
             {details?.patient_id &&
-              generateID(details?.patient_id, details.created_time)}
+              generateID(details?.patient_id, details.patient.created_time)}
+          </Typography>
+        </Box>
+        <Divider />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            margin: "10px 0px",
+          }}
+        >
+          <Box sx={{ width: "30%" }}>
+            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+              Patient Name
+            </Typography>
+          </Box>
+          <Typography variant="body2">
+            {details?.patient && details.patient.name}
           </Typography>
         </Box>
         <Divider />
