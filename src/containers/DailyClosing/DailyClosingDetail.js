@@ -33,44 +33,30 @@ const DailyClosingDetail = () => {
   });
 
   const getData = async () => {
-    const [detail, bill, deposit] = await Promise.all([
-      api.get(`/api/dailyClosing/${id}`),
-      api.get(`/api/dailyClosing/${id}/bills`),
-      api.get(`/api/dailyClosing/${id}/deposits`),
-    ]);
-    if (
-      detail.status === 200 &&
-      bill.status === 200 &&
-      deposit.status === 200
-    ) {
-      setDetails(detail.data);
-      const b = bill.data.map((row) => {
-        const ID = generateID(
-          row.bill.patient.id,
-          row.bill.patient.created_time
-        );
+    const res = await api.get(`/api/dailyClosing/${id}`);
+    if (res.status === 200) {
+      setDetails(res.data);
+      const b = res.data.bills.map((row) => {
+        const ID = generateID(row.patient.id, row.patient.created_time);
         return {
           id: row.id,
-          bill_id: row.bill_id,
+          bill_id: row.id,
           patient_id: ID,
-          patient_name: row.bill.patient.name,
-          total_amount: row.bill.payment[0].total_amount,
-          deposit_amount: row.bill.payment[0].total_deposit_amount,
-          collected_amount: row.bill.payment[0].collected_amount,
+          patient_name: row.patient.name,
+          total_amount: row.payment[0].total_amount,
+          deposit_amount: row.payment[0].total_deposit_amount,
+          collected_amount: row.payment[0].collected_amount,
         };
       });
       setBills(b);
-      const d = deposit.data.map((row) => {
-        const ID = generateID(
-          row.deposit.patient.id,
-          row.deposit.patient.created_time
-        );
+      const d = res.data.deposits.map((row) => {
+        const ID = generateID(row.patient.id, row.patient.created_time);
         return {
           id: row.id,
-          deposit_id: row.deposit.id,
+          deposit_id: row.id,
           patient_id: ID,
-          patient_name: row.deposit.patient.name,
-          deposit_amount: row.deposit.amount,
+          patient_name: row.patient.name,
+          deposit_amount: row.amount,
         };
       });
       setDeposits(d);
