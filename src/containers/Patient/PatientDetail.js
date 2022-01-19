@@ -78,7 +78,7 @@ const PatientDetail = () => {
           /> */}
           <Box sx={{ width: "70%" }}>
             <Typography variant="body2">
-              {generateID(details.id, details.created_time)}
+              {details?.id && generateID(details.id, details.created_time)}
             </Typography>
           </Box>
         </Box>
