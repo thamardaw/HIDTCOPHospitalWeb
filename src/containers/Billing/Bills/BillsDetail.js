@@ -31,6 +31,8 @@ const BillsDetail = () => {
   const [payment, setPayment] = useState({});
 
   const handlePrint = useReactToPrint({
+    pageStyle:
+      "@media print { body { -webkit-print-color-adjust: exact; } @page { size: A4; margin: 200mm !important }}",
     content: () => receiptRef.current,
     onAfterPrint: () => {
       if (stage === "drafted") {

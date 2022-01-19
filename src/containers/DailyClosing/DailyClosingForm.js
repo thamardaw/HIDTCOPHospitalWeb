@@ -21,6 +21,7 @@ import { AuthContext } from "../../contexts";
 import { useAxios } from "../../hooks";
 import { generateID } from "../../utils/generateID";
 import { styled } from "@mui/material/styles";
+import { useEffect } from "react";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -43,19 +44,31 @@ const DailyClosingForm = () => {
     to: 0,
   });
   const [details, setDetails] = useState({
-    opening_balance: "",
-    grand_total: "",
     actual_amount: "",
     adjusted_amount: "",
     adjusted_reason: "",
   });
+  const [billTotal, setBillTotal] = useState(0);
+  const [depositTotal, setDepositTotal] = useState(0);
+  const [grandTotal, setGrandTotal] = useState(0);
+  const [openingBalance, setOpeningBalance] = useState(0);
+
+  useEffect(() => {
+    setGrandTotal(
+      parseInt(billTotal) +
+        parseInt(depositTotal) +
+        parseInt(openingBalance === "" ? 0 : openingBalance)
+    );
+  }, [billTotal, depositTotal, openingBalance]);
 
   const getBills = async () => {
     const res = await api.get(
       `/api/bill/?f=${billLimit.from}&t=${billLimit.to}`
     );
     if (res.status === 200) {
+      let total = 0;
       const data = res.data.map((row) => {
+        total += row.total_amount;
         const ID = generateID(row.patient.id, row.patient.created_time);
         return {
           bill_id: row.id,
@@ -66,8 +79,10 @@ const DailyClosingForm = () => {
           collected_amount: row.payment[0].collected_amount,
         };
       });
+      setBillTotal(total);
       setBills(data);
     } else {
+      setBillTotal(0);
       setBills([]);
     }
   };
@@ -77,7 +92,9 @@ const DailyClosingForm = () => {
       `/api/deposit/?f=${depositLimit.from}&t=${depositLimit.to}`
     );
     if (res.status === 200) {
+      let total = 0;
       const data = res.data.map((row) => {
+        total += row.amount;
         const ID = generateID(row.patient.id, row.patient.created_time);
         return {
           deposit_id: row.id,
@@ -86,8 +103,10 @@ const DailyClosingForm = () => {
           patient_name: row.patient.name,
         };
       });
+      setDepositTotal(total);
       setDeposits(data);
     } else {
+      setDepositTotal(0);
       setDeposits([]);
     }
   };
@@ -95,8 +114,8 @@ const DailyClosingForm = () => {
   const createNew = async () => {
     if (bills.length !== 0 || deposits.length !== 0) {
       const res = await api.post(`/api/dailyClosing/`, {
-        opening_balance: details.opening_balance,
-        grand_total: details.grand_total,
+        opening_balance: openingBalance,
+        grand_total: grandTotal,
         actual_amount: details.actual_amount,
         adjusted_amount: details.adjusted_amount,
         adjusted_reason: details.adjusted_reason,
@@ -165,10 +184,18 @@ const DailyClosingForm = () => {
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details.opening_balance}
-            onChange={(e) =>
-              setDetails({ ...details, opening_balance: e.target.value })
-            }
+            value={openingBalance}
+            type="number"
+            InputProps={{
+              inputProps: { min: "0", step: "1" },
+            }}
+            onChange={(e) => {
+              // setDetails({
+              //   ...details,
+              //   opening_balance: e.target.value,
+              // });
+              setOpeningBalance(e.target.value);
+            }}
           />
         </Box>
         <Box
@@ -228,7 +255,7 @@ const DailyClosingForm = () => {
             sx={{ width: { xs: "100%", sm: "0" }, marginTop: "20px" }}
             onClick={getBills}
           >
-            Add
+            Confirm
           </Button>
         </Box>
         <TableContainer sx={{ maxHeight: 300, marginTop: "15px" }}>
@@ -321,7 +348,7 @@ const DailyClosingForm = () => {
             sx={{ width: { xs: "100%", sm: "0" }, marginTop: "20px" }}
             onClick={getDeposits}
           >
-            Add
+            Confirm
           </Button>
         </Box>
         <TableContainer sx={{ maxHeight: 300, marginTop: "15px" }}>
@@ -368,10 +395,8 @@ const DailyClosingForm = () => {
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details.grand_total}
-            onChange={(e) =>
-              setDetails({ ...details, grand_total: e.target.value })
-            }
+            value={grandTotal}
+            disabled
           />
         </Box>
         <Box
@@ -409,6 +434,10 @@ const DailyClosingForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details.adjusted_amount}
+            type="number"
+            InputProps={{
+              inputProps: { min: "0", step: "1" },
+            }}
             onChange={(e) =>
               setDetails({ ...details, adjusted_amount: e.target.value })
             }
@@ -429,6 +458,7 @@ const DailyClosingForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             multiline
+            rows={3}
             value={details.adjusted_reason}
             onChange={(e) =>
               setDetails({ ...details, adjusted_reason: e.target.value })

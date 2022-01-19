@@ -21,6 +21,8 @@ const CategoryDetail = () => {
   const depositRef = useRef();
 
   const handlePrint = useReactToPrint({
+    pageStyle:
+      "@media print { body { -webkit-print-color-adjust: exact; } @page { size: A4; margin: 200mm !important }}",
     content: () => depositRef.current,
   });
 
