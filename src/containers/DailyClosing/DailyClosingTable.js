@@ -1,6 +1,7 @@
 import { Box } from "@mui/system";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { CustomTable } from "../../components";
+import LoadingContext from "../../contexts/LoadingContext";
 import { useAxios } from "../../hooks";
 
 const headCells = [
@@ -62,10 +63,12 @@ const headCells = [
 const DailyClosingTable = () => {
   const api = useAxios();
   const [rows, setRows] = useState([]);
+  const { setLoading } = useContext(LoadingContext);
 
   const handleClickOpen = (id) => {};
 
   const getData = useCallback(async () => {
+    setLoading(true);
     const res = await api.get("/api/dailyClosing/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -82,6 +85,7 @@ const DailyClosingTable = () => {
         };
       });
       setRows(data);
+      setLoading(false);
     }
     return;
     // eslint-disable-next-line

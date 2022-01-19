@@ -1,8 +1,9 @@
 import { Tab, Tabs } from "@mui/material";
 import { Box } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { CustomTable, TabPanel } from "../../../components";
+import LoadingContext from "../../../contexts/LoadingContext";
 import { useAxios } from "../../../hooks";
 
 const headCells = [
@@ -45,6 +46,7 @@ const BillsTable = () => {
   const [outstandingRows, setOutstandingRows] = useState([]);
   const [completedRows, setCompletedRows] = useState([]);
   const [tab, setTab] = useState(0);
+  const { setLoading } = useContext(LoadingContext);
 
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
@@ -65,6 +67,7 @@ const BillsTable = () => {
   };
 
   const getDraftedData = useCallback(async () => {
+    setLoading(true);
     const res = await api.get("/api/bill/drafted");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -77,6 +80,7 @@ const BillsTable = () => {
         };
       });
       setDraftedRows(data);
+      setLoading(false);
     }
     return;
     // eslint-disable-next-line

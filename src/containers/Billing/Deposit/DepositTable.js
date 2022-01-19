@@ -9,8 +9,9 @@ import {
   Tabs,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { CustomTable, TabPanel } from "../../../components";
+import LoadingContext from "../../../contexts/LoadingContext";
 import { useAxios } from "../../../hooks";
 import { generateID } from "../../../utils/generateID";
 
@@ -47,6 +48,7 @@ const DepositTable = () => {
   const [open, setOpen] = useState(false);
   //   const [id, setId] = useState("");
   const [tab, setTab] = useState(0);
+  const { setLoading } = useContext(LoadingContext);
 
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
@@ -62,6 +64,7 @@ const DepositTable = () => {
   };
 
   const getActiveDeposit = useCallback(async () => {
+    setLoading(true);
     const res = await api.get("/api/deposit/active");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -73,6 +76,7 @@ const DepositTable = () => {
         };
       });
       setActiveRows(data);
+      setLoading(false);
     }
     return;
     // eslint-disable-next-line
