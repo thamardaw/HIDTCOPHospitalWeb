@@ -18,6 +18,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { SnackbarContext } from "../contexts";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 // const Container = styled("div")(({ theme }) => ({
 //   display: "flex",
@@ -98,8 +99,10 @@ const Signup = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const submitHandler = async (e) => {
+    setLoading(true);
     e.preventDefault();
     if (details.password !== details.confirmPassword) {
       message({ status: "error", detail: "Passwords do not match." });
@@ -127,6 +130,7 @@ const Signup = () => {
       message({ status: res.status, detail: res.data.detail });
       openAlert(true);
     }
+    setLoading(false);
   };
   return (
     <Container>
@@ -209,14 +213,15 @@ const Signup = () => {
               <MenuItem value="Admin">Admin</MenuItem>
               <MenuItem value="Receptionist">Receptionist</MenuItem>
             </TextField>
-            <Button
+            <LoadingButton
               fullWidth
+              loading={loading}
               variant="contained"
               style={{ marginTop: "20px" }}
               type="submit"
             >
               Sign up
-            </Button>
+            </LoadingButton>
           </form>
           <Button size="small" style={{ marginTop: "10px" }}>
             <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>

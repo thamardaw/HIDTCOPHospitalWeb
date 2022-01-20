@@ -23,6 +23,7 @@ import { useAxios } from "../../../hooks";
 import { useState, useEffect } from "react";
 import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -41,6 +42,7 @@ const BillsForm = () => {
   const [billItems, setBillItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalDeposit, setTotalDeposit] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const getPatientAndSalesServiceItem = async () => {
     const [patient, salesServiceItem] = await Promise.all([
@@ -117,6 +119,7 @@ const BillsForm = () => {
 
   const createBill = async () => {
     if (currentPatient) {
+      setLoading(true);
       const res = await api.post(`/api/bill/`, {
         patient_id: parseInt(currentPatient.id.split("-")[1]),
         patient_name: currentPatient.name,
@@ -127,6 +130,7 @@ const BillsForm = () => {
       if (res.status === 200) {
         history.goBack();
       }
+      setLoading(false);
     }
     return;
   };
@@ -396,9 +400,14 @@ const BillsForm = () => {
               </Box>
             </Box>
             <Box sx={{ paddingTop: "10px" }}>
-              <Button variant="contained" fullWidth onClick={createBill}>
+              <LoadingButton
+                loading={loading}
+                variant="contained"
+                fullWidth
+                onClick={createBill}
+              >
                 Create Bill
-              </Button>
+              </LoadingButton>
             </Box>
             <Box sx={{ paddingTop: "10px" }}>
               <Button

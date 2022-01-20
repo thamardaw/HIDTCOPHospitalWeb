@@ -1,5 +1,4 @@
 import {
-  Button,
   Divider,
   IconButton,
   TextField,
@@ -11,6 +10,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
 import React, { useEffect, useState } from "react";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const UomForm = () => {
   const history = useHistory();
@@ -20,6 +20,7 @@ const UomForm = () => {
     name: "",
     description: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const getData = async () => {
     const res = await api.get(`/api/uom/${parseInt(id)}`);
@@ -31,15 +32,18 @@ const UomForm = () => {
   };
 
   const createNew = async () => {
+    setLoading(true);
     const res = await api.post(`/api/uom/`, {
       ...details,
     });
     if (res.status === 200) {
       history.goBack();
     }
+    setLoading(false);
   };
 
   const update = async () => {
+    setLoading(true);
     const res = await api.put(`/api/uom/${parseInt(id)}`, {
       name: details.name,
       description: details.description,
@@ -47,6 +51,7 @@ const UomForm = () => {
     if (res.status === 200) {
       history.goBack();
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -133,14 +138,15 @@ const UomForm = () => {
           padding: "20px 10px",
         }}
       >
-        <Button
+        <LoadingButton
+          loading={loading}
           variant="contained"
           size="small"
           sx={{ marginRight: "5px" }}
           onClick={id ? update : createNew}
         >
           Save
-        </Button>
+        </LoadingButton>
       </Box>
     </Box>
   );

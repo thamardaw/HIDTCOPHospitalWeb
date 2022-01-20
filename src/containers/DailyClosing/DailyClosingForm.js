@@ -22,6 +22,7 @@ import { useAxios } from "../../hooks";
 import { generateID } from "../../utils/generateID";
 import { styled } from "@mui/material/styles";
 import { useEffect } from "react";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,6 +53,7 @@ const DailyClosingForm = () => {
   const [depositTotal, setDepositTotal] = useState(0);
   const [grandTotal, setGrandTotal] = useState(0);
   const [openingBalance, setOpeningBalance] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setGrandTotal(
@@ -113,6 +115,7 @@ const DailyClosingForm = () => {
 
   const createNew = async () => {
     if (bills.length !== 0 || deposits.length !== 0) {
+      setLoading(true);
       const res = await api.post(`/api/dailyClosing/`, {
         opening_balance: openingBalance,
         grand_total: grandTotal,
@@ -125,6 +128,7 @@ const DailyClosingForm = () => {
       if (res.status === 200) {
         history.goBack();
       }
+      setLoading(false);
     }
   };
 
@@ -474,14 +478,15 @@ const DailyClosingForm = () => {
           justifyContent: "flex-end",
         }}
       >
-        <Button
+        <LoadingButton
+          loading={loading}
           variant="contained"
           size="small"
           sx={{ marginRight: "5px" }}
           onClick={createNew}
         >
           Save
-        </Button>
+        </LoadingButton>
       </Box>
     </Box>
   );

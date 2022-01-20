@@ -48,7 +48,7 @@ const DepositTable = () => {
   const [open, setOpen] = useState(false);
   //   const [id, setId] = useState("");
   const [tab, setTab] = useState(0);
-  const { setLoading } = useContext(LoadingContext);
+  const { setScreenLoading } = useContext(LoadingContext);
 
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
@@ -64,7 +64,7 @@ const DepositTable = () => {
   };
 
   const getActiveDeposit = useCallback(async () => {
-    setLoading(true);
+    setScreenLoading(true);
     const res = await api.get("/api/deposit/active");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -76,7 +76,7 @@ const DepositTable = () => {
         };
       });
       setActiveRows(data);
-      setLoading(false);
+      setScreenLoading(false);
     }
     return;
     // eslint-disable-next-line

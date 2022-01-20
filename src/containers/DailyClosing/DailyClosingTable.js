@@ -63,12 +63,12 @@ const headCells = [
 const DailyClosingTable = () => {
   const api = useAxios();
   const [rows, setRows] = useState([]);
-  const { setLoading } = useContext(LoadingContext);
+  const { setScreenLoading } = useContext(LoadingContext);
 
   const handleClickOpen = (id) => {};
 
   const getData = useCallback(async () => {
-    setLoading(true);
+    setScreenLoading(true);
     const res = await api.get("/api/dailyClosing/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -85,7 +85,7 @@ const DailyClosingTable = () => {
         };
       });
       setRows(data);
-      setLoading(false);
+      setScreenLoading(false);
     }
     return;
     // eslint-disable-next-line

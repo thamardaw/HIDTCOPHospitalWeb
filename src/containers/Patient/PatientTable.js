@@ -164,7 +164,7 @@ const PatientTable = () => {
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
-  const { setLoading } = useContext(LoadingContext);
+  const { setScreenLoading } = useContext(LoadingContext);
 
   const handleClickOpen = (id) => {
     setId(id);
@@ -176,7 +176,7 @@ const PatientTable = () => {
   };
 
   const getData = useCallback(async () => {
-    setLoading(true);
+    setScreenLoading(true);
     const res = await api.get("/api/patients/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -192,7 +192,7 @@ const PatientTable = () => {
         };
       });
       setRows(data);
-      setLoading(false);
+      setScreenLoading(false);
     }
     return;
     // eslint-disable-next-line

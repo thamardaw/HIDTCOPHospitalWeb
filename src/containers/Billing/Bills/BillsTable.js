@@ -46,7 +46,7 @@ const BillsTable = () => {
   const [outstandingRows, setOutstandingRows] = useState([]);
   const [completedRows, setCompletedRows] = useState([]);
   const [tab, setTab] = useState(0);
-  const { setLoading } = useContext(LoadingContext);
+  const { setScreenLoading } = useContext(LoadingContext);
 
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
@@ -67,7 +67,7 @@ const BillsTable = () => {
   };
 
   const getDraftedData = useCallback(async () => {
-    setLoading(true);
+    setScreenLoading(true);
     const res = await api.get("/api/bill/drafted");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -80,7 +80,7 @@ const BillsTable = () => {
         };
       });
       setDraftedRows(data);
-      setLoading(false);
+      setScreenLoading(false);
     }
     return;
     // eslint-disable-next-line

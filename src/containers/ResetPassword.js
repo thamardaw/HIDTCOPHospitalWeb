@@ -16,6 +16,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { SnackbarContext } from "../contexts";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const Container = styled("div")(({ theme }) => ({
   width: "100vw",
@@ -69,8 +70,10 @@ const ResetPassword = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const submitHandler = async (e) => {
+    setLoading(true);
     e.preventDefault();
     console.log(details);
     if (details.newPassword !== details.confirmNewPassword) {
@@ -99,6 +102,7 @@ const ResetPassword = () => {
       message({ status: res.status, detail: res.data.detail });
       openAlert(true);
     }
+    setLoading(false);
   };
   return (
     <Container>
@@ -199,14 +203,15 @@ const ResetPassword = () => {
                 }
               />
             </FormControl>
-            <Button
+            <LoadingButton
               fullWidth
+              loading={loading}
               variant="contained"
               style={{ marginTop: "20px" }}
               type="submit"
             >
               Reset
-            </Button>
+            </LoadingButton>
           </form>
           <Button size="small" style={{ marginTop: "10px" }}>
             <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>

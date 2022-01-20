@@ -14,6 +14,7 @@ import { Box } from "@mui/system";
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../contexts";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const Container = styled("div")(({ theme }) => ({
   width: "100vw",
@@ -59,10 +60,13 @@ const Login = () => {
   let { loginUser } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [details, setDetails] = useState({ username: "", password: "" });
+  const [loading, setLoading] = useState(false);
 
   const submitHandler = async (e) => {
+    setLoading(true);
     e.preventDefault();
     await loginUser(details);
+    setLoading(false);
   };
 
   return (
@@ -107,14 +111,15 @@ const Login = () => {
                 }
               />
             </FormControl>
-            <Button
+            <LoadingButton
               fullWidth
+              loading={loading}
               variant="contained"
               style={{ marginTop: "20px" }}
               type="submit"
             >
               Log in
-            </Button>
+            </LoadingButton>
           </form>
           <Button size="small" style={{ marginTop: "10px" }}>
             <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>

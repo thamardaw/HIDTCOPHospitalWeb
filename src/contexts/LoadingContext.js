@@ -10,8 +10,8 @@ export const LoadingProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
 
   let contextData = {
-    isLoading: loading,
-    setLoading: setLoading,
+    isScreenLoading: loading,
+    setScreenLoading: setLoading,
   };
 
   return (
@@ -19,7 +19,7 @@ export const LoadingProvider = ({ children }) => {
       <Box
         sx={{
           width: "100%",
-          height: "100%",
+          height: "50vh",
           display: loading ? "flex" : "none",
           alignItems: "center",
           justifyContent: "center",

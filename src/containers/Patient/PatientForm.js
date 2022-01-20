@@ -1,5 +1,4 @@
 import {
-  Button,
   Divider,
   IconButton,
   MenuItem,
@@ -12,11 +11,13 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../hooks";
 import React, { useEffect, useState } from "react";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const PatientForm = () => {
   const history = useHistory();
   const { id } = useParams();
   const api = useAxios();
+  const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({
     name: "",
     age: "",
@@ -36,15 +37,18 @@ const PatientForm = () => {
   };
 
   const createNew = async () => {
+    setLoading(true);
     const res = await api.post(`/api/patients/`, {
       ...details,
     });
     if (res.status === 200) {
       history.goBack();
     }
+    setLoading(false);
   };
 
   const update = async () => {
+    setLoading(true);
     const res = await api.put(`/api/patients/${parseInt(id.split("-")[1])}`, {
       name: details.name,
       age: details.age,
@@ -56,6 +60,7 @@ const PatientForm = () => {
     if (res.status === 200) {
       history.goBack();
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -227,14 +232,15 @@ const PatientForm = () => {
           padding: "20px 10px",
         }}
       >
-        <Button
+        <LoadingButton
           variant="contained"
+          loading={loading}
           size="small"
           sx={{ marginRight: "5px" }}
           onClick={id ? update : createNew}
         >
           Save
-        </Button>
+        </LoadingButton>
         {/* <Button
           variant="contained"
           size="small"

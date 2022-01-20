@@ -1,6 +1,5 @@
 import {
   Autocomplete,
-  Button,
   Divider,
   IconButton,
   TextField,
@@ -14,6 +13,7 @@ import { useAxios } from "../../../hooks";
 import React, { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { generateID } from "../../../utils/generateID";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const DepositForm = () => {
   const history = useHistory();
@@ -25,6 +25,7 @@ const DepositForm = () => {
     remark: "",
   });
   const [patient, setPatient] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const getPatient = useCallback(async () => {
     const res = await api.get("/api/patients/");
@@ -48,12 +49,14 @@ const DepositForm = () => {
   }, []);
 
   const createNew = async () => {
+    setLoading(true);
     const res = await api.post(`/api/deposit/`, {
       ...details,
     });
     if (res.status === 200) {
       history.goBack();
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -218,14 +221,15 @@ const DepositForm = () => {
           padding: "20px 10px",
         }}
       >
-        <Button
+        <LoadingButton
+          loading={loading}
           variant="contained"
           size="small"
           sx={{ marginRight: "5px" }}
           onClick={createNew}
         >
           Save
-        </Button>
+        </LoadingButton>
       </Box>
     </Box>
   );
