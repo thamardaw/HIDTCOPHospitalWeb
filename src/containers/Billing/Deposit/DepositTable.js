@@ -9,8 +9,9 @@ import {
   Tabs,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { CustomTable, TabPanel } from "../../../components";
+import LoadingContext from "../../../contexts/LoadingContext";
 import { useAxios } from "../../../hooks";
 import { generateID } from "../../../utils/generateID";
 
@@ -28,6 +29,12 @@ const headCells = [
     label: "Patient ID",
   },
   {
+    id: "patient_name",
+    numeric: false,
+    disablePadding: false,
+    label: "Patient Name",
+  },
+  {
     id: "amount",
     numeric: false,
     disablePadding: false,
@@ -41,6 +48,7 @@ const DepositTable = () => {
   const [open, setOpen] = useState(false);
   //   const [id, setId] = useState("");
   const [tab, setTab] = useState(0);
+  const { setScreenLoading } = useContext(LoadingContext);
 
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
@@ -56,16 +64,19 @@ const DepositTable = () => {
   };
 
   const getActiveDeposit = useCallback(async () => {
+    setScreenLoading(true);
     const res = await api.get("/api/deposit/active");
     if (res.status === 200) {
       const data = res.data.map((row) => {
         return {
           id: row.id,
+          patient_name: row.patient.name,
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount.toString(),
         };
       });
       setActiveRows(data);
+      setScreenLoading(false);
     }
     return;
     // eslint-disable-next-line
@@ -77,6 +88,7 @@ const DepositTable = () => {
       const data = res.data.map((row) => {
         return {
           id: row.id.toString(),
+          patient_name: row.patient.name,
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount.toString(),
         };

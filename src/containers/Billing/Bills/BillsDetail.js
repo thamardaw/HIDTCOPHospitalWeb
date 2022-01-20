@@ -20,9 +20,8 @@ import { useEffect, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import { useAxios } from "../../../hooks";
 import { useState } from "react";
-import { generateID } from "../../../utils/generateID";
 
-const PaymentDetail = () => {
+const BillsDetail = () => {
   const api = useAxios();
   const history = useHistory();
   const receiptRef = useRef();
@@ -32,6 +31,8 @@ const PaymentDetail = () => {
   const [payment, setPayment] = useState({});
 
   const handlePrint = useReactToPrint({
+    pageStyle:
+      "@media print { body { -webkit-print-color-adjust: exact; } @page { size: A4; margin: 200mm !important }}",
     content: () => receiptRef.current,
     onAfterPrint: () => {
       if (stage === "drafted") {
@@ -40,34 +41,14 @@ const PaymentDetail = () => {
     },
   });
 
-  const getBillAndPayment = async () => {
-    // const [bill, payment] = await Promise.all([
-    //   api.get(`/api/bill/${parseInt(id)}`),
-    //   api.get(`/api/payment/${parseInt(id)}`),
-    // ]);
-    // if (bill.status === 200 && payment.status === 200) {
-    //   setBill(bill.data);
-    //   setPayment(payment.data);
-    //   setShowPay(payment.data.is_outstanding);
-    // } else {
-    //   history.goBack();
-    // }
-    // return;
-    const [bill] = await Promise.all([api.get(`/api/bill/${parseInt(id)}`)]);
-    if (bill.status === 200) {
-      setBill(bill.data);
-      setPayment(bill.data.payment[0]);
-      setShowPay(bill.data.payment[0].is_outstanding);
-    } else {
-      history.goBack();
-    }
-    return;
-  };
-
   const getBill = async () => {
     const res = await api.get(`/api/bill/${parseInt(id)}`);
     if (res.status === 200) {
       setBill({ ...res.data });
+      if (res.data.payment.length !== 0) {
+        setPayment({ ...res.data.payment[0] });
+        setShowPay(res.data.payment[0].is_outstanding);
+      }
     } else {
       history.goBack();
     }
@@ -91,12 +72,7 @@ const PaymentDetail = () => {
   };
 
   useEffect(() => {
-    if (stage === "drafted") {
-      getBill();
-      setShowPay(false);
-    } else {
-      getBillAndPayment();
-    }
+    getBill();
     // eslint-disable-next-line
   }, []);
 
@@ -140,8 +116,8 @@ const PaymentDetail = () => {
           <Typography variant="h6" textAlign="center">
             Dagon Lin Hospital
           </Typography>
-          <Box sx={{ height: "15px" }} />
-          <Typography variant="body" component="div">
+          {/* <Box sx={{ height: "15px" }} /> */}
+          {/* <Typography variant="body" component="div">
             ID : {bill?.id && generateID(bill?.id, bill?.created_time)}
           </Typography>
           <Typography variant="body" component="div">
@@ -155,7 +131,78 @@ const PaymentDetail = () => {
           </Typography>
           <Typography variant="body" component="div">
             Address : {bill?.patient_address}
-          </Typography>
+          </Typography> */}
+          <Box sx={{ flexDirection: "column", paddingTop: "15px" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "10px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="body">ID</Typography>
+              </Box>
+              <Typography variant="body">{bill?.id && bill?.id}</Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "10px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="body">Date</Typography>
+              </Box>
+              <Typography variant="body">
+                {bill?.created_time && bill?.created_time.split("T")[0]}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "10px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="body">Name</Typography>
+              </Box>
+              <Typography variant="body">{bill?.patient_name}</Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "10px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="body">Phone</Typography>
+              </Box>
+              <Typography variant="body">{bill?.patient_phone}</Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "10px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="body">Address</Typography>
+              </Box>
+              <Box sx={{ width: "70%" }}>
+                <Typography variant="body">{bill?.patient_address}</Typography>
+              </Box>
+            </Box>
+          </Box>
         </Box>
         <Box sx={{ my: "15px" }}>
           <TableContainer>
@@ -226,4 +273,4 @@ const PaymentDetail = () => {
   );
 };
 
-export default PaymentDetail;
+export default BillsDetail;

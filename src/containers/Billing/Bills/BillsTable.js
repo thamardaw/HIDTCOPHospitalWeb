@@ -1,8 +1,9 @@
 import { Tab, Tabs } from "@mui/material";
 import { Box } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { CustomTable, TabPanel } from "../../../components";
+import LoadingContext from "../../../contexts/LoadingContext";
 import { useAxios } from "../../../hooks";
 
 const headCells = [
@@ -45,6 +46,7 @@ const BillsTable = () => {
   const [outstandingRows, setOutstandingRows] = useState([]);
   const [completedRows, setCompletedRows] = useState([]);
   const [tab, setTab] = useState(0);
+  const { setScreenLoading } = useContext(LoadingContext);
 
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
@@ -53,18 +55,19 @@ const BillsTable = () => {
   const handleClickOpen = (id) => {};
 
   const toDetailFromOutstanding = (id) => {
-    history.push(`/dashboard/payment/details/${id}/outstanding`);
+    history.push(`/dashboard/bills/details/${id}/outstanding`);
   };
 
   const toDetailFromDrafted = (id) => {
-    history.push(`/dashboard/payment/details/${id}/drafted`);
+    history.push(`/dashboard/bills/details/${id}/drafted`);
   };
 
   const toDetailFromCompleted = (id) => {
-    history.push(`/dashboard/payment/details/${id}/completed`);
+    history.push(`/dashboard/bills/details/${id}/completed`);
   };
 
   const getDraftedData = useCallback(async () => {
+    setScreenLoading(true);
     const res = await api.get("/api/bill/drafted");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -77,13 +80,14 @@ const BillsTable = () => {
         };
       });
       setDraftedRows(data);
+      setScreenLoading(false);
     }
     return;
     // eslint-disable-next-line
   }, []);
 
   const getOutstandingData = useCallback(async () => {
-    const res = await api.get("/api/payment/outstanding");
+    const res = await api.get("/api/bill/outstanding");
     if (res.status === 200) {
       const data = res.data.map((row) => {
         return {
@@ -101,7 +105,7 @@ const BillsTable = () => {
   }, []);
 
   const getCompletedData = useCallback(async () => {
-    const res = await api.get("/api/payment/completed");
+    const res = await api.get("/api/bill/completed");
     if (res.status === 200) {
       const data = res.data.map((row) => {
         return {

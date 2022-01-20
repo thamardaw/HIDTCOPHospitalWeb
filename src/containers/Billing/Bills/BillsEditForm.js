@@ -23,6 +23,7 @@ import { useAxios } from "../../../hooks";
 import { useState, useEffect } from "react";
 import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -38,6 +39,8 @@ const BillsEditForm = () => {
   const [salesServiceItem, setSalesServiceItem] = useState([]);
   const [currentSSI, setCurrentSSI] = useState(null);
   const [currentQuantity, setCurrentQuantity] = useState(0);
+  const [totalDeposit, setTotalDeposit] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const getSalesServiceItem = async () => {
     const res = await api.get("/api/salesServiceItem/");
@@ -57,10 +60,19 @@ const BillsEditForm = () => {
     return;
     // eslint-disable-next-line
   };
+  const getDepositByPatientId = async (id) => {
+    const res = await api.get(`/api/deposit/active/${id}`);
+    if (res.status === 200) {
+      const total = res.data.reduce((total, num) => total + num.amount, 0);
+      setTotalDeposit(total);
+    }
+  };
 
   const getData = async () => {
     const res = await api.get(`/api/bill/${parseInt(id)}`);
+    console.log(res.data);
     if (res.status === 200) {
+      getDepositByPatientId(res.data.patient.id);
       setDetails({ ...res.data });
     } else {
       history.goBack();
@@ -69,6 +81,7 @@ const BillsEditForm = () => {
   };
 
   const addItem = async () => {
+    setLoading(true);
     const res = await api.post(`/api/bill/${parseInt(id)}/billItem/`, {
       ...currentSSI,
       sales_service_item_id: parseInt(currentSSI.sales_service_item_id),
@@ -78,6 +91,7 @@ const BillsEditForm = () => {
     if (res.status === 200) {
       getData();
     }
+    setLoading(false);
   };
 
   const removeItem = async (itemId) => {
@@ -327,9 +341,13 @@ const BillsEditForm = () => {
                   justifyContent: "flex-end",
                 }}
               >
-                <Button variant="contained" onClick={addItem}>
+                <LoadingButton
+                  loading={loading}
+                  variant="contained"
+                  onClick={addItem}
+                >
                   ADD
-                </Button>
+                </LoadingButton>
               </Box>
             </Box>
             <Box sx={{ paddingTop: "10px" }}>
@@ -364,17 +382,10 @@ const BillsEditForm = () => {
                 >
                   Bill Items
                 </Typography>
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                >
-                  Total : {details?.total_amount}MMK
-                </Typography>
               </Box>
             </Container>
             <Container sx={{ paddingTop: "10px" }}>
-              <TableContainer sx={{ maxHeight: 260 }}>
+              <TableContainer sx={{ maxHeight: 225 }}>
                 <Table
                   sx={{ minWidth: 380 }}
                   aria-label="simple table"
@@ -423,6 +434,29 @@ const BillsEditForm = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
+            </Container>
+            <Container sx={{ paddingTop: { xs: "20px", sm: "5px" } }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                >
+                  Deposit : {totalDeposit}MMK
+                </Typography>
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                >
+                  Total : {details?.total_amount}MMK
+                </Typography>
+              </Box>
             </Container>
           </Box>
         </Box>

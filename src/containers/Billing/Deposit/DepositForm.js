@@ -1,6 +1,5 @@
 import {
   Autocomplete,
-  Button,
   Divider,
   IconButton,
   TextField,
@@ -14,6 +13,7 @@ import { useAxios } from "../../../hooks";
 import React, { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { generateID } from "../../../utils/generateID";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const DepositForm = () => {
   const history = useHistory();
@@ -22,8 +22,10 @@ const DepositForm = () => {
     patient_id: null,
     patient: null,
     amount: "",
+    remark: "",
   });
   const [patient, setPatient] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const getPatient = useCallback(async () => {
     const res = await api.get("/api/patients/");
@@ -47,13 +49,14 @@ const DepositForm = () => {
   }, []);
 
   const createNew = async () => {
-    console.log(details);
+    setLoading(true);
     const res = await api.post(`/api/deposit/`, {
       ...details,
     });
     if (res.status === 200) {
       history.goBack();
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -123,11 +126,60 @@ const DepositForm = () => {
             getOptionLabel={(option) => option.id}
             style={{ width: "70%" }}
             onChange={(event, newValue) => {
-              setDetails({
-                ...details,
-                patient: newValue,
-                patient_id: parseInt(newValue.id.split("-")[1]),
-              });
+              if (newValue) {
+                setDetails({
+                  ...details,
+                  patient: newValue,
+                  patient_id: parseInt(newValue.id.split("-")[1]),
+                });
+              } else {
+                setDetails({
+                  ...details,
+                  patient: newValue,
+                  patient_id: null,
+                });
+              }
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                fullWidth
+                size="small"
+                margin="normal"
+              />
+            )}
+          />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Box sx={{ width: "30%" }}>
+            <Typography variant="p">Patient Name</Typography>
+          </Box>
+          <Autocomplete
+            value={details?.patient}
+            options={patient}
+            getOptionLabel={(option) => option.name}
+            style={{ width: "70%" }}
+            onChange={(event, newValue) => {
+              if (newValue) {
+                setDetails({
+                  ...details,
+                  patient: newValue,
+                  patient_id: parseInt(newValue.id.split("-")[1]),
+                });
+              } else {
+                setDetails({
+                  ...details,
+                  patient: newValue,
+                  patient_id: null,
+                });
+              }
             }}
             renderInput={(params) => (
               <TextField
@@ -169,14 +221,15 @@ const DepositForm = () => {
           padding: "20px 10px",
         }}
       >
-        <Button
+        <LoadingButton
+          loading={loading}
           variant="contained"
           size="small"
           sx={{ marginRight: "5px" }}
           onClick={createNew}
         >
           Save
-        </Button>
+        </LoadingButton>
       </Box>
     </Box>
   );

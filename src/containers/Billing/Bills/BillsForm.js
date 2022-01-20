@@ -23,6 +23,7 @@ import { useAxios } from "../../../hooks";
 import { useState, useEffect } from "react";
 import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -40,6 +41,8 @@ const BillsForm = () => {
   const [currentQuantity, setCurrentQuantity] = useState(0);
   const [billItems, setBillItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [totalDeposit, setTotalDeposit] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const getPatientAndSalesServiceItem = async () => {
     const [patient, salesServiceItem] = await Promise.all([
@@ -71,6 +74,14 @@ const BillsForm = () => {
       setSalesServiceItem(s);
     } else {
       history.goBack();
+    }
+  };
+
+  const getDepositByPatientId = async (id) => {
+    const res = await api.get(`/api/deposit/active/${id.split("-")[1]}`);
+    if (res.status === 200) {
+      const total = res.data.reduce((total, num) => total + num.amount, 0);
+      setTotalDeposit(total);
     }
   };
 
@@ -108,13 +119,18 @@ const BillsForm = () => {
 
   const createBill = async () => {
     if (currentPatient) {
+      setLoading(true);
       const res = await api.post(`/api/bill/`, {
         patient_id: parseInt(currentPatient.id.split("-")[1]),
+        patient_name: currentPatient.name,
+        patient_phone: currentPatient.contactDetails,
+        patient_address: currentPatient.address,
         bill_items: billItems,
       });
       if (res.status === 200) {
         history.goBack();
       }
+      setLoading(false);
     }
     return;
   };
@@ -166,6 +182,11 @@ const BillsForm = () => {
                 }}
                 style={{ width: "80%" }}
                 onChange={(event, newValue) => {
+                  if (newValue) {
+                    getDepositByPatientId(newValue.id);
+                  } else {
+                    setTotalDeposit(0);
+                  }
                   setCurrectPatient(newValue);
                 }}
                 renderInput={(params) => (
@@ -206,6 +227,11 @@ const BillsForm = () => {
               getOptionLabel={(option) => option.id}
               style={{ width: "90%" }}
               onChange={(event, newValue) => {
+                if (newValue) {
+                  getDepositByPatientId(newValue.id);
+                } else {
+                  setTotalDeposit(0);
+                }
                 setCurrectPatient(newValue);
               }}
               renderInput={(params) => (
@@ -374,9 +400,14 @@ const BillsForm = () => {
               </Box>
             </Box>
             <Box sx={{ paddingTop: "10px" }}>
-              <Button variant="contained" fullWidth onClick={createBill}>
+              <LoadingButton
+                loading={loading}
+                variant="contained"
+                fullWidth
+                onClick={createBill}
+              >
                 Create Bill
-              </Button>
+              </LoadingButton>
             </Box>
             <Box sx={{ paddingTop: "10px" }}>
               <Button
@@ -410,17 +441,10 @@ const BillsForm = () => {
                 >
                   Bill Items
                 </Typography>
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                >
-                  Total : {totalAmount}MMK
-                </Typography>
               </Box>
             </Container>
             <Container sx={{ paddingTop: "10px" }}>
-              <TableContainer sx={{ maxHeight: 300 }}>
+              <TableContainer sx={{ maxHeight: 270 }}>
                 <Table
                   sx={{ minWidth: 380 }}
                   aria-label="simple table"
@@ -470,6 +494,29 @@ const BillsForm = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
+            </Container>
+            <Container sx={{ paddingTop: { xs: "20px", sm: "5px" } }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                >
+                  Deposit : {totalDeposit}MMK
+                </Typography>
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                >
+                  Total : {totalAmount}MMK
+                </Typography>
+              </Box>
             </Container>
           </Box>
         </Box>

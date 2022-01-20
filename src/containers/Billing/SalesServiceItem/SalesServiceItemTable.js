@@ -7,8 +7,9 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { CustomTable } from "../../../components";
+import LoadingContext from "../../../contexts/LoadingContext";
 import { useAxios } from "../../../hooks";
 
 const headCells = [
@@ -48,6 +49,7 @@ const SalesServiceItemTable = () => {
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
+  const { setScreenLoading } = useContext(LoadingContext);
 
   const handleClickOpen = (id) => {
     setId(id);
@@ -59,6 +61,7 @@ const SalesServiceItemTable = () => {
   };
 
   const getData = useCallback(async () => {
+    setScreenLoading(true);
     const res = await api.get("/api/salesServiceItem/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -71,6 +74,7 @@ const SalesServiceItemTable = () => {
         };
       });
       setRows(data);
+      setScreenLoading(false);
     }
     return;
     // eslint-disable-next-line
