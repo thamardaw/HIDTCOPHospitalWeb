@@ -20,6 +20,7 @@ import { useEffect, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import { useAxios } from "../../../hooks";
 import { useState } from "react";
+import { generateID } from "../../../utils/generateID";
 
 const BillsDetail = () => {
   const api = useAxios();
@@ -29,6 +30,7 @@ const BillsDetail = () => {
   const [showPay, setShowPay] = useState(false);
   const [bill, setBill] = useState({});
   const [payment, setPayment] = useState({});
+  const [totalDeposit, setTotalDeposit] = useState(0);
 
   const handlePrint = useReactToPrint({
     pageStyle:
@@ -41,9 +43,18 @@ const BillsDetail = () => {
     },
   });
 
+  const getDepositByPatientId = async (id) => {
+    const res = await api.get(`/api/deposit/active/${id}`);
+    if (res.status === 200) {
+      const total = res.data.reduce((total, num) => total + num.amount, 0);
+      setTotalDeposit(total);
+    }
+  };
+
   const getBill = async () => {
     const res = await api.get(`/api/bill/${parseInt(id)}`);
     if (res.status === 200) {
+      getDepositByPatientId(res.data.patient.id);
       setBill({ ...res.data });
       if (res.data.payment.length !== 0) {
         setPayment({ ...res.data.payment[0] });
@@ -56,9 +67,11 @@ const BillsDetail = () => {
   };
 
   const make_payment = async () => {
-    const res = await api.put(`/api/payment/${parseInt(id)}`);
-    if (res.status === 200) {
-      history.goBack();
+    if (bill) {
+      const res = await api.put(`/api/payment/${parseInt(payment.id)}`);
+      if (res.status === 200) {
+        history.goBack();
+      }
     }
     return;
   };
@@ -100,7 +113,7 @@ const BillsDetail = () => {
           sx={{ marginRight: "5px", display: showPay ? "block" : "none" }}
           onClick={make_payment}
         >
-          Pay
+          Record Payment
         </Button>
         <Button
           variant="contained"
@@ -142,7 +155,7 @@ const BillsDetail = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="body">ID</Typography>
+                <Typography variant="body">Bill ID</Typography>
               </Box>
               <Typography variant="body">{bill?.id && bill?.id}</Typography>
             </Box>
@@ -159,6 +172,22 @@ const BillsDetail = () => {
               </Box>
               <Typography variant="body">
                 {bill?.created_time && bill?.created_time.split("T")[0]}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "10px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="body">Patient ID</Typography>
+              </Box>
+              <Typography variant="body">
+                {bill?.patient &&
+                  generateID(bill?.patient.id, bill?.created_time)}
               </Typography>
             </Box>
             <Box
@@ -249,13 +278,15 @@ const BillsDetail = () => {
           <Divider sx={{ my: "6px" }} />
           <Box
             sx={{
-              display: stage === "drafted" ? "none" : "flex",
+              display: "flex",
               justifyContent: "space-between",
             }}
           >
             <Typography variant="body">Deposit : </Typography>
             <Typography variant="body">
-              {payment?.total_deposit_amount}
+              {stage === "drafted"
+                ? totalDeposit
+                : payment?.total_deposit_amount}
             </Typography>
           </Box>
           <Divider sx={{ my: "6px" }} />
@@ -263,7 +294,7 @@ const BillsDetail = () => {
             <Typography variant="body">Unpaid : </Typography>
             <Typography variant="body">
               {stage === "drafted"
-                ? bill?.total_amount
+                ? parseInt(bill?.total_amount) - totalDeposit
                 : payment?.unpaid_amount}
             </Typography>
           </Box>

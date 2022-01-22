@@ -167,7 +167,7 @@ const CategoryDetail = () => {
               </Typography>
             </Box>
             <Box sx={{ width: "70%" }}>
-              <Typography variant="body2">{details?.amount}</Typography>
+              <Typography variant="body2">{details?.amount} MMK</Typography>
             </Box>
           </Box>
         </Box>

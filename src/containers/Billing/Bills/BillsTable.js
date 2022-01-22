@@ -156,7 +156,6 @@ const BillsTable = () => {
           addDelete={false}
           addCreate={false}
           addEdit={false}
-          detailBtnName="Pay"
         />
       </TabPanel>
       <TabPanel value={tab} index={2}>

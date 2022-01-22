@@ -44,15 +44,13 @@ const DailyClosingForm = () => {
     from: 0,
     to: 0,
   });
-  const [details, setDetails] = useState({
-    actual_amount: "",
-    adjusted_amount: "",
-    adjusted_reason: "",
-  });
   const [billTotal, setBillTotal] = useState(0);
   const [depositTotal, setDepositTotal] = useState(0);
   const [grandTotal, setGrandTotal] = useState(0);
   const [openingBalance, setOpeningBalance] = useState(0);
+  const [actualAmount, setActualAmount] = useState(0);
+  const [adjustedAmount, setAdjustedAmount] = useState(0);
+  const [adjustedReason, setAdjustedReason] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -62,6 +60,12 @@ const DailyClosingForm = () => {
         parseInt(openingBalance === "" ? 0 : openingBalance)
     );
   }, [billTotal, depositTotal, openingBalance]);
+
+  useEffect(() => {
+    setAdjustedAmount(
+      parseInt(grandTotal) - parseInt(actualAmount === "" ? 0 : actualAmount)
+    );
+  }, [grandTotal, actualAmount]);
 
   const getBills = async () => {
     const res = await api.get(
@@ -119,14 +123,16 @@ const DailyClosingForm = () => {
       const res = await api.post(`/api/dailyClosing/`, {
         opening_balance: openingBalance,
         grand_total: grandTotal,
-        actual_amount: details.actual_amount,
-        adjusted_amount: details.adjusted_amount,
-        adjusted_reason: details.adjusted_reason,
+        actual_amount: actualAmount,
+        adjusted_amount: adjustedAmount,
+        adjusted_reason: adjustedReason,
         closing_deposit_detail: deposits,
         closing_bill_detail: bills,
       });
       if (res.status === 200) {
-        history.goBack();
+        history.replace(
+          `/dashboard/dailyClosing/details/${res.data.id}/drafted`
+        );
       }
       setLoading(false);
     }
@@ -417,10 +423,12 @@ const DailyClosingForm = () => {
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details.actual_amount}
-            onChange={(e) =>
-              setDetails({ ...details, actual_amount: e.target.value })
-            }
+            value={actualAmount}
+            type="number"
+            InputProps={{
+              inputProps: { min: "0", step: "1" },
+            }}
+            onChange={(e) => setActualAmount(e.target.value)}
           />
         </Box>
         <Box
@@ -437,14 +445,13 @@ const DailyClosingForm = () => {
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details.adjusted_amount}
+            value={adjustedAmount}
             type="number"
             InputProps={{
               inputProps: { min: "0", step: "1" },
             }}
-            onChange={(e) =>
-              setDetails({ ...details, adjusted_amount: e.target.value })
-            }
+            // onChange={(e) => setAdjustedAmount(e.target.value)}
+            disabled
           />
         </Box>
         <Box
@@ -463,10 +470,8 @@ const DailyClosingForm = () => {
             margin="dense"
             multiline
             rows={3}
-            value={details.adjusted_reason}
-            onChange={(e) =>
-              setDetails({ ...details, adjusted_reason: e.target.value })
-            }
+            value={adjustedReason}
+            onChange={(e) => setAdjustedReason(e.target.value)}
           />
         </Box>
       </Box>
