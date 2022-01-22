@@ -20,10 +20,11 @@ import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/system";
 import { useHistory, useParams } from "react-router-dom";
 import { useAxios } from "../../../hooks";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton";
+import LoadingContext from "../../../contexts/LoadingContext";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -41,8 +42,10 @@ const BillsEditForm = () => {
   const [currentQuantity, setCurrentQuantity] = useState(0);
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [loading, setLoading] = useState(false);
+  const { setScreenLoading } = useContext(LoadingContext);
 
   const getSalesServiceItem = async () => {
+    setScreenLoading(true);
     const res = await api.get("/api/salesServiceItem/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -54,6 +57,7 @@ const BillsEditForm = () => {
         };
       });
       setSalesServiceItem(data);
+      setScreenLoading(false);
     } else {
       history.goBack();
     }

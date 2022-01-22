@@ -20,10 +20,11 @@ import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/system";
 import { useHistory } from "react-router-dom";
 import { useAxios } from "../../../hooks";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton";
+import LoadingContext from "../../../contexts/LoadingContext";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -43,8 +44,10 @@ const BillsForm = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [loading, setLoading] = useState(false);
+  const { setScreenLoading } = useContext(LoadingContext);
 
   const getPatientAndSalesServiceItem = async () => {
+    setScreenLoading(true);
     const [patient, salesServiceItem] = await Promise.all([
       api.get("/api/patients/"),
       api.get("/api/salesServiceItem/"),
@@ -72,6 +75,7 @@ const BillsForm = () => {
         };
       });
       setSalesServiceItem(s);
+      setScreenLoading(false);
     } else {
       history.goBack();
     }
@@ -128,7 +132,7 @@ const BillsForm = () => {
         bill_items: billItems,
       });
       if (res.status === 200) {
-        history.goBack();
+        history.replace(`/dashboard/bills/details/${res.data.id}/drafted`);
       }
       setLoading(false);
     }
