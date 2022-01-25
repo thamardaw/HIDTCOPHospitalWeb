@@ -54,7 +54,7 @@ const UomTable = () => {
     if (res.status === 200) {
       const data = res.data.map((row) => {
         return {
-          id: row.id.toString(),
+          id: row.id,
           name: row.name,
           description: row.description,
         };

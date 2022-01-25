@@ -357,7 +357,7 @@ const CustomTable = ({
     const searchItem = keyword.toLowerCase();
     return array.filter((value) => {
       let t = objKeys.map((key) => {
-        return value[key.id].toLowerCase().includes(searchItem);
+        return value[key.id].toString().toLowerCase().includes(searchItem);
       });
       return t.includes(true);
     });

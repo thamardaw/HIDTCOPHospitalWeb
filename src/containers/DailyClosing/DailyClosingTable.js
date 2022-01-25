@@ -73,13 +73,13 @@ const DailyClosingTable = () => {
     if (res.status === 200) {
       const data = res.data.map((row) => {
         return {
-          id: row.id.toString(),
-          opening_balance: row.opening_balance.toString(),
-          bill_total: row.bill_total.toString(),
-          deposit_total: row.deposit_total.toString(),
-          grand_total: row.grand_total.toString(),
-          actual_amount: row.actual_amount.toString(),
-          adjusted_amount: row.adjusted_amount.toString(),
+          id: row.id,
+          opening_balance: row.opening_balance,
+          bill_total: row.bill_total,
+          deposit_total: row.deposit_total,
+          grand_total: row.grand_total,
+          actual_amount: row.actual_amount,
+          adjusted_amount: row.adjusted_amount,
           adjusted_reason: row.adjusted_reason,
           date: row.created_time.split("T")[0],
         };

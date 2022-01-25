@@ -109,7 +109,7 @@ const BillsTable = () => {
     if (res.status === 200) {
       const data = res.data.map((row) => {
         return {
-          id: row.id.toString(),
+          id: row.id,
           name: row.patient_name,
           phone: row.patient_phone,
           address: row.patient_address,
