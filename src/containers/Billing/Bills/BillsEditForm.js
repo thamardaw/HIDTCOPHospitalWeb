@@ -74,6 +74,7 @@ const BillsEditForm = () => {
 
   const getData = async () => {
     const res = await api.get(`/api/bill/${parseInt(id)}`);
+    console.log(res.data);
     if (res.status === 200) {
       getDepositByPatientId(res.data.patient.id);
       setDetails({ ...res.data });
