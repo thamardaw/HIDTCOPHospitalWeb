@@ -12,6 +12,12 @@ import { useAxios } from "../../../hooks";
 import { useEffect, useRef, useState } from "react";
 import { generateID } from "../../../utils/generateID";
 import { useReactToPrint } from "react-to-print";
+import { styled } from "@mui/material/styles";
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  fontSize: "1.3rem",
+  fontWeight: 500,
+}));
 
 const CategoryDetail = () => {
   const history = useHistory();
@@ -81,7 +87,7 @@ const CategoryDetail = () => {
         <Typography
           variant="h6"
           textAlign="center"
-          sx={{ fontWeight: "100", fontSize: "16px" }}
+          sx={{ fontWeight: "500", fontSize: "16px" }}
         >
           Receipt
         </Typography>
@@ -95,13 +101,11 @@ const CategoryDetail = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                Date
-              </Typography>
+              <StyledTypography variant="body2">Date</StyledTypography>
             </Box>
-            <Typography variant="body2">
+            <StyledTypography variant="body2">
               {details?.created_time && details.created_time.split("T")[0]}
-            </Typography>
+            </StyledTypography>
           </Box>
           <Box
             sx={{
@@ -112,11 +116,11 @@ const CategoryDetail = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                Deposit ID
-              </Typography>
+              <StyledTypography variant="body2">Deposit ID</StyledTypography>
             </Box>
-            <Typography variant="body2">{details?.id && details.id}</Typography>
+            <StyledTypography variant="body2">
+              {details?.id && details.id}
+            </StyledTypography>
           </Box>
           <Box
             sx={{
@@ -127,14 +131,12 @@ const CategoryDetail = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                Patient ID
-              </Typography>
+              <StyledTypography variant="body2">Patient ID</StyledTypography>
             </Box>
-            <Typography variant="body2">
+            <StyledTypography variant="body2">
               {details?.patient_id &&
                 generateID(details?.patient_id, details.patient.created_time)}
-            </Typography>
+            </StyledTypography>
           </Box>
           <Box
             sx={{
@@ -145,13 +147,11 @@ const CategoryDetail = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                Patient Name
-              </Typography>
+              <StyledTypography variant="body2">Patient Name</StyledTypography>
             </Box>
-            <Typography variant="body2">
+            <StyledTypography variant="body2">
               {details?.patient && details.patient.name}
-            </Typography>
+            </StyledTypography>
           </Box>
           <Box
             sx={{
@@ -162,12 +162,12 @@ const CategoryDetail = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                Amount
-              </Typography>
+              <StyledTypography variant="body2">Amount</StyledTypography>
             </Box>
             <Box sx={{ width: "70%" }}>
-              <Typography variant="body2">{details?.amount} MMK</Typography>
+              <StyledTypography variant="body2">
+                {details?.amount} MMK
+              </StyledTypography>
             </Box>
           </Box>
         </Box>
@@ -182,14 +182,14 @@ const CategoryDetail = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+            <StyledTypography variant="body2" >
               Patient ID
-            </Typography>
+            </StyledTypography>
           </Box>
-          <Typography variant="body2">
+          <StyledTypography variant="body2">
             {details?.patient_id &&
               generateID(details?.patient_id, details.patient.created_time)}
-          </Typography>
+          </StyledTypography>
         </Box>
         <Divider />
         <Box
@@ -201,13 +201,13 @@ const CategoryDetail = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+            <StyledTypography variant="body2" >
               Patient Name
-            </Typography>
+            </StyledTypography>
           </Box>
-          <Typography variant="body2">
+          <StyledTypography variant="body2">
             {details?.patient && details.patient.name}
-          </Typography>
+          </StyledTypography>
         </Box>
         <Divider />
         <Box
@@ -219,12 +219,12 @@ const CategoryDetail = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+            <StyledTypography variant="body2" >
               Amount
-            </Typography>
+            </StyledTypography>
           </Box>
           <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">{details?.amount}</Typography>
+            <StyledTypography variant="body2">{details?.amount}</StyledTypography>
           </Box>
         </Box>
       </Box> */}
