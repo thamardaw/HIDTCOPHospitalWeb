@@ -81,8 +81,8 @@ const DailyClosingForm = () => {
           amount: row.total_amount,
           patient_id: ID,
           patient_name: row.patient.name,
-          deposit_amount: row.payment[0].total_deposit_amount,
-          collected_amount: row.payment[0].collected_amount,
+          deposit_amount: row.payment[0]?.total_deposit_amount,
+          collected_amount: row.payment[0]?.collected_amount,
         };
       });
       setBillTotal(total);

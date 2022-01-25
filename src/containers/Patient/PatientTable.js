@@ -184,7 +184,7 @@ const PatientTable = () => {
         return {
           id: ID,
           name: row.name,
-          age: row.age,
+          age: row.age.toString(),
           contactDetails: row.contact_details,
           gender: row.gender,
           dataOfBirth: row.date_of_birth,

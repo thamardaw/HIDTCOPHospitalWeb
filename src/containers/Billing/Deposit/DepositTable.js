@@ -72,7 +72,7 @@ const DepositTable = () => {
           id: row.id,
           patient_name: row.patient.name,
           patient_id: generateID(row.patient_id, row.patient.created_time),
-          amount: row.amount,
+          amount: row.amount.toString(),
         };
       });
       setActiveRows(data);
@@ -87,10 +87,10 @@ const DepositTable = () => {
     if (res.status === 200) {
       const data = res.data.map((row) => {
         return {
-          id: row.id,
+          id: row.id.toString(),
           patient_name: row.patient.name,
           patient_id: generateID(row.patient_id, row.patient.created_time),
-          amount: row.amount,
+          amount: row.amount.toString(),
         };
       });
       setUsedRows(data);
