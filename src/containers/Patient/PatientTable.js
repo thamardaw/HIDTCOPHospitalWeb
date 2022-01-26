@@ -158,6 +158,12 @@ const headCells = [
     disablePadding: false,
     label: "Address",
   },
+  {
+    id: "dateAndTime",
+    numeric: false,
+    disablePadding: false,
+    label: "Date And Time",
+  },
 ];
 const PatientTable = () => {
   const api = useAxios();
@@ -181,6 +187,13 @@ const PatientTable = () => {
     if (res.status === 200) {
       const data = res.data.map((row) => {
         const ID = generateID(row.id, row.created_time);
+        const dateAndTime = `${row.created_time.split("T")[0]} ${new Date(
+          row.created_time
+        ).toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        })}`;
         return {
           id: ID,
           name: row.name,
@@ -189,6 +202,7 @@ const PatientTable = () => {
           gender: row.gender,
           dataOfBirth: row.date_of_birth,
           address: row.address,
+          dateAndTime: dateAndTime,
         };
       });
       setRows(data);
