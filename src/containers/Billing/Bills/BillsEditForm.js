@@ -3,6 +3,8 @@ import {
   Button,
   Container,
   IconButton,
+  Menu,
+  MenuItem,
   Paper,
   Table,
   TableBody,
@@ -25,6 +27,7 @@ import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton";
 import LoadingContext from "../../../contexts/LoadingContext";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -43,6 +46,28 @@ const BillsEditForm = () => {
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [loading, setLoading] = useState(false);
   const { setScreenLoading } = useContext(LoadingContext);
+  const [editingItem, setEditingItem] = useState({
+    id: 0,
+    index: 0,
+    quantity: 0,
+    price: 0,
+  });
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleEdit = (event, index) => {
+    setEditingItem({
+      ...editingItem,
+      index: index,
+      id: details.bill_items[index].id,
+      quantity: details.bill_items[index].quantity,
+    });
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const getSalesServiceItem = async () => {
     setScreenLoading(true);
@@ -74,7 +99,6 @@ const BillsEditForm = () => {
 
   const getData = async () => {
     const res = await api.get(`/api/bill/${parseInt(id)}`);
-    console.log(res.data);
     if (res.status === 200) {
       getDepositByPatientId(res.data.patient.id);
       setDetails({ ...res.data });
@@ -82,6 +106,18 @@ const BillsEditForm = () => {
       history.goBack();
     }
     return;
+  };
+
+  const updateItem = async () => {
+    setLoading(true);
+    const res = await api.put(
+      `/api/bill/billItem/${editingItem.id}/?quantity=${editingItem.quantity}`
+    );
+    if (res.status === 200) {
+      handleClose();
+      getData();
+    }
+    setLoading(false);
   };
 
   const addItem = async () => {
@@ -114,358 +150,437 @@ const BillsEditForm = () => {
   }, [id]);
 
   return (
-    <Paper sx={{ width: "100%", mb: 2 }}>
-      <Toolbar>
-        <Typography
-          variant="h6"
-          component="div"
-          //   sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-        >
-          Patient Info
-        </Typography>
-      </Toolbar>
-      <Container>
-        <Box
-          sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
-        >
-          <Box
-            sx={{
-              flex: 0.5,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
+    <>
+      <Paper sx={{ width: "100%", mb: 2 }}>
+        <Toolbar>
+          <Typography
+            variant="h6"
+            component="div"
+            //   sx={{ fontSize: { xs: "14px", sm: "16px" } }}
           >
-            <Box sx={{ width: "100%" }}>
-              <Typography variant="p" fontWeight={500}>
-                Patient Name
-              </Typography>
-            </Box>
-            {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
+            Patient Info
+          </Typography>
+        </Toolbar>
+        <Container>
+          <Box
+            sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
+          >
             <Box
               sx={{
-                width: "100%",
+                flex: 0.5,
                 display: "flex",
-                alignItems: "center",
-                margin: "20px 0px",
+                flexDirection: "column",
+                alignItems: "flex-start",
               }}
             >
-              <Typography variant="body2">{details?.patient_name}</Typography>
+              <Box sx={{ width: "100%" }}>
+                <Typography variant="p" fontWeight={500}>
+                  Patient Name
+                </Typography>
+              </Box>
+              {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  margin: "20px 0px",
+                }}
+              >
+                <Typography variant="body2">{details?.patient_name}</Typography>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                flex: 0.5,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+              }}
+            >
+              <Box sx={{ width: "100%" }}>
+                <Typography variant="p" fontWeight={500}>
+                  Pateint ID
+                </Typography>
+              </Box>
+              {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  margin: "20px 0px",
+                }}
+              >
+                <Typography variant="body2">
+                  {details?.patient_id &&
+                    generateID(
+                      details?.patient_id,
+                      details?.patient.created_time
+                    )}
+                </Typography>
+              </Box>
             </Box>
           </Box>
           <Box
-            sx={{
-              flex: 0.5,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
+            sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
           >
-            <Box sx={{ width: "100%" }}>
-              <Typography variant="p" fontWeight={500}>
-                Pateint ID
-              </Typography>
-            </Box>
-            {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
             <Box
               sx={{
-                width: "100%",
+                flex: 0.5,
                 display: "flex",
-                alignItems: "center",
-                margin: "20px 0px",
+                flexDirection: "column",
+                alignItems: "flex-start",
               }}
             >
-              <Typography variant="body2">
-                {details?.patient_id &&
-                  generateID(
-                    details?.patient_id,
-                    details?.patient.created_time
-                  )}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-        <Box
-          sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
-        >
-          <Box
-            sx={{
-              flex: 0.5,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
-          >
-            <Box sx={{ width: "100%" }}>
-              <Typography variant="p" fontWeight={500}>
-                Phone
-              </Typography>
+              <Box sx={{ width: "100%" }}>
+                <Typography variant="p" fontWeight={500}>
+                  Phone
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  margin: "20px 0px",
+                }}
+              >
+                <Typography variant="body2">
+                  {details?.patient_phone}
+                </Typography>
+              </Box>
             </Box>
             <Box
               sx={{
-                width: "100%",
+                flex: 0.5,
                 display: "flex",
-                alignItems: "center",
-                margin: "20px 0px",
+                flexDirection: "column",
+                alignItems: "flex-start",
               }}
             >
-              <Typography variant="body2">{details?.patient_phone}</Typography>
+              <Box sx={{ width: "100%" }}>
+                <Typography variant="p" fontWeight={500}>
+                  Address
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  margin: "20px 0px",
+                }}
+              >
+                <Typography variant="body2">
+                  {details?.patient_address}
+                </Typography>
+              </Box>
             </Box>
           </Box>
+        </Container>
+        <Container sx={{ padding: "20px 0px" }}>
           <Box
             sx={{
-              flex: 0.5,
               display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
-          >
-            <Box sx={{ width: "100%" }}>
-              <Typography variant="p" fontWeight={500}>
-                Address
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                margin: "20px 0px",
-              }}
-            >
-              <Typography variant="body2">
-                {details?.patient_address}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-      </Container>
-      <Container sx={{ padding: "20px 0px" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", sm: "column", md: "row" },
-          }}
-        >
-          <Box
-            sx={{
-              width: { xs: "100%", md: "35%" },
+              flexDirection: { xs: "column", sm: "column", md: "row" },
             }}
           >
             <Box
               sx={{
-                padding: "14px",
-                width: "100%",
-                border: "2px solid lightgray",
-                borderRadius: "10px",
+                width: { xs: "100%", md: "35%" },
               }}
             >
               <Box
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
+                  padding: "14px",
+                  width: "100%",
+                  border: "2px solid lightgray",
+                  borderRadius: "10px",
                 }}
               >
-                <Box sx={{ width: "100%" }}>
-                  <Typography variant="p">Sales & Service Item</Typography>
-                </Box>
-                {/* <TextField size="small" fullWidth margin="dense" />
-                 */}
                 <Box
                   sx={{
-                    width: "100%",
                     display: "flex",
-                    alignItems: "center",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
                   }}
                 >
-                  <Autocomplete
-                    value={currentSSI}
-                    options={salesServiceItem}
-                    style={{ width: "90%" }}
-                    getOptionLabel={(option) => option.name}
-                    renderOption={(props, option) => {
-                      return (
-                        <Box {...props} key={option.sales_service_item_id}>
-                          {option.name}
-                        </Box>
-                      );
+                  <Box sx={{ width: "100%" }}>
+                    <Typography variant="p">Sales & Service Item</Typography>
+                  </Box>
+                  {/* <TextField size="small" fullWidth margin="dense" />
+                   */}
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
                     }}
-                    onChange={(event, newValue) => {
-                      setCurrentSSI(newValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        fullWidth
-                        size="small"
-                        margin="normal"
-                      />
-                    )}
-                  />
-                  <IconButton
-                    size="small"
-                    color="primary"
-                    sx={{ marginTop: "5px" }}
-                    onClick={() =>
-                      history.push("/dashboard/salesServiceItem/form")
-                    }
                   >
-                    <AddIcon fontSize="large" />
-                  </IconButton>
+                    <Autocomplete
+                      value={currentSSI}
+                      options={salesServiceItem}
+                      style={{ width: "90%" }}
+                      getOptionLabel={(option) => option.name}
+                      renderOption={(props, option) => {
+                        return (
+                          <Box {...props} key={option.sales_service_item_id}>
+                            {option.name}
+                          </Box>
+                        );
+                      }}
+                      onChange={(event, newValue) => {
+                        setCurrentSSI(newValue);
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="outlined"
+                          fullWidth
+                          size="small"
+                          margin="normal"
+                        />
+                      )}
+                    />
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      sx={{ marginTop: "5px" }}
+                      onClick={() =>
+                        history.push("/dashboard/salesServiceItem/form")
+                      }
+                    >
+                      <AddIcon fontSize="large" />
+                    </IconButton>
+                  </Box>
                 </Box>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                }}
-              >
-                <Box sx={{ width: "100%" }}>
-                  <Typography variant="p">Quantity</Typography>
-                </Box>
-                <TextField
-                  size="small"
-                  fullWidth
-                  margin="dense"
-                  type="number"
-                  InputProps={{
-                    inputProps: { min: "0", step: "1" },
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
                   }}
-                  value={currentQuantity}
-                  onChange={(e) => setCurrentQuantity(e.target.value)}
-                />
+                >
+                  <Box sx={{ width: "100%" }}>
+                    <Typography variant="p">Quantity</Typography>
+                  </Box>
+                  <TextField
+                    size="small"
+                    fullWidth
+                    margin="dense"
+                    type="number"
+                    InputProps={{
+                      inputProps: { min: "0", step: "1" },
+                    }}
+                    value={currentQuantity}
+                    onChange={(e) => setCurrentQuantity(e.target.value)}
+                  />
+                </Box>
+                <Box
+                  sx={{
+                    paddingTop: "10px",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <LoadingButton
+                    loading={loading}
+                    variant="contained"
+                    onClick={addItem}
+                  >
+                    ADD
+                  </LoadingButton>
+                </Box>
               </Box>
-              <Box
-                sx={{
-                  paddingTop: "10px",
-                  display: "flex",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <LoadingButton
-                  loading={loading}
+              <Box sx={{ paddingTop: "10px" }}>
+                <Button
                   variant="contained"
-                  onClick={addItem}
+                  fullWidth
+                  onClick={() => history.goBack()}
                 >
-                  ADD
-                </LoadingButton>
+                  Done
+                </Button>
               </Box>
             </Box>
-            <Box sx={{ paddingTop: "10px" }}>
-              <Button
-                variant="contained"
-                fullWidth
-                onClick={() => history.goBack()}
-              >
-                Done
-              </Button>
+            <Box
+              sx={{
+                width: { xs: "100%", md: "65%" },
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+              }}
+            >
+              <Container sx={{ paddingTop: { xs: "20px", sm: "0px" } }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    Bill Items
+                  </Typography>
+                </Box>
+              </Container>
+              <Container sx={{ paddingTop: "10px" }}>
+                <TableContainer sx={{ maxHeight: 225 }}>
+                  <Table
+                    sx={{ minWidth: 380 }}
+                    aria-label="simple table"
+                    size="small"
+                    stickyHeader
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <StyledTableCell>No</StyledTableCell>
+                        <StyledTableCell>Name</StyledTableCell>
+                        <StyledTableCell align="right">Price</StyledTableCell>
+                        <StyledTableCell align="right">
+                          Quantity
+                        </StyledTableCell>
+                        <StyledTableCell align="right">UOM</StyledTableCell>
+                        <StyledTableCell align="right">
+                          SubTotal
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          Actions
+                        </StyledTableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {details?.bill_items &&
+                        details?.bill_items.map((row, index) => (
+                          <TableRow
+                            key={row.id}
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              {index + 1}
+                            </TableCell>
+                            <TableCell>{row?.name}</TableCell>
+                            <TableCell align="right">{row?.price}</TableCell>
+                            <TableCell align="right">{row?.quantity}</TableCell>
+                            <TableCell align="right">{row?.uom}</TableCell>
+                            <TableCell align="right">{row?.subtotal}</TableCell>
+                            <TableCell align="center">
+                              <Box sx={{ display: "flex" }}>
+                                <IconButton
+                                  aria-label="edit"
+                                  color="primary"
+                                  onClick={(e) => handleEdit(e, index)}
+                                >
+                                  <ModeEditIcon />
+                                </IconButton>
+                                <IconButton
+                                  aria-label="delete"
+                                  color="error"
+                                  onClick={() => removeItem(row.id)}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Box>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Container>
+              <Container sx={{ paddingTop: { xs: "20px", sm: "5px" } }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    Deposit : {totalDeposit}MMK
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    Total : {details?.total_amount}MMK
+                  </Typography>
+                </Box>
+              </Container>
             </Box>
           </Box>
-          <Box
-            sx={{
-              width: { xs: "100%", md: "65%" },
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
+        </Container>
+      </Paper>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: "visible",
+            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+            mt: 1.5,
+            "& .MuiAvatar-root": {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            "&:before": {
+              content: '""',
+              display: "block",
+              position: "absolute",
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: "background.paper",
+              transform: "translateY(-50%) rotate(45deg)",
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+      >
+        <MenuItem>
+          <TextField
+            label="Quantity"
+            type="number"
+            InputProps={{
+              inputProps: { min: "0", step: "1" },
             }}
+            size="small"
+            sx={{ width: "120px" }}
+            value={editingItem.quantity}
+            onChange={(e) =>
+              setEditingItem({ ...editingItem, quantity: e.target.value })
+            }
+          />
+        </MenuItem>
+        <MenuItem>
+          <LoadingButton
+            loading={loading}
+            variant="contained"
+            size="small"
+            onClick={updateItem}
+            fullWidth
           >
-            <Container sx={{ paddingTop: { xs: "20px", sm: "0px" } }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                >
-                  Bill Items
-                </Typography>
-              </Box>
-            </Container>
-            <Container sx={{ paddingTop: "10px" }}>
-              <TableContainer sx={{ maxHeight: 225 }}>
-                <Table
-                  sx={{ minWidth: 380 }}
-                  aria-label="simple table"
-                  size="small"
-                  stickyHeader
-                >
-                  <TableHead>
-                    <TableRow>
-                      <StyledTableCell>No</StyledTableCell>
-                      <StyledTableCell>Name</StyledTableCell>
-                      <StyledTableCell align="right">Price</StyledTableCell>
-                      <StyledTableCell align="right">Quantity</StyledTableCell>
-                      <StyledTableCell align="right">UOM</StyledTableCell>
-                      <StyledTableCell align="right">SubTotal</StyledTableCell>
-                      <StyledTableCell align="right">Actions</StyledTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {details?.bill_items &&
-                      details?.bill_items.map((row, index) => (
-                        <TableRow
-                          key={row.id}
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            {index + 1}
-                          </TableCell>
-                          <TableCell>{row?.name}</TableCell>
-                          <TableCell align="right">{row?.price}</TableCell>
-                          <TableCell align="right">{row?.quantity}</TableCell>
-                          <TableCell align="right">{row?.uom}</TableCell>
-                          <TableCell align="right">{row?.subtotal}</TableCell>
-                          <TableCell align="right">
-                            <IconButton
-                              aria-label="delete"
-                              color="error"
-                              onClick={() => removeItem(row.id)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Container>
-            <Container sx={{ paddingTop: { xs: "20px", sm: "5px" } }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                >
-                  Deposit : {totalDeposit}MMK
-                </Typography>
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                >
-                  Total : {details?.total_amount}MMK
-                </Typography>
-              </Box>
-            </Container>
-          </Box>
-        </Box>
-      </Container>
-    </Paper>
+            Save
+          </LoadingButton>
+        </MenuItem>
+      </Menu>
+    </>
   );
 };
 

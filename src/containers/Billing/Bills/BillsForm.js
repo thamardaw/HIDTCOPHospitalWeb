@@ -3,6 +3,8 @@ import {
   Button,
   Container,
   IconButton,
+  Menu,
+  MenuItem,
   Paper,
   Table,
   TableBody,
@@ -25,6 +27,7 @@ import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton";
 import LoadingContext from "../../../contexts/LoadingContext";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -44,7 +47,40 @@ const BillsForm = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [editingItem, setEditingItem] = useState({
+    index: 0,
+    quantity: 0,
+    price: 0,
+  });
   const { setScreenLoading } = useContext(LoadingContext);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleEdit = (event, index) => {
+    // console.log((billItems[index].quantity = 10));
+    // setBillItems([...billItems]);
+    // console.log(billItems[index]);
+    setEditingItem({
+      ...editingItem,
+      index: index,
+      quantity: billItems[index].quantity,
+    });
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const updateItem = () => {
+    billItems[editingItem.index].quantity = editingItem.quantity;
+    setBillItems([...billItems]);
+    handleClose();
+    setEditingItem({
+      index: 0,
+      quantity: 0,
+      price: 0,
+    });
+  };
 
   const getPatientAndSalesServiceItem = async () => {
     setScreenLoading(true);
@@ -140,51 +176,97 @@ const BillsForm = () => {
   };
 
   return (
-    <Paper sx={{ width: "100%", mb: 2 }}>
-      <Toolbar>
-        <Typography
-          variant="h6"
-          component="div"
-          //   sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-        >
-          Patient Information
-        </Typography>
-      </Toolbar>
-      <Container>
-        <Box
-          sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
-        >
-          <Box
-            sx={{
-              flex: 0.5,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
+    <>
+      <Paper sx={{ width: "100%", mb: 2 }}>
+        <Toolbar>
+          <Typography
+            variant="h6"
+            component="div"
+            //   sx={{ fontSize: { xs: "14px", sm: "16px" } }}
           >
-            <Box sx={{ width: "100%" }}>
-              <Typography variant="p">Patient Name</Typography>
-            </Box>
-            {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
+            Patient Information
+          </Typography>
+        </Toolbar>
+        <Container>
+          <Box
+            sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
+          >
             <Box
               sx={{
-                width: "100%",
+                flex: 0.5,
                 display: "flex",
-                alignItems: "center",
+                flexDirection: "column",
+                alignItems: "flex-start",
               }}
             >
+              <Box sx={{ width: "100%" }}>
+                <Typography variant="p">Patient Name</Typography>
+              </Box>
+              {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <Autocomplete
+                  value={currentPatient}
+                  options={patient}
+                  getOptionLabel={(option) => option.name}
+                  renderOption={(props, option) => {
+                    return (
+                      <Box {...props} key={option.id}>
+                        {option.name}
+                      </Box>
+                    );
+                  }}
+                  style={{ width: "80%" }}
+                  onChange={(event, newValue) => {
+                    if (newValue) {
+                      getDepositByPatientId(newValue.id);
+                    } else {
+                      setTotalDeposit(0);
+                    }
+                    setCurrectPatient(newValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      fullWidth
+                      size="small"
+                      margin="normal"
+                    />
+                  )}
+                />
+                <IconButton
+                  size="small"
+                  color="primary"
+                  sx={{ marginTop: "5px" }}
+                  onClick={() => history.push("/dashboard/patient/form")}
+                >
+                  <AddIcon fontSize="large" />
+                </IconButton>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                flex: 0.5,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+              }}
+            >
+              <Box sx={{ width: "100%" }}>
+                <Typography variant="p">Pateint ID</Typography>
+              </Box>
+              {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
               <Autocomplete
                 value={currentPatient}
                 options={patient}
-                getOptionLabel={(option) => option.name}
-                renderOption={(props, option) => {
-                  return (
-                    <Box {...props} key={option.id}>
-                      {option.name}
-                    </Box>
-                  );
-                }}
-                style={{ width: "80%" }}
+                getOptionLabel={(option) => option.id}
+                style={{ width: "90%" }}
                 onChange={(event, newValue) => {
                   if (newValue) {
                     getDepositByPatientId(newValue.id);
@@ -203,329 +285,359 @@ const BillsForm = () => {
                   />
                 )}
               />
-              <IconButton
-                size="small"
-                color="primary"
-                sx={{ marginTop: "5px" }}
-                onClick={() => history.push("/dashboard/patient/form")}
-              >
-                <AddIcon fontSize="large" />
-              </IconButton>
             </Box>
           </Box>
           <Box
-            sx={{
-              flex: 0.5,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
+            sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
           >
-            <Box sx={{ width: "100%" }}>
-              <Typography variant="p">Pateint ID</Typography>
-            </Box>
-            {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
-            <Autocomplete
-              value={currentPatient}
-              options={patient}
-              getOptionLabel={(option) => option.id}
-              style={{ width: "90%" }}
-              onChange={(event, newValue) => {
-                if (newValue) {
-                  getDepositByPatientId(newValue.id);
-                } else {
-                  setTotalDeposit(0);
-                }
-                setCurrectPatient(newValue);
+            <Box
+              sx={{
+                flex: 0.5,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
               }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  fullWidth
-                  size="small"
-                  margin="normal"
-                />
-              )}
-            />
-          </Box>
-        </Box>
-        <Box
-          sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
-        >
-          <Box
-            sx={{
-              flex: 0.5,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
-          >
-            <Box sx={{ width: "100%" }}>
-              <Typography variant="p">Phone</Typography>
+            >
+              <Box sx={{ width: "100%" }}>
+                <Typography variant="p">Phone</Typography>
+              </Box>
+              <TextField
+                size="small"
+                sx={{ width: "90%" }}
+                margin="normal"
+                disabled
+                value={currentPatient ? currentPatient?.contactDetails : ""}
+              />
             </Box>
-            <TextField
-              size="small"
-              sx={{ width: "90%" }}
-              margin="normal"
-              disabled
-              value={currentPatient ? currentPatient?.contactDetails : ""}
-            />
-          </Box>
-          <Box
-            sx={{
-              flex: 0.5,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
-          >
-            <Box sx={{ width: "100%" }}>
-              <Typography variant="p">Address</Typography>
+            <Box
+              sx={{
+                flex: 0.5,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+              }}
+            >
+              <Box sx={{ width: "100%" }}>
+                <Typography variant="p">Address</Typography>
+              </Box>
+              <TextField
+                size="small"
+                sx={{ width: "90%" }}
+                margin="normal"
+                disabled
+                value={currentPatient ? currentPatient?.address : ""}
+              />
             </Box>
-            <TextField
-              size="small"
-              sx={{ width: "90%" }}
-              margin="normal"
-              disabled
-              value={currentPatient ? currentPatient?.address : ""}
-            />
           </Box>
-        </Box>
-      </Container>
-      <Container sx={{ padding: "20px 0px" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", sm: "column", md: "row" },
-          }}
-        >
+        </Container>
+        <Container sx={{ padding: "20px 0px" }}>
           <Box
             sx={{
-              width: { xs: "100%", md: "35%" },
+              display: "flex",
+              flexDirection: { xs: "column", sm: "column", md: "row" },
             }}
           >
             <Box
               sx={{
-                padding: "14px",
-                width: "100%",
-                border: "2px solid lightgray",
-                borderRadius: "10px",
+                width: { xs: "100%", md: "35%" },
               }}
             >
               <Box
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
+                  padding: "14px",
+                  width: "100%",
+                  border: "2px solid lightgray",
+                  borderRadius: "10px",
                 }}
               >
-                <Box sx={{ width: "100%" }}>
-                  <Typography variant="p">Sales & Service Item</Typography>
-                </Box>
-                {/* <TextField size="small" fullWidth margin="dense" />
-                 */}
                 <Box
                   sx={{
-                    width: "100%",
                     display: "flex",
-                    alignItems: "center",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
                   }}
                 >
-                  <Autocomplete
-                    value={currentSSI}
-                    options={salesServiceItem}
-                    style={{ width: "90%" }}
-                    getOptionLabel={(option) => option.name}
-                    renderOption={(props, option) => {
-                      return (
-                        <Box {...props} key={option.sales_service_item_id}>
-                          {option.name}
-                        </Box>
-                      );
+                  <Box sx={{ width: "100%" }}>
+                    <Typography variant="p">Sales & Service Item</Typography>
+                  </Box>
+                  {/* <TextField size="small" fullWidth margin="dense" />
+                   */}
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
                     }}
-                    onChange={(event, newValue) => {
-                      setCurrentSSI(newValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        fullWidth
-                        size="small"
-                        margin="normal"
-                      />
-                    )}
-                  />
-                  <IconButton
-                    size="small"
-                    color="primary"
-                    sx={{ marginTop: "5px" }}
-                    onClick={() =>
-                      history.push("/dashboard/salesServiceItem/form")
-                    }
                   >
-                    <AddIcon fontSize="large" />
-                  </IconButton>
+                    <Autocomplete
+                      value={currentSSI}
+                      options={salesServiceItem}
+                      style={{ width: "90%" }}
+                      getOptionLabel={(option) => option.name}
+                      renderOption={(props, option) => {
+                        return (
+                          <Box {...props} key={option.sales_service_item_id}>
+                            {option.name}
+                          </Box>
+                        );
+                      }}
+                      onChange={(event, newValue) => {
+                        setCurrentSSI(newValue);
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="outlined"
+                          fullWidth
+                          size="small"
+                          margin="normal"
+                        />
+                      )}
+                    />
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      sx={{ marginTop: "5px" }}
+                      onClick={() =>
+                        history.push("/dashboard/salesServiceItem/form")
+                      }
+                    >
+                      <AddIcon fontSize="large" />
+                    </IconButton>
+                  </Box>
                 </Box>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                }}
-              >
-                <Box sx={{ width: "100%" }}>
-                  <Typography variant="p">Quantity</Typography>
-                </Box>
-                <TextField
-                  size="small"
-                  fullWidth
-                  margin="dense"
-                  type="number"
-                  InputProps={{
-                    inputProps: { min: "0", step: "1" },
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
                   }}
-                  value={currentQuantity}
-                  onChange={(e) => setCurrentQuantity(e.target.value)}
-                />
+                >
+                  <Box sx={{ width: "100%" }}>
+                    <Typography variant="p">Quantity</Typography>
+                  </Box>
+                  <TextField
+                    size="small"
+                    fullWidth
+                    margin="dense"
+                    type="number"
+                    InputProps={{
+                      inputProps: { min: "0", step: "1" },
+                    }}
+                    value={currentQuantity}
+                    onChange={(e) => setCurrentQuantity(e.target.value)}
+                  />
+                </Box>
+                <Box
+                  sx={{
+                    paddingTop: "10px",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <Button variant="contained" onClick={addItem}>
+                    ADD
+                  </Button>
+                </Box>
               </Box>
-              <Box
-                sx={{
-                  paddingTop: "10px",
-                  display: "flex",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <Button variant="contained" onClick={addItem}>
-                  ADD
+              <Box sx={{ paddingTop: "10px" }}>
+                <LoadingButton
+                  loading={loading}
+                  variant="contained"
+                  fullWidth
+                  onClick={createBill}
+                >
+                  Create Bill
+                </LoadingButton>
+              </Box>
+              <Box sx={{ paddingTop: "10px" }}>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => history.goBack()}
+                >
+                  Cancel
                 </Button>
               </Box>
             </Box>
-            <Box sx={{ paddingTop: "10px" }}>
-              <LoadingButton
-                loading={loading}
-                variant="contained"
-                fullWidth
-                onClick={createBill}
-              >
-                Create Bill
-              </LoadingButton>
-            </Box>
-            <Box sx={{ paddingTop: "10px" }}>
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={() => history.goBack()}
-              >
-                Cancel
-              </Button>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              width: { xs: "100%", md: "65%" },
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
-          >
-            <Container sx={{ paddingTop: { xs: "20px", sm: "0px" } }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+            <Box
+              sx={{
+                width: { xs: "100%", md: "65%" },
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+              }}
+            >
+              <Container sx={{ paddingTop: { xs: "20px", sm: "0px" } }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
                 >
-                  Bill Items
-                </Typography>
-              </Box>
-            </Container>
-            <Container sx={{ paddingTop: "10px" }}>
-              <TableContainer sx={{ maxHeight: 270 }}>
-                <Table
-                  sx={{ minWidth: 380 }}
-                  aria-label="simple table"
-                  size="small"
-                  stickyHeader
-                >
-                  <TableHead>
-                    <TableRow>
-                      <StyledTableCell>No</StyledTableCell>
-                      <StyledTableCell>Name</StyledTableCell>
-                      <StyledTableCell align="right">Price</StyledTableCell>
-                      <StyledTableCell align="right">Quantity</StyledTableCell>
-                      <StyledTableCell align="right">UOM</StyledTableCell>
-                      <StyledTableCell align="right">SubTotal</StyledTableCell>
-                      <StyledTableCell align="right">Actions</StyledTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {billItems.map((row, index) => (
-                      <TableRow
-                        key={index}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {index + 1}
-                        </TableCell>
-                        <TableCell>{row.name}</TableCell>
-                        <TableCell align="right">{row.price}</TableCell>
-                        <TableCell align="right">{row.quantity}</TableCell>
-                        <TableCell align="right">{row.uom}</TableCell>
-                        <TableCell align="right">
-                          {row.price * row.quantity}
-                        </TableCell>
-                        <TableCell align="right">
-                          <IconButton
-                            aria-label="delete"
-                            color="error"
-                            onClick={() => removeItem(index)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    Bill Items
+                  </Typography>
+                </Box>
+              </Container>
+              <Container sx={{ paddingTop: "10px" }}>
+                <TableContainer sx={{ maxHeight: 270 }}>
+                  <Table
+                    sx={{ minWidth: 380 }}
+                    aria-label="simple table"
+                    size="small"
+                    stickyHeader
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <StyledTableCell>No</StyledTableCell>
+                        <StyledTableCell>Name</StyledTableCell>
+                        <StyledTableCell align="right">Price</StyledTableCell>
+                        <StyledTableCell align="right">
+                          Quantity
+                        </StyledTableCell>
+                        <StyledTableCell align="right">UOM</StyledTableCell>
+                        <StyledTableCell align="right">
+                          SubTotal
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          Actions
+                        </StyledTableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Container>
-            <Container sx={{ paddingTop: { xs: "20px", sm: "5px" } }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                    </TableHead>
+                    <TableBody>
+                      {billItems.map((row, index) => (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {index + 1}
+                          </TableCell>
+                          <TableCell>{row.name}</TableCell>
+                          <TableCell align="right">{row.price}</TableCell>
+                          <TableCell align="right">{row.quantity}</TableCell>
+                          <TableCell align="right">{row.uom}</TableCell>
+                          <TableCell align="right">
+                            {row.price * row.quantity}
+                          </TableCell>
+                          <TableCell align="center">
+                            <Box sx={{ display: "flex" }}>
+                              <IconButton
+                                aria-label="edit"
+                                color="primary"
+                                onClick={(e) => handleEdit(e, index)}
+                              >
+                                <ModeEditIcon />
+                              </IconButton>
+                              <IconButton
+                                aria-label="delete"
+                                color="error"
+                                onClick={() => removeItem(index)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </Box>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Container>
+              <Container sx={{ paddingTop: { xs: "20px", sm: "5px" } }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
                 >
-                  Deposit : {totalDeposit}MMK
-                </Typography>
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                >
-                  Total : {totalAmount}MMK
-                </Typography>
-              </Box>
-            </Container>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    Deposit : {totalDeposit}MMK
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    Total : {totalAmount}MMK
+                  </Typography>
+                </Box>
+              </Container>
+            </Box>
           </Box>
-        </Box>
-      </Container>
-    </Paper>
+        </Container>
+      </Paper>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: "visible",
+            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+            mt: 1.5,
+            "& .MuiAvatar-root": {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            "&:before": {
+              content: '""',
+              display: "block",
+              position: "absolute",
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: "background.paper",
+              transform: "translateY(-50%) rotate(45deg)",
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+      >
+        <MenuItem>
+          <TextField
+            label="Quantity"
+            type="number"
+            InputProps={{
+              inputProps: { min: "0", step: "1" },
+            }}
+            size="small"
+            sx={{ width: "120px" }}
+            value={editingItem.quantity}
+            onChange={(e) =>
+              setEditingItem({ ...editingItem, quantity: e.target.value })
+            }
+          />
+        </MenuItem>
+        <MenuItem>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={updateItem}
+            fullWidth
+          >
+            Save
+          </Button>
+        </MenuItem>
+      </Menu>
+    </>
   );
 };
 
