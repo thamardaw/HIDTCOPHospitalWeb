@@ -66,9 +66,9 @@ const SalesServiceItemTable = () => {
     if (res.status === 200) {
       const data = res.data.map((row) => {
         return {
-          id: row.id.toString(),
+          id: row.id,
           name: row.name,
-          price: row.price.toString(),
+          price: row.price,
           uom: row.uom?.name,
           category: row.category?.name,
         };

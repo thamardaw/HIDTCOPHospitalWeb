@@ -21,6 +21,17 @@ import { useReactToPrint } from "react-to-print";
 import { useAxios } from "../../../hooks";
 import { useState } from "react";
 import { generateID } from "../../../utils/generateID";
+import { styled } from "@mui/material/styles";
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  fontSize: "1.3rem",
+  fontWeight: 500,
+}));
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  fontSize: "1.2rem",
+  fontWeight: 500,
+}));
 
 const BillsDetail = () => {
   const api = useAxios();
@@ -83,6 +94,17 @@ const BillsDetail = () => {
     }
     return;
   };
+
+  // const formatAMPM = (date) => {
+  //   let hours = date.getHours();
+  //   let minutes = date.getMinutes();
+  //   let ampm = hours >= 12 ? "pm" : "am";
+  //   hours = hours % 12;
+  //   hours = hours ? hours : 12;
+  //   minutes = minutes.toString().padStart(2, "0");
+  //   let strTime = hours + ":" + minutes + " " + ampm;
+  //   return strTime;
+  // };
 
   useEffect(() => {
     getBill();
@@ -155,9 +177,11 @@ const BillsDetail = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="body">Bill ID</Typography>
+                <StyledTypography variant="body">Bill ID</StyledTypography>
               </Box>
-              <Typography variant="body">{bill?.id && bill?.id}</Typography>
+              <StyledTypography variant="body">
+                {bill?.id && bill?.id}
+              </StyledTypography>
             </Box>
             <Box
               sx={{
@@ -168,11 +192,11 @@ const BillsDetail = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="body">Date</Typography>
+                <StyledTypography variant="body">Date</StyledTypography>
               </Box>
-              <Typography variant="body">
+              <StyledTypography variant="body">
                 {bill?.created_time && bill?.created_time.split("T")[0]}
-              </Typography>
+              </StyledTypography>
             </Box>
             <Box
               sx={{
@@ -183,12 +207,32 @@ const BillsDetail = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="body">Patient ID</Typography>
+                <StyledTypography variant="body">Time</StyledTypography>
               </Box>
-              <Typography variant="body">
+              <StyledTypography variant="body">
+                {bill?.created_time &&
+                  new Date(bill.created_time).toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    minute: "numeric",
+                    hour12: true,
+                  })}
+              </StyledTypography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "10px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <StyledTypography variant="body">Patient ID</StyledTypography>
+              </Box>
+              <StyledTypography variant="body">
                 {bill?.patient &&
                   generateID(bill?.patient.id, bill?.created_time)}
-              </Typography>
+              </StyledTypography>
             </Box>
             <Box
               sx={{
@@ -199,9 +243,11 @@ const BillsDetail = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="body">Name</Typography>
+                <StyledTypography variant="body">Name</StyledTypography>
               </Box>
-              <Typography variant="body">{bill?.patient_name}</Typography>
+              <StyledTypography variant="body">
+                {bill?.patient_name}
+              </StyledTypography>
             </Box>
             <Box
               sx={{
@@ -212,9 +258,11 @@ const BillsDetail = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="body">Phone</Typography>
+                <StyledTypography variant="body">Phone</StyledTypography>
               </Box>
-              <Typography variant="body">{bill?.patient_phone}</Typography>
+              <StyledTypography variant="body">
+                {bill?.patient_phone}
+              </StyledTypography>
             </Box>
             <Box
               sx={{
@@ -225,10 +273,12 @@ const BillsDetail = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="body">Address</Typography>
+                <StyledTypography variant="body">Address</StyledTypography>
               </Box>
               <Box sx={{ width: "70%" }}>
-                <Typography variant="body">{bill?.patient_address}</Typography>
+                <StyledTypography variant="body">
+                  {bill?.patient_address}
+                </StyledTypography>
               </Box>
             </Box>
           </Box>
@@ -238,12 +288,12 @@ const BillsDetail = () => {
             <Table sx={{ minWidth: 380 }} aria-label="simple table">
               <TableHead sx={{ backgroundColor: "#EBEBEB" }}>
                 <TableRow>
-                  <TableCell>No</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Price</TableCell>
-                  <TableCell>Quantity</TableCell>
-                  <TableCell>UOM</TableCell>
-                  <TableCell>SubTotal</TableCell>
+                  <StyledTableCell>No</StyledTableCell>
+                  <StyledTableCell>Name</StyledTableCell>
+                  <StyledTableCell>Price</StyledTableCell>
+                  <StyledTableCell>Quantity</StyledTableCell>
+                  <StyledTableCell>UOM</StyledTableCell>
+                  <StyledTableCell>SubTotal</StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -255,15 +305,15 @@ const BillsDetail = () => {
                         "&:last-child td, &:last-child th": { border: 0 },
                       }}
                     >
-                      <TableCell component="th" scope="row">
+                      <StyledTableCell component="th" scope="row">
                         {index + 1}
                         {/* {generateID(row.id, row.created_time)} */}
-                      </TableCell>
-                      <TableCell>{row?.name}</TableCell>
-                      <TableCell>{row?.price}</TableCell>
-                      <TableCell>{row?.quantity}</TableCell>
-                      <TableCell>{row?.uom}</TableCell>
-                      <TableCell>{row?.subtotal}</TableCell>
+                      </StyledTableCell>
+                      <StyledTableCell>{row?.name}</StyledTableCell>
+                      <StyledTableCell>{row?.price}</StyledTableCell>
+                      <StyledTableCell>{row?.quantity}</StyledTableCell>
+                      <StyledTableCell>{row?.uom}</StyledTableCell>
+                      <StyledTableCell>{row?.subtotal}</StyledTableCell>
                     </TableRow>
                   ))}
               </TableBody>
@@ -272,8 +322,10 @@ const BillsDetail = () => {
         </Box>
         <Box sx={{ paddingBottom: "25px" }}>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography variant="body">Total : </Typography>
-            <Typography variant="body">{bill?.total_amount}</Typography>
+            <StyledTypography variant="body">Total : </StyledTypography>
+            <StyledTypography variant="body">
+              {bill?.total_amount}
+            </StyledTypography>
           </Box>
           <Divider sx={{ my: "6px" }} />
           <Box
@@ -282,21 +334,28 @@ const BillsDetail = () => {
               justifyContent: "space-between",
             }}
           >
-            <Typography variant="body">Deposit : </Typography>
-            <Typography variant="body">
+            <StyledTypography variant="body">Deposit : </StyledTypography>
+            <StyledTypography variant="body">
               {stage === "drafted"
                 ? totalDeposit
                 : payment?.total_deposit_amount}
-            </Typography>
+            </StyledTypography>
           </Box>
           <Divider sx={{ my: "6px" }} />
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography variant="body">Unpaid : </Typography>
-            <Typography variant="body">
+            <StyledTypography variant="body">Unpaid : </StyledTypography>
+            <StyledTypography variant="body">
               {stage === "drafted"
                 ? parseInt(bill?.total_amount) - totalDeposit
                 : payment?.unpaid_amount}
-            </Typography>
+            </StyledTypography>
+          </Box>
+          <Divider sx={{ my: "6px" }} />
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <StyledTypography variant="body">Created By : </StyledTypography>
+            <StyledTypography variant="body">
+              {bill?.created_user?.username}
+            </StyledTypography>
           </Box>
         </Box>
       </Container>
