@@ -42,25 +42,6 @@ const ResponsiveDrawer = ({
       <Toolbar />
       <Divider />
       <List>
-        <ListItem>
-          <Button
-            size="small"
-            variant={
-              location.pathname.includes("/patient") ? "contained" : "text"
-            }
-            fullWidth
-            startIcon={<PeopleIcon />}
-            onClick={() => history.push(`${url}/patients`)}
-            sx={{
-              display: "flex",
-              justifyContent: location.pathname.includes("/patient")
-                ? "flex-end"
-                : "flex-start",
-            }}
-          >
-            Patient
-          </Button>
-        </ListItem>
         <ListItem onClick={handleClick}>
           <Button
             size="small"
@@ -103,7 +84,7 @@ const ResponsiveDrawer = ({
                     : "flex-start",
                 }}
               >
-                Bills
+                Bill
               </Button>
             </ListItem>
             <ListItem>
@@ -123,6 +104,27 @@ const ResponsiveDrawer = ({
                 }}
               >
                 Deposit
+              </Button>
+            </ListItem>
+            <ListItem>
+              <Button
+                size="small"
+                variant={
+                  location.pathname.includes("/dailyClosing")
+                    ? "contained"
+                    : "text"
+                }
+                fullWidth
+                startIcon={<AnalyticsIcon />}
+                onClick={() => history.push(`${url}/dailyClosing`)}
+                sx={{
+                  display: "flex",
+                  justifyContent: location.pathname.includes("/dailyClosing")
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              >
+                Daily Closing
               </Button>
             </ListItem>
             <ListItem>
@@ -192,19 +194,19 @@ const ResponsiveDrawer = ({
           <Button
             size="small"
             variant={
-              location.pathname.includes("/dailyClosing") ? "contained" : "text"
+              location.pathname.includes("/patient") ? "contained" : "text"
             }
             fullWidth
-            startIcon={<AnalyticsIcon />}
-            onClick={() => history.push(`${url}/dailyClosing`)}
+            startIcon={<PeopleIcon />}
+            onClick={() => history.push(`${url}/patients`)}
             sx={{
               display: "flex",
-              justifyContent: location.pathname.includes("/dailyClosing")
+              justifyContent: location.pathname.includes("/patient")
                 ? "flex-end"
                 : "flex-start",
             }}
           >
-            Daily Closing
+            Patient
           </Button>
         </ListItem>
       </List>

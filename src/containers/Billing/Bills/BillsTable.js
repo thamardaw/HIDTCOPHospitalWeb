@@ -59,7 +59,7 @@ const BillsTable = () => {
   };
 
   const toDetailFromDrafted = (id) => {
-    history.push(`/dashboard/bills/details/${id}/drafted`);
+    history.push(`/dashboard/bills/details/${id}/draft`);
   };
 
   const toDetailFromCompleted = (id) => {
@@ -132,23 +132,24 @@ const BillsTable = () => {
   return (
     <Box sx={{ width: "100%" }}>
       <Tabs value={tab} onChange={handleTabChange} centered>
-        <Tab label="Drafted" />
+        <Tab label="Draft" />
         <Tab label="Outstanding" />
         <Tab label="Completed" />
       </Tabs>
       <TabPanel value={tab} index={0}>
         <CustomTable
-          tableName="Bills"
+          tableName="Bill"
           headCells={headCells}
           rows={draftedRows}
           onDelete={handleClickOpen}
           onDetail={toDetailFromDrafted}
           addDelete={false}
+          deleteBtnName="Cancel"
         />
       </TabPanel>
       <TabPanel value={tab} index={1}>
         <CustomTable
-          tableName="Bills"
+          tableName="Bill"
           headCells={headCells}
           rows={outstandingRows}
           onDelete={handleClickOpen}
@@ -160,7 +161,7 @@ const BillsTable = () => {
       </TabPanel>
       <TabPanel value={tab} index={2}>
         <CustomTable
-          tableName="Bills"
+          tableName="Bill"
           headCells={headCells}
           rows={completedRows}
           onDelete={handleClickOpen}

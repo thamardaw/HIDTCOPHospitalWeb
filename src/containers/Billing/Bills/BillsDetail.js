@@ -48,7 +48,7 @@ const BillsDetail = () => {
       "@media print { body { -webkit-print-color-adjust: exact; } @page { size: A4; margin: 200mm !important }}",
     content: () => receiptRef.current,
     onAfterPrint: () => {
-      if (stage === "drafted") {
+      if (stage === "draft") {
         to_print();
       }
     },
@@ -336,16 +336,14 @@ const BillsDetail = () => {
           >
             <StyledTypography variant="body">Deposit : </StyledTypography>
             <StyledTypography variant="body">
-              {stage === "drafted"
-                ? totalDeposit
-                : payment?.total_deposit_amount}
+              {stage === "draft" ? totalDeposit : payment?.total_deposit_amount}
             </StyledTypography>
           </Box>
           <Divider sx={{ my: "6px" }} />
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <StyledTypography variant="body">Unpaid : </StyledTypography>
             <StyledTypography variant="body">
-              {stage === "drafted"
+              {stage === "draft"
                 ? parseInt(bill?.total_amount) - totalDeposit
                 : payment?.unpaid_amount}
             </StyledTypography>
