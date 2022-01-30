@@ -67,7 +67,7 @@ const BillsDetail = () => {
     if (res.status === 200) {
       getDepositByPatientId(res.data.patient.id);
       setBill({ ...res.data });
-      if (res.data.payment.length !== 0) {
+      if (res.data.payment.length !== 0 && res.data.is_cancelled === false) {
         setPayment({ ...res.data.payment[0] });
         setShowPay(res.data.payment[0].is_outstanding);
       }
@@ -81,7 +81,7 @@ const BillsDetail = () => {
     if (bill) {
       const res = await api.put(`/api/payment/${parseInt(payment.id)}`);
       if (res.status === 200) {
-        history.goBack();
+        history.replace(`/dashboard/bills/details/${id}/completed`);
       }
     }
     return;
@@ -90,7 +90,7 @@ const BillsDetail = () => {
   const to_print = async () => {
     const res = await api.put(`/api/bill/print/${parseInt(id)}`);
     if (res.status === 200) {
-      history.goBack();
+      history.replace(`/dashboard/bills/details/${id}/outstanding`);
     }
     return;
   };
@@ -107,9 +107,18 @@ const BillsDetail = () => {
   // };
 
   useEffect(() => {
-    getBill();
+    if (
+      stage === "draft" ||
+      stage === "outstanding" ||
+      stage === "completed" ||
+      stage === "cancelled"
+    ) {
+      getBill();
+    } else {
+      history.goBack();
+    }
     // eslint-disable-next-line
-  }, []);
+  }, [stage]);
 
   return (
     <Paper sx={{ width: "100%", mb: 2 }}>
@@ -124,7 +133,7 @@ const BillsDetail = () => {
             },
             marginRight: "5px",
           }}
-          onClick={() => history.goBack()}
+          onClick={() => history.replace(`/dashboard/bills/form`)}
           size="small"
         >
           <ArrowBackIosNewIcon size="small" sx={{ fontSize: "1.4rem" }} />
@@ -337,6 +346,7 @@ const BillsDetail = () => {
             <StyledTypography variant="body">Deposit : </StyledTypography>
             <StyledTypography variant="body">
               {stage === "draft" ? totalDeposit : payment?.total_deposit_amount}
+              {stage === "cancelled" && "0"}
             </StyledTypography>
           </Box>
           <Divider sx={{ my: "6px" }} />
@@ -346,6 +356,7 @@ const BillsDetail = () => {
               {stage === "draft"
                 ? parseInt(bill?.total_amount) - totalDeposit
                 : payment?.unpaid_amount}
+              {stage === "cancelled" && bill?.total_amount}
             </StyledTypography>
           </Box>
           <Divider sx={{ my: "6px" }} />

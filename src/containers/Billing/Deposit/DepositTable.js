@@ -45,8 +45,9 @@ const DepositTable = () => {
   const api = useAxios();
   const [activeRows, setActiveRows] = useState([]);
   const [usedRows, setUsedRows] = useState([]);
+  const [cancelledRows, setCancelledRows] = useState([]);
   const [open, setOpen] = useState(false);
-  //   const [id, setId] = useState("");
+  const [id, setId] = useState("");
   const [tab, setTab] = useState(0);
   const { setScreenLoading } = useContext(LoadingContext);
 
@@ -55,7 +56,7 @@ const DepositTable = () => {
   };
 
   const handleClickOpen = (id) => {
-    // setId(id);
+    setId(id);
     setOpen(true);
   };
 
@@ -99,32 +100,61 @@ const DepositTable = () => {
     // eslint-disable-next-line
   }, []);
 
-  const deleteItem = async () => {
-    // await api.delete(`/api/deposit/${parseInt(id.split("-")[1])}`);
-    // handleClose();
-    // getActiveDeposit();
+  const getCancelledDeposit = useCallback(async () => {
+    const res = await api.get("/api/deposit/cancelled");
+    if (res.status === 200) {
+      const data = res.data.map((row) => {
+        return {
+          id: row.id,
+          patient_name: row.patient.name,
+          patient_id: generateID(row.patient_id, row.patient.created_time),
+          amount: row.amount,
+        };
+      });
+      setCancelledRows(data);
+    }
+    return;
+    // eslint-disable-next-line
+  }, []);
+
+  const cancelDeposit = async () => {
+    await api.put(`/api/deposit/cancel/${id}`);
+    handleClose();
+    getActiveDeposit();
+    getUsedDeposit();
+    getCancelledDeposit();
   };
 
   useEffect(() => {
     getActiveDeposit();
     getUsedDeposit();
+    getCancelledDeposit();
     // eslint-disable-next-line
   }, []);
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Tabs value={tab} onChange={handleTabChange} centered>
-        <Tab label="Active" />
-        <Tab label="Used" />
-      </Tabs>
+      <Box display="flex" justifyContent="center" width="100%">
+        <Tabs
+          value={tab}
+          onChange={handleTabChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
+        >
+          <Tab label="Active" />
+          <Tab label="Used" />
+          <Tab label="Cancelled" />
+        </Tabs>
+      </Box>
       <TabPanel value={tab} index={0}>
         <CustomTable
           tableName="Deposit"
           headCells={headCells}
           rows={activeRows}
           onDelete={handleClickOpen}
-          addDelete={false}
           addEdit={false}
+          deleteBtnName="Cancel"
         />
       </TabPanel>
       <TabPanel value={tab} index={1}>
@@ -132,6 +162,17 @@ const DepositTable = () => {
           tableName="Deposit"
           headCells={headCells}
           rows={usedRows}
+          onDelete={handleClickOpen}
+          addDelete={false}
+          addEdit={false}
+          addCreate={false}
+        />
+      </TabPanel>
+      <TabPanel value={tab} index={2}>
+        <CustomTable
+          tableName="Deposit"
+          headCells={headCells}
+          rows={cancelledRows}
           onDelete={handleClickOpen}
           addDelete={false}
           addEdit={false}
@@ -147,12 +188,12 @@ const DepositTable = () => {
         <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete?
+            Are you sure you want to cancel the deposit?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={deleteItem} autoFocus>
+          <Button onClick={cancelDeposit} autoFocus>
             Ok
           </Button>
         </DialogActions>
