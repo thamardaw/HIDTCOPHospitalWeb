@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Button,
   Container,
+  Divider,
   IconButton,
   Menu,
   MenuItem,
@@ -22,7 +23,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/system";
 import { useHistory } from "react-router-dom";
 import { useAxios } from "../../../hooks";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -55,6 +56,8 @@ const BillsForm = () => {
   const { setScreenLoading } = useContext(LoadingContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const quantityRef = useRef();
+  const SSIRef = useRef();
 
   const handleEdit = (event, index) => {
     // console.log((billItems[index].quantity = 10));
@@ -133,9 +136,10 @@ const BillsForm = () => {
     setTotalAmount(total);
   };
 
-  const addItem = () => {
+  const addItem = (e) => {
+    e.preventDefault();
     if (currentSSI) {
-      billItems.push({
+      billItems.unshift({
         ...currentSSI,
         quantity: parseInt(currentQuantity),
         remark: "",
@@ -143,6 +147,7 @@ const BillsForm = () => {
       setCurrentSSI(null);
       setCurrentQuantity(0);
       calculateTotal();
+      SSIRef.current.focus();
     }
   };
 
@@ -168,7 +173,7 @@ const BillsForm = () => {
         bill_items: billItems,
       });
       if (res.status === 200) {
-        history.replace(`/dashboard/bills/details/${res.data.id}/drafted`);
+        history.replace(`/dashboard/bills/details/${res.data.id}/draft`);
       }
       setLoading(false);
     }
@@ -184,11 +189,11 @@ const BillsForm = () => {
             component="div"
             //   sx={{ fontSize: { xs: "14px", sm: "16px" } }}
           >
-            Patient Information
+            New Bill
           </Typography>
         </Toolbar>
         <Container>
-          <Box
+          {/* <Box
             sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
           >
             <Box
@@ -200,9 +205,8 @@ const BillsForm = () => {
               }}
             >
               <Box sx={{ width: "100%" }}>
-                <Typography variant="p">Patient Name</Typography>
+                <Typography variant="p">Select Patient</Typography>
               </Box>
-              {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
               <Box
                 sx={{
                   width: "100%",
@@ -213,11 +217,11 @@ const BillsForm = () => {
                 <Autocomplete
                   value={currentPatient}
                   options={patient}
-                  getOptionLabel={(option) => option.name}
+                  getOptionLabel={(option) => `${option.name}, ${option.id}`}
                   renderOption={(props, option) => {
                     return (
                       <Box {...props} key={option.id}>
-                        {option.name}
+                        {option.name}, {option.id}
                       </Box>
                     );
                   }}
@@ -261,7 +265,6 @@ const BillsForm = () => {
               <Box sx={{ width: "100%" }}>
                 <Typography variant="p">Pateint ID</Typography>
               </Box>
-              {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
               <Autocomplete
                 value={currentPatient}
                 options={patient}
@@ -286,8 +289,8 @@ const BillsForm = () => {
                 )}
               />
             </Box>
-          </Box>
-          <Box
+          </Box> */}
+          {/* <Box
             sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
           >
             <Box
@@ -328,9 +331,9 @@ const BillsForm = () => {
                 value={currentPatient ? currentPatient?.address : ""}
               />
             </Box>
-          </Box>
+          </Box> */}
         </Container>
-        <Container sx={{ padding: "20px 0px" }}>
+        <Container sx={{ paddingBottom: "20px" }}>
           <Box
             sx={{
               display: "flex",
@@ -358,10 +361,9 @@ const BillsForm = () => {
                   }}
                 >
                   <Box sx={{ width: "100%" }}>
-                    <Typography variant="p">Sales & Service Item</Typography>
+                    <Typography variant="p">Select Patient</Typography>
                   </Box>
-                  {/* <TextField size="small" fullWidth margin="dense" />
-                   */}
+                  {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
                   <Box
                     sx={{
                       width: "100%",
@@ -370,19 +372,26 @@ const BillsForm = () => {
                     }}
                   >
                     <Autocomplete
-                      value={currentSSI}
-                      options={salesServiceItem}
-                      style={{ width: "90%" }}
-                      getOptionLabel={(option) => option.name}
+                      value={currentPatient}
+                      options={patient}
+                      getOptionLabel={(option) =>
+                        `${option.name}, ${option.id}`
+                      }
                       renderOption={(props, option) => {
                         return (
-                          <Box {...props} key={option.sales_service_item_id}>
-                            {option.name}
+                          <Box {...props} key={option.id}>
+                            {option.name}, {option.id}
                           </Box>
                         );
                       }}
+                      style={{ width: "90%" }}
                       onChange={(event, newValue) => {
-                        setCurrentSSI(newValue);
+                        if (newValue) {
+                          getDepositByPatientId(newValue.id);
+                        } else {
+                          setTotalDeposit(0);
+                        }
+                        setCurrectPatient(newValue);
                       }}
                       renderInput={(params) => (
                         <TextField
@@ -398,47 +407,109 @@ const BillsForm = () => {
                       size="small"
                       color="primary"
                       sx={{ marginTop: "5px" }}
-                      onClick={() =>
-                        history.push("/dashboard/salesServiceItem/form")
-                      }
+                      onClick={() => history.push("/dashboard/patient/form")}
                     >
                       <AddIcon fontSize="large" />
                     </IconButton>
                   </Box>
                 </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <Box sx={{ width: "100%" }}>
-                    <Typography variant="p">Quantity</Typography>
-                  </Box>
-                  <TextField
-                    size="small"
-                    fullWidth
-                    margin="dense"
-                    type="number"
-                    InputProps={{
-                      inputProps: { min: "0", step: "1" },
+                <Divider sx={{ margin: "15px 0px" }} />
+                <form onSubmit={addItem}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
                     }}
-                    value={currentQuantity}
-                    onChange={(e) => setCurrentQuantity(e.target.value)}
-                  />
-                </Box>
-                <Box
-                  sx={{
-                    paddingTop: "10px",
-                    display: "flex",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <Button variant="contained" onClick={addItem}>
-                    ADD
-                  </Button>
-                </Box>
+                  >
+                    <Box sx={{ width: "100%" }}>
+                      <Typography variant="p">
+                        Select Sales & Service Item
+                      </Typography>
+                    </Box>
+                    {/* <TextField size="small" fullWidth margin="dense" />
+                     */}
+                    <Box
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Autocomplete
+                        value={currentSSI}
+                        options={salesServiceItem}
+                        style={{ width: "90%" }}
+                        getOptionLabel={(option) => option.name}
+                        renderOption={(props, option) => {
+                          return (
+                            <Box {...props} key={option.sales_service_item_id}>
+                              {option.name}
+                            </Box>
+                          );
+                        }}
+                        onChange={(event, newValue) => {
+                          setCurrentSSI(newValue);
+                          quantityRef.current.focus();
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            inputRef={SSIRef}
+                            variant="outlined"
+                            fullWidth
+                            size="small"
+                            margin="normal"
+                          />
+                        )}
+                      />
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        sx={{ marginTop: "5px" }}
+                        onClick={() =>
+                          history.push("/dashboard/salesServiceItem/form")
+                        }
+                      >
+                        <AddIcon fontSize="large" />
+                      </IconButton>
+                    </Box>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <Box sx={{ width: "100%" }}>
+                      <Typography variant="p">Quantity</Typography>
+                    </Box>
+                    <TextField
+                      inputRef={quantityRef}
+                      size="small"
+                      fullWidth
+                      margin="normal"
+                      type="number"
+                      InputProps={{
+                        inputProps: { min: "0", step: "1" },
+                      }}
+                      value={currentQuantity}
+                      onChange={(e) => setCurrentQuantity(e.target.value)}
+                    />
+                  </Box>
+                  <Box
+                    sx={{
+                      paddingTop: "10px",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <Button variant="contained" type="submit">
+                      ADD
+                    </Button>
+                  </Box>
+                </form>
               </Box>
               <Box sx={{ paddingTop: "10px" }}>
                 <LoadingButton
@@ -447,7 +518,7 @@ const BillsForm = () => {
                   fullWidth
                   onClick={createBill}
                 >
-                  Create Bill
+                  save Bill
                 </LoadingButton>
               </Box>
               <Box sx={{ paddingTop: "10px" }}>
@@ -472,20 +543,63 @@ const BillsForm = () => {
                 <Box
                   sx={{
                     display: "flex",
-                    justifyContent: "space-between",
+                    flexDirection: "row",
+                    alignItems: "center",
                   }}
                 >
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                  >
-                    Bill Items
+                  <Box sx={{ width: "30%" }}>
+                    <Typography variant="body">Patient ID</Typography>
+                  </Box>
+                  <Typography variant="body">: {currentPatient?.id}</Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    margin: "5px 0px",
+                  }}
+                >
+                  <Box sx={{ width: "30%" }}>
+                    <Typography variant="body">Patient Name</Typography>
+                  </Box>
+                  <Typography variant="body">
+                    : {currentPatient?.name}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    margin: "5px 0px",
+                  }}
+                >
+                  <Box sx={{ width: "30%" }}>
+                    <Typography variant="body">Patient Phone</Typography>
+                  </Box>
+                  <Typography variant="body">
+                    : {currentPatient?.contactDetails}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    margin: "5px 0px",
+                  }}
+                >
+                  <Box sx={{ width: "30%" }}>
+                    <Typography variant="body">Patient Address</Typography>
+                  </Box>
+                  <Typography variant="body">
+                    : {currentPatient?.address}
                   </Typography>
                 </Box>
               </Container>
               <Container sx={{ paddingTop: "10px" }}>
-                <TableContainer sx={{ maxHeight: 270 }}>
+                <TableContainer sx={{ maxHeight: 260 }}>
                   <Table
                     sx={{ minWidth: 380 }}
                     aria-label="simple table"
@@ -563,14 +677,58 @@ const BillsForm = () => {
                     component="div"
                     sx={{ fontSize: { xs: "14px", sm: "16px" } }}
                   >
-                    Deposit : {totalDeposit}MMK
+                    Deposit :
                   </Typography>
                   <Typography
                     variant="h6"
                     component="div"
                     sx={{ fontSize: { xs: "14px", sm: "16px" } }}
                   >
-                    Total : {totalAmount}MMK
+                    {totalDeposit}MMK
+                  </Typography>
+                </Box>
+                <Divider />
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    Total :
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    {totalAmount}MMK
+                  </Typography>
+                </Box>
+                <Divider />
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    Unpaid :
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    {totalAmount - totalDeposit}MMK
                   </Typography>
                 </Box>
               </Container>

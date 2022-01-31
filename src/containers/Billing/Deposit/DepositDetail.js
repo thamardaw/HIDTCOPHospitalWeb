@@ -162,6 +162,42 @@ const CategoryDetail = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
+              <StyledTypography variant="body2">Patient Phone</StyledTypography>
+            </Box>
+            <Box sx={{ width: "70%" }}>
+              <StyledTypography variant="body2">
+                {details?.patient && details.patient.contact_details}
+              </StyledTypography>
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              margin: "20px 0px",
+            }}
+          >
+            <Box sx={{ width: "30%" }}>
+              <StyledTypography variant="body2">
+                Patient Address
+              </StyledTypography>
+            </Box>
+            <Box sx={{ width: "70%" }}>
+              <StyledTypography variant="body2">
+                {details?.patient && details.patient.address}
+              </StyledTypography>
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              margin: "20px 0px",
+            }}
+          >
+            <Box sx={{ width: "30%" }}>
               <StyledTypography variant="body2">Amount</StyledTypography>
             </Box>
             <Box sx={{ width: "70%" }}>

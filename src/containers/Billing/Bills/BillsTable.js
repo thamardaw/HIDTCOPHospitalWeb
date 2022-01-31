@@ -1,4 +1,13 @@
-import { Tab, Tabs } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Tab,
+  Tabs,
+} from "@mui/material";
 import { Box } from "@mui/material";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -45,6 +54,9 @@ const BillsTable = () => {
   const [draftedRows, setDraftedRows] = useState([]);
   const [outstandingRows, setOutstandingRows] = useState([]);
   const [completedRows, setCompletedRows] = useState([]);
+  const [cancelledRows, setCancelledRows] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [id, setId] = useState("");
   const [tab, setTab] = useState(0);
   const { setScreenLoading } = useContext(LoadingContext);
 
@@ -52,18 +64,29 @@ const BillsTable = () => {
     setTab(newTab);
   };
 
-  const handleClickOpen = (id) => {};
+  const handleClickOpen = (id) => {
+    setId(id);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const toDetailFromOutstanding = (id) => {
     history.push(`/dashboard/bills/details/${id}/outstanding`);
   };
 
   const toDetailFromDrafted = (id) => {
-    history.push(`/dashboard/bills/details/${id}/drafted`);
+    history.push(`/dashboard/bills/details/${id}/draft`);
   };
 
   const toDetailFromCompleted = (id) => {
     history.push(`/dashboard/bills/details/${id}/completed`);
+  };
+
+  const toDetailFromCancelled = (id) => {
+    history.push(`/dashboard/bills/details/${id}/cancelled`);
   };
 
   const getDraftedData = useCallback(async () => {
@@ -122,45 +145,82 @@ const BillsTable = () => {
     // eslint-disable-next-line
   }, []);
 
+  const getCancelledData = useCallback(async () => {
+    const res = await api.get("/api/bill/cancelled");
+    if (res.status === 200) {
+      const data = res.data.map((row) => {
+        return {
+          id: row.id,
+          name: row.patient_name,
+          phone: row.patient_phone,
+          address: row.patient_address,
+          totalAmount: row.total_amount,
+        };
+      });
+      setCancelledRows(data);
+    }
+    return;
+    // eslint-disable-next-line
+  }, []);
+
+  const cancelBill = async () => {
+    await api.put(`/api/bill/cancel/${id}`);
+    handleClose();
+    getDraftedData();
+    getOutstandingData();
+    getCompletedData();
+    getCancelledData();
+  };
+
   useEffect(() => {
     getDraftedData();
     getOutstandingData();
     getCompletedData();
+    getCancelledData();
     // eslint-disable-next-line
   }, []);
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Tabs value={tab} onChange={handleTabChange} centered>
-        <Tab label="Drafted" />
-        <Tab label="Outstanding" />
-        <Tab label="Completed" />
-      </Tabs>
+      <Box display="flex" justifyContent="center" width="100%">
+        <Tabs
+          value={tab}
+          onChange={handleTabChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
+        >
+          <Tab label="Draft" />
+          <Tab label="Outstanding" />
+          <Tab label="Completed" />
+          <Tab label="Cancelled" />
+        </Tabs>
+      </Box>
       <TabPanel value={tab} index={0}>
         <CustomTable
-          tableName="Bills"
+          tableName="Bill"
           headCells={headCells}
           rows={draftedRows}
           onDelete={handleClickOpen}
           onDetail={toDetailFromDrafted}
-          addDelete={false}
+          deleteBtnName="Cancel"
         />
       </TabPanel>
       <TabPanel value={tab} index={1}>
         <CustomTable
-          tableName="Bills"
+          tableName="Bill"
           headCells={headCells}
           rows={outstandingRows}
           onDelete={handleClickOpen}
           onDetail={toDetailFromOutstanding}
-          addDelete={false}
           addCreate={false}
           addEdit={false}
+          deleteBtnName="Cancel"
         />
       </TabPanel>
       <TabPanel value={tab} index={2}>
         <CustomTable
-          tableName="Bills"
+          tableName="Bill"
           headCells={headCells}
           rows={completedRows}
           onDelete={handleClickOpen}
@@ -170,6 +230,37 @@ const BillsTable = () => {
           addEdit={false}
         />
       </TabPanel>
+      <TabPanel value={tab} index={3}>
+        <CustomTable
+          tableName="Bill"
+          headCells={headCells}
+          rows={cancelledRows}
+          onDelete={handleClickOpen}
+          onDetail={toDetailFromCancelled}
+          addDelete={false}
+          addCreate={false}
+          addEdit={false}
+        />
+      </TabPanel>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to cancel the bill?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={cancelBill} autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
