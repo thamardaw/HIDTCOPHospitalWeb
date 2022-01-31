@@ -265,7 +265,6 @@ const BillsForm = () => {
               <Box sx={{ width: "100%" }}>
                 <Typography variant="p">Pateint ID</Typography>
               </Box>
-              
               <Autocomplete
                 value={currentPatient}
                 options={patient}

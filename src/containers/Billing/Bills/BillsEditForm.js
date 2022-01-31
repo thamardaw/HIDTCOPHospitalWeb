@@ -157,7 +157,6 @@ const BillsEditForm = () => {
           <Typography
             variant="h6"
             component="div"
-
             //   sx={{ fontSize: { xs: "14px", sm: "16px" } }}
           >
             Edit Bill
