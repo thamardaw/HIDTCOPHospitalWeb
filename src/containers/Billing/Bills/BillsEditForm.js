@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Button,
   Container,
+  Divider,
   IconButton,
   Menu,
   MenuItem,
@@ -156,13 +157,15 @@ const BillsEditForm = () => {
           <Typography
             variant="h6"
             component="div"
+
             //   sx={{ fontSize: { xs: "14px", sm: "16px" } }}
           >
-            Patient Info
+            Edit Bill
           </Typography>
         </Toolbar>
+
         <Container>
-          <Box
+          {/* <Box
             sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
           >
             <Box
@@ -178,7 +181,6 @@ const BillsEditForm = () => {
                   Patient Name
                 </Typography>
               </Box>
-              {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
               <Box
                 sx={{
                   width: "100%",
@@ -203,7 +205,6 @@ const BillsEditForm = () => {
                   Pateint ID
                 </Typography>
               </Box>
-              {/* <TextField size="small" sx={{ width: "90%" }} margin="normal" /> */}
               <Box
                 sx={{
                   width: "100%",
@@ -221,8 +222,8 @@ const BillsEditForm = () => {
                 </Typography>
               </Box>
             </Box>
-          </Box>
-          <Box
+          </Box> */}
+          {/* <Box
             sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
           >
             <Box
@@ -277,13 +278,14 @@ const BillsEditForm = () => {
                 </Typography>
               </Box>
             </Box>
-          </Box>
+          </Box> */}
         </Container>
-        <Container sx={{ padding: "20px 0px" }}>
+        <Container sx={{ paddingBottom: "20px" }}>
           <Box
             sx={{
               display: "flex",
               flexDirection: { xs: "column", sm: "column", md: "row" },
+              alignItems: "flex-end",
             }}
           >
             <Box
@@ -368,7 +370,7 @@ const BillsEditForm = () => {
                   <TextField
                     size="small"
                     fullWidth
-                    margin="dense"
+                    margin="normal"
                     type="number"
                     InputProps={{
                       inputProps: { min: "0", step: "1" },
@@ -415,20 +417,70 @@ const BillsEditForm = () => {
                 <Box
                   sx={{
                     display: "flex",
-                    justifyContent: "space-between",
+                    flexDirection: "row",
+                    alignItems: "center",
                   }}
                 >
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                  >
-                    Bill Items
+                  <Box sx={{ width: "30%" }}>
+                    <Typography variant="body">Patient ID</Typography>
+                  </Box>
+                  <Typography variant="body">
+                    :{" "}
+                    {details?.patient_id &&
+                      generateID(
+                        details?.patient_id,
+                        details?.patient.created_time
+                      )}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    margin: "5px 0px",
+                  }}
+                >
+                  <Box sx={{ width: "30%" }}>
+                    <Typography variant="body">Patient Name</Typography>
+                  </Box>
+                  <Typography variant="body">
+                    : {details?.patient_name}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    margin: "5px 0px",
+                  }}
+                >
+                  <Box sx={{ width: "30%" }}>
+                    <Typography variant="body">Patient Phone</Typography>
+                  </Box>
+                  <Typography variant="body">
+                    : {details?.patient_phone}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    margin: "5px 0px",
+                  }}
+                >
+                  <Box sx={{ width: "30%" }}>
+                    <Typography variant="body">Patient Address</Typography>
+                  </Box>
+                  <Typography variant="body">
+                    : {details?.patient_address}
                   </Typography>
                 </Box>
               </Container>
               <Container sx={{ paddingTop: "10px" }}>
-                <TableContainer sx={{ maxHeight: 225 }}>
+                <TableContainer sx={{ maxHeight: 220 }}>
                   <Table
                     sx={{ minWidth: 380 }}
                     aria-label="simple table"
@@ -494,7 +546,7 @@ const BillsEditForm = () => {
                 </TableContainer>
               </Container>
               <Container sx={{ paddingTop: { xs: "20px", sm: "5px" } }}>
-                <Box
+                {/* <Box
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -513,6 +565,74 @@ const BillsEditForm = () => {
                     sx={{ fontSize: { xs: "14px", sm: "16px" } }}
                   >
                     Total : {details?.total_amount}MMK
+                  </Typography>
+                </Box> */}
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    Deposit :
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    {totalDeposit}MMK
+                  </Typography>
+                </Box>
+                <Divider />
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    Total :
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    {details?.total_amount}MMK
+                  </Typography>
+                </Box>
+                <Divider />
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    Unpaid :
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                  >
+                    {details?.total_amount &&
+                      details?.total_amount - totalDeposit}
+                    MMK
                   </Typography>
                 </Box>
               </Container>
