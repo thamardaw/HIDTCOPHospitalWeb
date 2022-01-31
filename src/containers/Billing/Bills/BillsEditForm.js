@@ -23,7 +23,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/system";
 import { useHistory, useParams } from "react-router-dom";
 import { useAxios } from "../../../hooks";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -53,7 +53,8 @@ const BillsEditForm = () => {
     quantity: 0,
     price: 0,
   });
-
+  const quantityRef = useRef();
+  const SSIRef = useRef();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -121,7 +122,8 @@ const BillsEditForm = () => {
     setLoading(false);
   };
 
-  const addItem = async () => {
+  const addItem = async (e) => {
+    e.preventDefault();
     setLoading(true);
     const res = await api.post(`/api/bill/${parseInt(id)}/billItem/`, {
       ...currentSSI,
@@ -133,6 +135,7 @@ const BillsEditForm = () => {
       getData();
     }
     setLoading(false);
+    SSIRef.current.focus();
   };
 
   const removeItem = async (itemId) => {
@@ -301,99 +304,104 @@ const BillsEditForm = () => {
                   borderRadius: "10px",
                 }}
               >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <Box sx={{ width: "100%" }}>
-                    <Typography variant="p">Sales & Service Item</Typography>
-                  </Box>
-                  {/* <TextField size="small" fullWidth margin="dense" />
-                   */}
+                <form onSubmit={addItem}>
                   <Box
                     sx={{
-                      width: "100%",
                       display: "flex",
-                      alignItems: "center",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
                     }}
                   >
-                    <Autocomplete
-                      value={currentSSI}
-                      options={salesServiceItem}
-                      style={{ width: "90%" }}
-                      getOptionLabel={(option) => option.name}
-                      renderOption={(props, option) => {
-                        return (
-                          <Box {...props} key={option.sales_service_item_id}>
-                            {option.name}
-                          </Box>
-                        );
+                    <Box sx={{ width: "100%" }}>
+                      <Typography variant="p">Sales & Service Item</Typography>
+                    </Box>
+                    {/* <TextField size="small" fullWidth margin="dense" />
+                     */}
+                    <Box
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
                       }}
-                      onChange={(event, newValue) => {
-                        setCurrentSSI(newValue);
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="outlined"
-                          fullWidth
-                          size="small"
-                          margin="normal"
-                        />
-                      )}
-                    />
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      sx={{ marginTop: "5px" }}
-                      onClick={() =>
-                        history.push("/dashboard/salesServiceItem/form")
-                      }
                     >
-                      <AddIcon fontSize="large" />
-                    </IconButton>
+                      <Autocomplete
+                        value={currentSSI}
+                        options={salesServiceItem}
+                        style={{ width: "90%" }}
+                        getOptionLabel={(option) => option.name}
+                        renderOption={(props, option) => {
+                          return (
+                            <Box {...props} key={option.sales_service_item_id}>
+                              {option.name}
+                            </Box>
+                          );
+                        }}
+                        onChange={(event, newValue) => {
+                          setCurrentSSI(newValue);
+                          quantityRef.current.focus();
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            inputRef={SSIRef}
+                            variant="outlined"
+                            fullWidth
+                            size="small"
+                            margin="normal"
+                          />
+                        )}
+                      />
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        sx={{ marginTop: "5px" }}
+                        onClick={() =>
+                          history.push("/dashboard/salesServiceItem/form")
+                        }
+                      >
+                        <AddIcon fontSize="large" />
+                      </IconButton>
+                    </Box>
                   </Box>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <Box sx={{ width: "100%" }}>
-                    <Typography variant="p">Quantity</Typography>
-                  </Box>
-                  <TextField
-                    size="small"
-                    fullWidth
-                    margin="normal"
-                    type="number"
-                    InputProps={{
-                      inputProps: { min: "0", step: "1" },
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
                     }}
-                    value={currentQuantity}
-                    onChange={(e) => setCurrentQuantity(e.target.value)}
-                  />
-                </Box>
-                <Box
-                  sx={{
-                    paddingTop: "10px",
-                    display: "flex",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <LoadingButton
-                    loading={loading}
-                    variant="contained"
-                    onClick={addItem}
                   >
-                    ADD
-                  </LoadingButton>
-                </Box>
+                    <Box sx={{ width: "100%" }}>
+                      <Typography variant="p">Quantity</Typography>
+                    </Box>
+                    <TextField
+                      inputRef={quantityRef}
+                      size="small"
+                      fullWidth
+                      margin="normal"
+                      type="number"
+                      InputProps={{
+                        inputProps: { min: "0", step: "1" },
+                      }}
+                      value={currentQuantity}
+                      onChange={(e) => setCurrentQuantity(e.target.value)}
+                    />
+                  </Box>
+                  <Box
+                    sx={{
+                      paddingTop: "10px",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <LoadingButton
+                      loading={loading}
+                      variant="contained"
+                      type="submit"
+                    >
+                      ADD
+                    </LoadingButton>
+                  </Box>
+                </form>
               </Box>
               <Box sx={{ paddingTop: "10px" }}>
                 <Button
