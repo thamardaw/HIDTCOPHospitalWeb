@@ -103,7 +103,7 @@ const BillsTable = () => {
     const res = await api.get("/api/bill/drafted");
     if (res.status === 200) {
       const data = res.data.map((row) => {
-        const ID = generateID(row.id, row.created_time);
+        const ID = generateID(row.id);
         return {
           id: ID,
           name: row.patient_name,
@@ -123,7 +123,7 @@ const BillsTable = () => {
     const res = await api.get("/api/bill/outstanding");
     if (res.status === 200) {
       const data = res.data.map((row) => {
-        const ID = generateID(row.id, row.created_time);
+        const ID = generateID(row.id);
         return {
           id: ID,
           name: row.patient_name,
@@ -142,7 +142,7 @@ const BillsTable = () => {
     const res = await api.get("/api/bill/completed");
     if (res.status === 200) {
       const data = res.data.map((row) => {
-        const ID = generateID(row.id, row.created_time);
+        const ID = generateID(row.id);
         return {
           id: ID,
           name: row.patient_name,
@@ -161,7 +161,7 @@ const BillsTable = () => {
     const res = await api.get("/api/bill/cancelled");
     if (res.status === 200) {
       const data = res.data.map((row) => {
-        const ID = generateID(row.id, row.created_time);
+        const ID = generateID(row.id);
         return {
           id: ID,
           name: row.patient_name,

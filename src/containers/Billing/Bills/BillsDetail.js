@@ -189,7 +189,7 @@ const BillsDetail = () => {
                 <StyledTypography variant="body">Bill ID</StyledTypography>
               </Box>
               <StyledTypography variant="body">
-                {bill?.id && generateID(bill?.id, bill?.created_time)}
+                {bill?.id && generateID(bill?.id)}
               </StyledTypography>
             </Box>
             <Box

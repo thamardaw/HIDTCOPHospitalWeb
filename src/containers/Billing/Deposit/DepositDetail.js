@@ -33,9 +33,11 @@ const CategoryDetail = () => {
   });
 
   const getData = async () => {
-    const res = await api.get(`/api/deposit/${parseInt(id)}`);
+    const res = await api.get(`/api/deposit/${parseInt(id.split("-")[1])}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
+    } else {
+      history.goBack();
     }
   };
 
@@ -119,7 +121,7 @@ const CategoryDetail = () => {
               <StyledTypography variant="body2">Deposit ID</StyledTypography>
             </Box>
             <StyledTypography variant="body2">
-              {details?.id && details.id}
+              {details?.id && generateID(details.id)}
             </StyledTypography>
           </Box>
           <Box

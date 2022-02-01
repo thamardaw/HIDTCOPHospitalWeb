@@ -65,7 +65,7 @@ const DepositForm = () => {
       ...details,
     });
     if (res.status === 200) {
-      history.replace(`/dashboard/deposit/details/${res.data.id}`);
+      history.replace(`/dashboard/deposit/details/${generateID(res.data.id)}`);
     }
     setLoading(false);
   };

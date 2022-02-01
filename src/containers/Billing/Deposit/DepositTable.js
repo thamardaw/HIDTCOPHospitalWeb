@@ -69,8 +69,9 @@ const DepositTable = () => {
     const res = await api.get("/api/deposit/active");
     if (res.status === 200) {
       const data = res.data.map((row) => {
+        const ID = generateID(row.id);
         return {
-          id: row.id,
+          id: ID,
           patient_name: row.patient.name,
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount,
@@ -87,8 +88,9 @@ const DepositTable = () => {
     const res = await api.get("/api/deposit/used");
     if (res.status === 200) {
       const data = res.data.map((row) => {
+        const ID = generateID(row.id);
         return {
-          id: row.id,
+          id: ID,
           patient_name: row.patient.name,
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount,
@@ -104,8 +106,9 @@ const DepositTable = () => {
     const res = await api.get("/api/deposit/cancelled");
     if (res.status === 200) {
       const data = res.data.map((row) => {
+        const ID = generateID(row.id);
         return {
-          id: row.id,
+          id: ID,
           patient_name: row.patient.name,
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount,
@@ -118,7 +121,7 @@ const DepositTable = () => {
   }, []);
 
   const cancelDeposit = async () => {
-    await api.put(`/api/deposit/cancel/${id}`);
+    await api.put(`/api/deposit/cancel/${parseInt(id.split("-")[1])}`);
     handleClose();
     getActiveDeposit();
     getUsedDeposit();
