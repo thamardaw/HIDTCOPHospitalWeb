@@ -488,7 +488,7 @@ const BillsForm = () => {
                     <TextField
                       inputRef={quantityRef}
                       size="small"
-                      fullWidth
+                      style={{ width: "85%" }}
                       margin="normal"
                       type="number"
                       InputProps={{

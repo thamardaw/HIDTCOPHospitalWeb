@@ -92,7 +92,7 @@ const BillsEditForm = () => {
     // eslint-disable-next-line
   };
   const getDepositByPatientId = async (id) => {
-    const res = await api.get(`/api/deposit/active/${id}`);
+    const res = await api.get(`/api/deposit/active/${parseInt(id)}`);
     if (res.status === 200) {
       const total = res.data.reduce((total, num) => total + num.amount, 0);
       setTotalDeposit(total);
@@ -100,7 +100,7 @@ const BillsEditForm = () => {
   };
 
   const getData = async () => {
-    const res = await api.get(`/api/bill/${parseInt(id)}`);
+    const res = await api.get(`/api/bill/${parseInt(id.split("-")[1])}`);
     if (res.status === 200) {
       getDepositByPatientId(res.data.patient.id);
       setDetails({ ...res.data });
@@ -125,12 +125,15 @@ const BillsEditForm = () => {
   const addItem = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const res = await api.post(`/api/bill/${parseInt(id)}/billItem/`, {
-      ...currentSSI,
-      sales_service_item_id: parseInt(currentSSI.sales_service_item_id),
-      quantity: parseInt(currentQuantity),
-      remark: "",
-    });
+    const res = await api.post(
+      `/api/bill/${parseInt(id.split("-")[1])}/billItem/`,
+      {
+        ...currentSSI,
+        sales_service_item_id: parseInt(currentSSI.sales_service_item_id),
+        quantity: parseInt(currentQuantity),
+        remark: "",
+      }
+    );
     if (res.status === 200) {
       getData();
     }
@@ -140,7 +143,7 @@ const BillsEditForm = () => {
 
   const removeItem = async (itemId) => {
     const res = await api.delete(
-      `/api/bill/${parseInt(id)}/billItem/${itemId}`
+      `/api/bill/${parseInt(id.split("-")[1])}/billItem/${itemId}`
     );
     if (res.status === 200) {
       getData();
@@ -375,7 +378,7 @@ const BillsEditForm = () => {
                     <TextField
                       inputRef={quantityRef}
                       size="small"
-                      fullWidth
+                      style={{ width: "85%" }}
                       margin="normal"
                       type="number"
                       InputProps={{

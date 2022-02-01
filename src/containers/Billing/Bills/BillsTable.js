@@ -14,6 +14,7 @@ import { useHistory } from "react-router-dom";
 import { CustomTable, TabPanel } from "../../../components";
 import LoadingContext from "../../../contexts/LoadingContext";
 import { useAxios } from "../../../hooks";
+import { generateID } from "../../../utils/generateID";
 
 const headCells = [
   {
@@ -74,19 +75,27 @@ const BillsTable = () => {
   };
 
   const toDetailFromOutstanding = (id) => {
-    history.push(`/dashboard/bills/details/${id}/outstanding`);
+    history.push(
+      `/dashboard/bills/details/${parseInt(id.split("-")[1])}/outstanding`
+    );
   };
 
   const toDetailFromDrafted = (id) => {
-    history.push(`/dashboard/bills/details/${id}/draft`);
+    history.push(
+      `/dashboard/bills/details/${parseInt(id.split("-")[1])}/draft`
+    );
   };
 
   const toDetailFromCompleted = (id) => {
-    history.push(`/dashboard/bills/details/${id}/completed`);
+    history.push(
+      `/dashboard/bills/details/${parseInt(id.split("-")[1])}/completed`
+    );
   };
 
   const toDetailFromCancelled = (id) => {
-    history.push(`/dashboard/bills/details/${id}/cancelled`);
+    history.push(
+      `/dashboard/bills/details/${parseInt(id.split("-")[1])}/cancelled`
+    );
   };
 
   const getDraftedData = useCallback(async () => {
@@ -94,8 +103,9 @@ const BillsTable = () => {
     const res = await api.get("/api/bill/drafted");
     if (res.status === 200) {
       const data = res.data.map((row) => {
+        const ID = generateID(row.id);
         return {
-          id: row.id,
+          id: ID,
           name: row.patient_name,
           phone: row.patient_phone,
           address: row.patient_address,
@@ -113,8 +123,9 @@ const BillsTable = () => {
     const res = await api.get("/api/bill/outstanding");
     if (res.status === 200) {
       const data = res.data.map((row) => {
+        const ID = generateID(row.id);
         return {
-          id: row.id,
+          id: ID,
           name: row.patient_name,
           phone: row.patient_phone,
           address: row.patient_address,
@@ -131,8 +142,9 @@ const BillsTable = () => {
     const res = await api.get("/api/bill/completed");
     if (res.status === 200) {
       const data = res.data.map((row) => {
+        const ID = generateID(row.id);
         return {
-          id: row.id,
+          id: ID,
           name: row.patient_name,
           phone: row.patient_phone,
           address: row.patient_address,
@@ -149,8 +161,9 @@ const BillsTable = () => {
     const res = await api.get("/api/bill/cancelled");
     if (res.status === 200) {
       const data = res.data.map((row) => {
+        const ID = generateID(row.id);
         return {
-          id: row.id,
+          id: ID,
           name: row.patient_name,
           phone: row.patient_phone,
           address: row.patient_address,
@@ -164,7 +177,7 @@ const BillsTable = () => {
   }, []);
 
   const cancelBill = async () => {
-    await api.put(`/api/bill/cancel/${id}`);
+    await api.put(`/api/bill/cancel/${parseInt(id.split("-")[1])}`);
     handleClose();
     getDraftedData();
     getOutstandingData();

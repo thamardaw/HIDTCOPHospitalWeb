@@ -65,7 +65,7 @@ const DepositForm = () => {
       ...details,
     });
     if (res.status === 200) {
-      history.replace(`/dashboard/deposit/details/${res.data.id}`);
+      history.replace(`/dashboard/deposit/details/${generateID(res.data.id)}`);
     }
     setLoading(false);
   };
@@ -194,7 +194,7 @@ const DepositForm = () => {
                 <Typography variant="p">Amount</Typography>
               </Box>
               <TextField
-                fullWidth
+                style={{ width: "85%" }}
                 size="small"
                 margin="normal"
                 value={details?.amount || ""}
