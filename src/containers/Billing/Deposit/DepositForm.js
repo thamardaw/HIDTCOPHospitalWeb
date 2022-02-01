@@ -191,19 +191,29 @@ const DepositForm = () => {
               <Box sx={{ width: "100%" }}>
                 <Typography variant="p">Amount</Typography>
               </Box>
-              <TextField
-                style={{ width: "85%" }}
-                size="small"
-                margin="normal"
-                value={details?.amount || ""}
-                type="number"
-                InputProps={{
-                  inputProps: { min: "0", step: "1" },
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
                 }}
-                onChange={(e) =>
-                  setDetails({ ...details, amount: e.target.value })
-                }
-              />
+              >
+                <TextField
+                  // style={{ width: "85%" }}
+                  fullWidth
+                  size="small"
+                  margin="normal"
+                  value={details?.amount || ""}
+                  type="number"
+                  InputProps={{
+                    inputProps: { min: "0", step: "1" },
+                  }}
+                  onChange={(e) =>
+                    setDetails({ ...details, amount: e.target.value })
+                  }
+                />
+                <Box sx={{ width: "50px" }}></Box>
+              </Box>
             </Box>
             <Box
               sx={{
