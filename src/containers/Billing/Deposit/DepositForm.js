@@ -194,7 +194,7 @@ const DepositForm = () => {
                 <Typography variant="p">Amount</Typography>
               </Box>
               <TextField
-                fullWidth
+                style={{ width: "85%" }}
                 size="small"
                 margin="normal"
                 value={details?.amount || ""}
