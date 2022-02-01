@@ -98,6 +98,10 @@ const BillsTable = () => {
     );
   };
 
+  const toDetailFromCancelled = (id) => {
+    history.push(`/dashboard/bills/details/${id}/cancelled`);
+  };
+
   const getDraftedData = useCallback(async () => {
     setScreenLoading(true);
     const res = await api.get("/api/bill/drafted");
