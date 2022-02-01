@@ -175,9 +175,7 @@ const DepositForm = () => {
                   size="small"
                   color="primary"
                   sx={{ marginTop: "5px" }}
-                  onClick={() =>
-                    history.push("/dashboard/salesServiceItem/form")
-                  }
+                  onClick={() => history.push("/dashboard/patient/form")}
                 >
                   <AddIcon fontSize="large" />
                 </IconButton>
