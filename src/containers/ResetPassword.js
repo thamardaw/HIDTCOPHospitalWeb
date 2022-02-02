@@ -6,17 +6,17 @@ import {
   InputAdornment,
   InputLabel,
   Paper,
-  Snackbar,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
-import MuiAlert from "@mui/material/Alert";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import { SnackbarContext } from "../contexts";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const Container = styled("div")(({ theme }) => ({
   width: "100vw",
@@ -58,12 +58,9 @@ const StyledLink = styled(Link)(({ theme }) => ({
   textDecoration: "none",
 }));
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
 const ResetPassword = () => {
   const history = useHistory();
+  let { openAlert, message } = useContext(SnackbarContext);
   const [details, setDetails] = useState({
     username: "",
     oldPassword: "",
@@ -73,26 +70,15 @@ const ResetPassword = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
-  const [openAlert, setOpenAlert] = useState(false);
-  const [message, setMessage] = useState({
-    status: "",
-    detail: "",
-  });
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpenAlert(false);
-    setMessage({ status: message.status, detail: "" });
-  };
+  const [loading, setLoading] = useState(false);
 
   const submitHandler = async (e) => {
+    setLoading(true);
     e.preventDefault();
     console.log(details);
     if (details.newPassword !== details.confirmNewPassword) {
-      setMessage({ status: "error", detail: "Passwords do not match." });
-      setOpenAlert(true);
+      message({ status: "error", detail: "Passwords do not match." });
+      openAlert(true);
       return;
     }
     const res = await axios.put(
@@ -109,144 +95,132 @@ const ResetPassword = () => {
       }
     );
     if (res.status === 200) {
-      setMessage({ status: res.status, detail: res.data.detail });
-      setOpenAlert(true);
-      setTimeout(() => {
-        history.goBack();
-      }, 1000);
+      message({ status: res.status, detail: res.data.detail });
+      openAlert(true);
+      history.goBack();
     } else {
-      setMessage({ status: res.status, detail: res.data.detail });
-      setOpenAlert(true);
+      message({ status: res.status, detail: res.data.detail });
+      openAlert(true);
     }
+    setLoading(false);
   };
   return (
-    <>
-      <Container>
-        <StyledBox>
-          <StyledPaper elevation={6}>
-            <form onSubmit={submitHandler}>
-              <FormControl
-                fullWidth
-                required
-                variant="standard"
-                sx={{ marginBottom: "10px" }}
-              >
-                <InputLabel>Username</InputLabel>
-                <Input
-                  onChange={(e) =>
-                    setDetails({ ...details, username: e.target.value })
-                  }
-                />
-              </FormControl>
-              <FormControl
-                fullWidth
-                required
-                variant="standard"
-                sx={{ marginBottom: "10px" }}
-              >
-                <InputLabel>Old Password</InputLabel>
-                <Input
-                  type={showOldPassword ? "text" : "password"}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={() => setShowOldPassword(!showOldPassword)}
-                      >
-                        {showOldPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                  onChange={(e) =>
-                    setDetails({ ...details, oldPassword: e.target.value })
-                  }
-                />
-              </FormControl>
-              <FormControl
-                fullWidth
-                required
-                variant="standard"
-                sx={{ marginBottom: "10px" }}
-              >
-                <InputLabel>New Password</InputLabel>
-                <Input
-                  type={showNewPassword ? "text" : "password"}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={() => setShowNewPassword(!showNewPassword)}
-                      >
-                        {showNewPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                  onChange={(e) =>
-                    setDetails({ ...details, newPassword: e.target.value })
-                  }
-                />
-              </FormControl>
-              <FormControl
-                fullWidth
-                required
-                variant="standard"
-                sx={{ marginBottom: "10px" }}
-              >
-                <InputLabel>Confirm New Password</InputLabel>
-                <Input
-                  type={showConfirmNewPassword ? "text" : "password"}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={() =>
-                          setShowConfirmNewPassword(!showConfirmNewPassword)
-                        }
-                      >
-                        {showConfirmNewPassword ? (
-                          <VisibilityOff />
-                        ) : (
-                          <Visibility />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                  onChange={(e) =>
-                    setDetails({
-                      ...details,
-                      confirmNewPassword: e.target.value,
-                    })
-                  }
-                />
-              </FormControl>
-              <Button
-                fullWidth
-                variant="contained"
-                style={{ marginTop: "20px" }}
-                type="submit"
-              >
-                Reset
-              </Button>
-            </form>
-            <Button size="small" style={{ marginTop: "10px" }}>
-              <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>
-                <StyledLink to="/login">Back</StyledLink>
-              </Typography>
-            </Button>
-          </StyledPaper>
-        </StyledBox>
-      </Container>
-      <Snackbar
-        open={openAlert}
-        autoHideDuration={1500}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert severity={message.status === 200 ? "success" : "error"}>
-          {message.detail}
-        </Alert>
-      </Snackbar>
-    </>
+    <Container>
+      <StyledBox>
+        <StyledPaper elevation={6}>
+          <form onSubmit={submitHandler}>
+            <FormControl
+              fullWidth
+              required
+              variant="standard"
+              sx={{ marginBottom: "10px" }}
+            >
+              <InputLabel>Username</InputLabel>
+              <Input
+                onChange={(e) =>
+                  setDetails({ ...details, username: e.target.value })
+                }
+              />
+            </FormControl>
+            <FormControl
+              fullWidth
+              required
+              variant="standard"
+              sx={{ marginBottom: "10px" }}
+            >
+              <InputLabel>Old Password</InputLabel>
+              <Input
+                type={showOldPassword ? "text" : "password"}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowOldPassword(!showOldPassword)}
+                    >
+                      {showOldPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                onChange={(e) =>
+                  setDetails({ ...details, oldPassword: e.target.value })
+                }
+              />
+            </FormControl>
+            <FormControl
+              fullWidth
+              required
+              variant="standard"
+              sx={{ marginBottom: "10px" }}
+            >
+              <InputLabel>New Password</InputLabel>
+              <Input
+                type={showNewPassword ? "text" : "password"}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                    >
+                      {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                onChange={(e) =>
+                  setDetails({ ...details, newPassword: e.target.value })
+                }
+              />
+            </FormControl>
+            <FormControl
+              fullWidth
+              required
+              variant="standard"
+              sx={{ marginBottom: "10px" }}
+            >
+              <InputLabel>Confirm New Password</InputLabel>
+              <Input
+                type={showConfirmNewPassword ? "text" : "password"}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() =>
+                        setShowConfirmNewPassword(!showConfirmNewPassword)
+                      }
+                    >
+                      {showConfirmNewPassword ? (
+                        <VisibilityOff />
+                      ) : (
+                        <Visibility />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                onChange={(e) =>
+                  setDetails({
+                    ...details,
+                    confirmNewPassword: e.target.value,
+                  })
+                }
+              />
+            </FormControl>
+            <LoadingButton
+              fullWidth
+              loading={loading}
+              variant="contained"
+              style={{ marginTop: "20px" }}
+              type="submit"
+            >
+              Reset
+            </LoadingButton>
+          </form>
+          <Button size="small" style={{ marginTop: "10px" }}>
+            <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>
+              <StyledLink to="/login">Back</StyledLink>
+            </Typography>
+          </Button>
+        </StyledPaper>
+      </StyledBox>
+    </Container>
   );
 };
 

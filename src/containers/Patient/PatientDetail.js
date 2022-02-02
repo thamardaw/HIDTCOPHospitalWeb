@@ -4,6 +4,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../hooks";
 import { useEffect, useState } from "react";
+import { generateID } from "../../utils/generateID";
 
 const PatientDetail = () => {
   const history = useHistory();
@@ -55,6 +56,33 @@ const PatientDetail = () => {
       </Toolbar>
       <Divider />
       <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            margin: "10px 0px",
+          }}
+        >
+          <Box sx={{ width: "30%" }}>
+            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+              ID
+            </Typography>
+          </Box>
+          {/* <TextField
+            size="small"
+            sx={{ width: "70%" }}
+            margin="dense"
+            defaultValue="18"
+            disabled={true}
+          /> */}
+          <Box sx={{ width: "70%" }}>
+            <Typography variant="body2">
+              {details?.id && generateID(details.id, details.created_time)}
+            </Typography>
+          </Box>
+        </Box>
+        <Divider />
         <Box
           sx={{
             display: "flex",

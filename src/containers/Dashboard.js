@@ -3,7 +3,15 @@ import { Box } from "@mui/system";
 import { useState } from "react";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router";
 import { Patient } from "./Patient";
-import { Appbar, ResponsiveDrawer } from "../components";
+import { Appbar, Footer, ResponsiveDrawer } from "../components";
+import { Uom } from "./Billing/Uom";
+import { Category } from "./Billing/Category";
+import { SalesServiceItem } from "./Billing/SalesServiceItem";
+import { Bills } from "./Billing/Bills";
+import { Deposit } from "./Billing/Deposit";
+// import { Payment } from "./Billing/Payment";
+import { DailyClosing } from "./DailyClosing";
+import { LoadingProvider } from "../contexts/LoadingContext";
 
 const drawerWidth = 240;
 
@@ -36,10 +44,23 @@ function Dashboard(props) {
         }}
       >
         <Toolbar />
-        <Switch>
-          <Route path={`${path}/patient`} component={Patient} />
-          <Redirect to={`${path}/patient`} />
-        </Switch>
+        <LoadingProvider>
+          <Switch>
+            <Route path={`${path}/patient`} component={Patient} />
+            <Route path={`${path}/uom`} component={Uom} />
+            <Route path={`${path}/category`} component={Category} />
+            <Route
+              path={`${path}/salesServiceItem`}
+              component={SalesServiceItem}
+            />
+            <Route path={`${path}/bills`} component={Bills} />
+            {/* <Route path={`${path}/payment`} component={Payment} /> */}
+            <Route path={`${path}/deposit`} component={Deposit} />
+            <Route path={`${path}/dailyClosing`} component={DailyClosing} />
+            <Redirect to={`${path}/patient`} />
+          </Switch>
+        </LoadingProvider>
+        <Footer />
       </Box>
     </Box>
   );

@@ -7,8 +7,9 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { CustomTable } from "../../components";
+import LoadingContext from "../../contexts/LoadingContext";
 import { useAxios } from "../../hooks";
 import { generateID } from "../../utils/generateID";
 
@@ -119,7 +120,7 @@ const headCells = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Patient ID",
+    label: "ID",
   },
   {
     id: "name",
@@ -157,12 +158,19 @@ const headCells = [
     disablePadding: false,
     label: "Address",
   },
+  {
+    id: "dateAndTime",
+    numeric: false,
+    disablePadding: false,
+    label: "Date And Time",
+  },
 ];
 const PatientTable = () => {
   const api = useAxios();
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
+  const { setScreenLoading } = useContext(LoadingContext);
 
   const handleClickOpen = (id) => {
     setId(id);
@@ -174,28 +182,42 @@ const PatientTable = () => {
   };
 
   const getData = useCallback(async () => {
+    setScreenLoading(true);
     const res = await api.get("/api/patients/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
         const ID = generateID(row.id, row.created_time);
+        const dateAndTime = `${row.created_time.split("T")[0]} ${new Date(
+          row.created_time
+        ).toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        })}`;
         return {
           id: ID,
           name: row.name,
-          age: row.age.toString(),
+          age: row.age,
           contactDetails: row.contact_details,
           gender: row.gender,
           dataOfBirth: row.date_of_birth,
           address: row.address,
+          dateAndTime: dateAndTime,
         };
       });
       setRows(data);
+      setScreenLoading(false);
     }
     return;
     // eslint-disable-next-line
   }, []);
 
   const deleteItem = async () => {
-    await api.delete(`/api/patients/${parseInt(id.split("-")[1])}`);
+    try {
+      await api.delete(`/api/patients/${parseInt(id.split("-")[1])}`);
+    } catch (e) {
+      console.log(e.response.data.detail);
+    }
     handleClose();
     getData();
   };
@@ -244,9 +266,10 @@ const PatientTable = () => {
         </ButtonContainer>
       </Toolbar> */}
       <CustomTable
+        tableName="Patient"
         headCells={headCells}
         rows={rows}
-        deleteDialog={handleClickOpen}
+        onDelete={handleClickOpen}
       />
       <Dialog
         open={open}

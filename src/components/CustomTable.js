@@ -19,6 +19,7 @@ import { Button, InputBase, useMediaQuery } from "@mui/material";
 import { useHistory, useRouteMatch } from "react-router";
 import { Search } from "@mui/icons-material";
 import { useEffect, useState } from "react";
+import { CSVLink } from "react-csv";
 
 const SearchContainer = styled("div")(({ theme }) => ({
   display: "flex",
@@ -135,16 +136,59 @@ const EnhancedTableToolbar = (props) => {
   const {
     numSelected,
     selected,
-    deleteDialog,
     onSelectAllClick,
     onChangeSearch,
+    tableName,
+    headCells,
+    onCreate,
+    onEdit,
+    onDetail,
+    onDelete,
+    addCreate,
+    addDelete,
+    addDetail,
+    addEdit,
+    addcsv,
+    createBtnName,
+    editBtnName,
+    deleteBtnName,
+    detailBtnName,
   } = props;
   const history = useHistory();
   const { url } = useRouteMatch();
-  const handleDelete = (event) => {
+  const [CSV, setCSV] = useState({});
+  const deleteItem = (event) => {
     onSelectAllClick(event);
-    deleteDialog(selected[0]);
+    onDelete(selected[0].id);
   };
+  const createItem = () => {
+    if (onCreate) {
+      onCreate();
+    } else {
+      history.push(`${url}/form`);
+    }
+  };
+
+  const updateItem = () => {
+    if (onEdit) {
+      onEdit(selected[0].id);
+    } else {
+      history.push(`${url}/form/${selected[0].id}`);
+    }
+  };
+  const readItem = () => {
+    if (onDetail) {
+      onDetail(selected[0].id);
+    } else {
+      history.push(`${url}/details/${selected[0].id}`);
+    }
+  };
+  useEffect(() => {
+    const h = headCells.map((headCell) => {
+      return { label: headCell.label, key: headCell.id };
+    });
+    setCSV({ data: selected, headers: h, filename: `${tableName}.csv` });
+  }, [headCells, selected, tableName]);
   return (
     <Toolbar
       sx={{
@@ -164,6 +208,7 @@ const EnhancedTableToolbar = (props) => {
       {numSelected > 0 ? (
         <Typography
           sx={{ flex: "1 1 100%" }}
+          // sx={{ flex: "1 1 100%", display: { xs: "none" } }}
           color="inherit"
           variant="subtitle1"
           component="div"
@@ -171,50 +216,68 @@ const EnhancedTableToolbar = (props) => {
           {numSelected} selected
         </Typography>
       ) : (
-        <Typography variant="h6" id="tableTitle" component="div">
-          Patient
+        <Typography
+          variant="h6"
+          id="tableTitle"
+          component="div"
+          sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+        >
+          {tableName}
         </Typography>
       )}
 
       {numSelected > 0 ? (
         <>
-          {numSelected === 1 && (
+          {numSelected === 1 ? (
             <>
-              <Button
-                variant="contained"
-                size="small"
-                sx={{ marginRight: "5px" }}
-                onClick={() => history.push(`${url}/form/${selected[0]}`)}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="contained"
-                size="small"
-                sx={{ marginRight: "5px" }}
-                onClick={() => history.push(`${url}/details/${selected[0]}`)}
-              >
-                Details
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                size="small"
-                sx={{ marginRight: "5px" }}
-                onClick={handleDelete}
-              >
-                Delete
-              </Button>
+              {addEdit && (
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{ marginRight: "5px" }}
+                  onClick={updateItem}
+                >
+                  {editBtnName}
+                </Button>
+              )}
+              {addDetail && (
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{ marginRight: "5px" }}
+                  onClick={readItem}
+                >
+                  {detailBtnName}
+                </Button>
+              )}
+              {addDelete && (
+                <Button
+                  variant="contained"
+                  color="error"
+                  size="small"
+                  sx={{ marginRight: "5px" }}
+                  onClick={deleteItem}
+                >
+                  {deleteBtnName}
+                </Button>
+              )}
             </>
+          ) : (
+            addcsv && (
+              <CSVLink
+                {...CSV}
+                style={{ color: "inherit", textDecoration: "inherit" }}
+              >
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{ marginRight: "5px" }}
+                >
+                  CSV
+                </Button>
+              </CSVLink>
+            )
           )}
-          {/* <Button
-            variant="contained"
-            color="error"
-            size="small"
-            sx={{ marginRight: "5px" }}
-          >
-            Delete
-          </Button> */}
         </>
       ) : (
         <>
@@ -225,13 +288,13 @@ const EnhancedTableToolbar = (props) => {
               onChange={onChangeSearch}
             />
           </SearchContainer>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={() => history.push(`${url}/form`)}
-          >
-            new
-          </Button>
+          {addCreate ? (
+            <Button variant="outlined" size="small" onClick={createItem}>
+              {createBtnName}
+            </Button>
+          ) : (
+            <Box></Box>
+          )}
         </>
       )}
     </Toolbar>
@@ -241,13 +304,44 @@ const EnhancedTableToolbar = (props) => {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   selected: PropTypes.array.isRequired,
-  deleteDialog: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
   onChangeSearch: PropTypes.func.isRequired,
+  tableName: PropTypes.string.isRequired,
+  headCells: PropTypes.array.isRequired,
+  onCreate: PropTypes.func,
+  onEdit: PropTypes.func,
+  onDetail: PropTypes.func,
+  onDelete: PropTypes.func,
+  addCreate: PropTypes.bool,
+  addDelete: PropTypes.bool,
+  addDetail: PropTypes.bool,
+  addEdit: PropTypes.bool,
+  addcsv: PropTypes.bool,
+  createBtnName: PropTypes.string,
+  editBtnName: PropTypes.string,
+  deleteBtnName: PropTypes.string,
+  detailBtnName: PropTypes.string,
 };
 
 // HeadCells ID have to be match with row's object key beause they two are dependent for sorting function
-const CustomTable = ({ headCells, rows, deleteDialog }) => {
+const CustomTable = ({
+  headCells,
+  rows,
+  tableName,
+  onCreate,
+  onDetail,
+  onEdit,
+  onDelete,
+  addCreate = true,
+  addEdit = true,
+  addDelete = true,
+  addDetail = true,
+  addcsv = true,
+  createBtnName = "New",
+  editBtnName = "Edit",
+  detailBtnName = "Details",
+  deleteBtnName = "Delete",
+}) => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("id");
   const [selected, setSelected] = useState([]);
@@ -263,7 +357,7 @@ const CustomTable = ({ headCells, rows, deleteDialog }) => {
     const searchItem = keyword.toLowerCase();
     return array.filter((value) => {
       let t = objKeys.map((key) => {
-        return value[key.id].toLowerCase().includes(searchItem);
+        return value[key.id].toString().toLowerCase().includes(searchItem);
       });
       return t.includes(true);
     });
@@ -285,10 +379,10 @@ const CustomTable = ({ headCells, rows, deleteDialog }) => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id);
-      setSelected(newSelecteds);
+      setSelected(dataRows);
       return;
     }
+    setDataRows(rows);
     setSelected([]);
   };
 
@@ -306,6 +400,9 @@ const CustomTable = ({ headCells, rows, deleteDialog }) => {
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1)
       );
+    }
+    if (newSelected.length === 0) {
+      setDataRows(rows);
     }
     setSelected(newSelected);
   };
@@ -332,11 +429,25 @@ const CustomTable = ({ headCells, rows, deleteDialog }) => {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar
+          tableName={tableName}
           numSelected={selected.length}
           selected={selected}
-          deleteDialog={deleteDialog}
           onSelectAllClick={handleSelectAllClick}
           onChangeSearch={handleSearch}
+          headCells={headCells}
+          onCreate={onCreate}
+          onEdit={onEdit}
+          onDetail={onDetail}
+          onDelete={onDelete}
+          addCreate={addCreate}
+          addDelete={addDelete}
+          addDetail={addDetail}
+          addEdit={addEdit}
+          addcsv={addcsv}
+          createBtnName={createBtnName}
+          editBtnName={editBtnName}
+          deleteBtnName={deleteBtnName}
+          detailBtnName={detailBtnName}
         />
         <TableContainer>
           <Table
@@ -350,19 +461,19 @@ const CustomTable = ({ headCells, rows, deleteDialog }) => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={dataRows.length}
               headCells={headCells}
             />
             <TableBody>
               {stableSort(dataRows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
+                  const isItemSelected = isSelected(row);
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.id)}
+                      onClick={(event) => handleClick(event, row)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -404,7 +515,7 @@ const CustomTable = ({ headCells, rows, deleteDialog }) => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={dataRows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

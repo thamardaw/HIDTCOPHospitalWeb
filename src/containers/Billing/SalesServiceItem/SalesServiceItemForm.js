@@ -9,26 +9,39 @@ import {
 import { Box } from "@mui/system";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router";
-import { useAxios } from "../../hooks";
+import { useAxios } from "../../../hooks";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 
-const PatientForm = () => {
+const SalesServiceItemForm = () => {
   const history = useHistory();
   const { id } = useParams();
   const api = useAxios();
-  const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({
     name: "",
-    age: "",
-    contact_details: "",
-    gender: "",
-    date_of_birth: "",
-    address: "",
+    price: "",
+    uom_id: null,
+    category_id: null,
   });
+  const [uom, setUom] = useState([]);
+  const [category, setCategory] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const getUOMAndCategory = async () => {
+    const [uom, category] = await Promise.all([
+      api.get("/api/uom/"),
+      api.get("/api/category/"),
+    ]);
+    if (uom.status === 200 && category.status === 200) {
+      setUom(uom.data);
+      setCategory(category.data);
+    } else {
+      history.goBack();
+    }
+  };
 
   const getData = async () => {
-    const res = await api.get(`/api/patients/${parseInt(id.split("-")[1])}`);
+    const res = await api.get(`/api/salesServiceItem/${parseInt(id)}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
     } else {
@@ -38,7 +51,7 @@ const PatientForm = () => {
 
   const createNew = async () => {
     setLoading(true);
-    const res = await api.post(`/api/patients/`, {
+    const res = await api.post(`/api/salesServiceItem/`, {
       ...details,
     });
     if (res.status === 200) {
@@ -49,13 +62,11 @@ const PatientForm = () => {
 
   const update = async () => {
     setLoading(true);
-    const res = await api.put(`/api/patients/${parseInt(id.split("-")[1])}`, {
+    const res = await api.put(`/api/salesServiceItem/${parseInt(id)}`, {
       name: details.name,
-      age: details.age,
-      contact_details: details.contact_details,
-      gender: details.gender,
-      date_of_birth: details.date_of_birth,
-      address: details.address,
+      price: details.price,
+      uom_id: details.uom_id,
+      category_id: details.category_id,
     });
     if (res.status === 200) {
       history.goBack();
@@ -64,6 +75,7 @@ const PatientForm = () => {
   };
 
   useEffect(() => {
+    getUOMAndCategory();
     if (id) {
       getData();
     }
@@ -124,14 +136,14 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Age</Typography>
+            <Typography variant="p">Price</Typography>
           </Box>
           <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.age || ""}
-            onChange={(e) => setDetails({ ...details, age: e.target.value })}
+            value={details?.price || ""}
+            onChange={(e) => setDetails({ ...details, price: e.target.value })}
           />
         </Box>
         <Box
@@ -142,41 +154,23 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Contact Details</Typography>
+            <Typography variant="p">UOM</Typography>
           </Box>
-          <TextField
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            value={details?.contact_details || ""}
-            onChange={(e) =>
-              setDetails({ ...details, contact_details: e.target.value })
-            }
-          />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Gender</Typography>
-          </Box>
-          {/* <TextField size="small" sx={{ width: "70%" }} margin="dense" /> */}
           <TextField
             select
             fullWidth
-            label="Gender"
+            label="UOM"
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.gender || ""}
-            onChange={(e) => setDetails({ ...details, gender: e.target.value })}
+            value={details?.uom_id || ""}
+            onChange={(e) => setDetails({ ...details, uom_id: e.target.value })}
           >
-            <MenuItem value="male">Male</MenuItem>
-            <MenuItem value="female">Female</MenuItem>
+            {uom.map((u) => (
+              <MenuItem key={u.id} value={u.id}>
+                {u.name}
+              </MenuItem>
+            ))}
           </TextField>
         </Box>
         <Box
@@ -187,41 +181,29 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Date Of Birth</Typography>
+            <Typography variant="p">Category</Typography>
           </Box>
           <TextField
+            select
+            fullWidth
+            label="Category"
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            placeholder="YYYY-MM-DD"
-            value={details?.date_of_birth || ""}
+            value={details?.category_id || ""}
             onChange={(e) =>
-              setDetails({ ...details, date_of_birth: e.target.value })
+              setDetails({ ...details, category_id: e.target.value })
             }
-          />
-        </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Address</Typography>
-          </Box>
-          <TextField
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            value={details?.address || ""}
-            onChange={(e) =>
-              setDetails({ ...details, address: e.target.value })
-            }
-          />
+          >
+            {category.map((c) => (
+              <MenuItem key={c.id} value={c.id}>
+                {c.name}
+              </MenuItem>
+            ))}
+          </TextField>
         </Box>
       </Box>
+
       <Divider />
       <Box
         sx={{
@@ -233,31 +215,17 @@ const PatientForm = () => {
         }}
       >
         <LoadingButton
-          variant="contained"
           loading={loading}
+          variant="contained"
           size="small"
           sx={{ marginRight: "5px" }}
           onClick={id ? update : createNew}
         >
           Save
         </LoadingButton>
-        {/* <Button
-          variant="contained"
-          size="small"
-          sx={{
-            marginRight: "5px",
-            backgroundColor: "gray",
-            "&:hover": {
-              backgroundColor: "lightgray",
-            },
-          }}
-          onClick={() => history.goBack()}
-        >
-          Cancel
-        </Button> */}
       </Box>
     </Box>
   );
 };
 
-export default PatientForm;
+export default SalesServiceItemForm;

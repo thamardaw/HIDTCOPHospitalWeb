@@ -1,13 +1,15 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import jwt_decode from "jwt-decode";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import { SnackbarContext } from ".";
 
 const AuthContext = createContext();
 
 export default AuthContext;
 
 export const AuthProvider = ({ children }) => {
+  let { openAlert, message } = useContext(SnackbarContext);
   let [authTokens, setAuthTokens] = useState(() =>
     localStorage.getItem("authTokens")
       ? JSON.parse(localStorage.getItem("authTokens"))
@@ -24,7 +26,7 @@ export const AuthProvider = ({ children }) => {
 
   const history = useHistory();
 
-  let loginUser = async (details, setMessage, setOpenAlert) => {
+  let loginUser = async (details) => {
     const formData = new FormData();
     formData.append("username", details.username);
     formData.append("password", details.password);
@@ -46,8 +48,8 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("authTokens", JSON.stringify(res.data));
       history.push("/");
     } else {
-      setMessage(res.data.detail);
-      setOpenAlert(true);
+      message({ status: res.status, detail: res.data.detail });
+      openAlert(true);
     }
   };
 
