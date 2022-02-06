@@ -1,5 +1,10 @@
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   IconButton,
   Toolbar,
@@ -13,6 +18,7 @@ import { useEffect, useRef, useState } from "react";
 import { generateID } from "../../../utils/generateID";
 import { useReactToPrint } from "react-to-print";
 import { styled } from "@mui/material/styles";
+import { useLocation } from "react-router-dom";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.3rem",
@@ -21,10 +27,22 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
 
 const CategoryDetail = () => {
   const history = useHistory();
+  const location = useLocation();
   const { id } = useParams();
   const api = useAxios();
   const [details, setDetails] = useState({});
+  const [open, setOpen] = useState(false);
   const depositRef = useRef();
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const cancelDeposit = async () => {
+    await api.put(`/api/deposit/cancel/${parseInt(id.split("-")[1])}`);
+    handleClose();
+    history.goBack();
+  };
 
   const handlePrint = useReactToPrint({
     pageStyle:
@@ -50,167 +68,188 @@ const CategoryDetail = () => {
     // eslint-disable-next-line
   }, [id]);
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Toolbar
-        sx={{
-          display: "flex",
-          paddingLeft: "12px",
-        }}
-        variant="dense"
-        disableGutters={true}
-      >
-        <IconButton
+    <>
+      <Box sx={{ flexGrow: 1 }}>
+        <Toolbar
           sx={{
-            color: "white",
-            backgroundColor: "primary.main",
-            borderRadius: "10%",
-            "&:hover": {
-              backgroundColor: "primary.light",
-            },
-            marginRight: "10px",
+            display: "flex",
+            paddingLeft: "12px",
           }}
-          onClick={() => history.goBack()}
-          size="small"
+          variant="dense"
+          disableGutters={true}
         >
-          <ArrowBackIosNewIcon size="small" />
-        </IconButton>
-        <Typography variant="h5" sx={{ flexGrow: 1 }}>
-          Details
-        </Typography>
-        <Button variant="contained" size="small" onClick={handlePrint}>
-          Print
-        </Button>
-      </Toolbar>
-      <Divider />
-      <Box ref={depositRef} sx={{ display: "bock" }}>
-        <Typography variant="h6" textAlign="center" sx={{ marginTop: "20px" }}>
-          Dagon Lin Hospital
-        </Typography>
-        <Typography
-          variant="h6"
-          textAlign="center"
-          sx={{ fontWeight: "500", fontSize: "16px" }}
-        >
-          Receipt
-        </Typography>
-        <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
-          <Box
+          <IconButton
             sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              margin: "20px 0px",
+              color: "white",
+              backgroundColor: "primary.main",
+              borderRadius: "10%",
+              "&:hover": {
+                backgroundColor: "primary.light",
+              },
+              marginRight: "10px",
             }}
+            onClick={() => history.goBack()}
+            size="small"
           >
-            <Box sx={{ width: "30%" }}>
-              <StyledTypography variant="body2">Date</StyledTypography>
-            </Box>
-            <StyledTypography variant="body2">
-              {details?.created_time && details.created_time.split("T")[0]}
-            </StyledTypography>
-          </Box>
-          <Box
+            <ArrowBackIosNewIcon size="small" />
+          </IconButton>
+          <Typography variant="h5" sx={{ flexGrow: 1 }}>
+            Details
+          </Typography>
+          <Button variant="contained" size="small" onClick={handlePrint}>
+            Print
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            color="error"
             sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              margin: "20px 0px",
+              marginLeft: "5px",
+              display: location.state?.from === "active" ? "block" : "none",
             }}
+            onClick={() => setOpen(true)}
           >
-            <Box sx={{ width: "30%" }}>
-              <StyledTypography variant="body2">Deposit ID</StyledTypography>
-            </Box>
-            <StyledTypography variant="body2">
-              {details?.id && generateID(details.id)}
-            </StyledTypography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              margin: "20px 0px",
-            }}
+            Cancel
+          </Button>
+        </Toolbar>
+        <Divider />
+        <Box ref={depositRef} sx={{ display: "bock" }}>
+          <Typography
+            variant="h6"
+            textAlign="center"
+            sx={{ marginTop: "20px" }}
           >
-            <Box sx={{ width: "30%" }}>
-              <StyledTypography variant="body2">Patient ID</StyledTypography>
-            </Box>
-            <StyledTypography variant="body2">
-              {details?.patient_id &&
-                generateID(details?.patient_id, details.patient.created_time)}
-            </StyledTypography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              margin: "20px 0px",
-            }}
+            Dagon Lin Hospital
+          </Typography>
+          <Typography
+            variant="h6"
+            textAlign="center"
+            sx={{ fontWeight: "500", fontSize: "16px" }}
           >
-            <Box sx={{ width: "30%" }}>
-              <StyledTypography variant="body2">Patient Name</StyledTypography>
-            </Box>
-            <StyledTypography variant="body2">
-              {details?.patient && details.patient.name}
-            </StyledTypography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              margin: "20px 0px",
-            }}
-          >
-            <Box sx={{ width: "30%" }}>
-              <StyledTypography variant="body2">Patient Phone</StyledTypography>
-            </Box>
-            <Box sx={{ width: "70%" }}>
+            Receipt
+          </Typography>
+          <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "20px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <StyledTypography variant="body2">Date</StyledTypography>
+              </Box>
               <StyledTypography variant="body2">
-                {details?.patient && details.patient.contact_details}
+                {details?.created_time && details.created_time.split("T")[0]}
               </StyledTypography>
             </Box>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              margin: "20px 0px",
-            }}
-          >
-            <Box sx={{ width: "30%" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "20px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <StyledTypography variant="body2">Deposit ID</StyledTypography>
+              </Box>
               <StyledTypography variant="body2">
-                Patient Address
+                {details?.id && generateID(details.id)}
               </StyledTypography>
             </Box>
-            <Box sx={{ width: "70%" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "20px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <StyledTypography variant="body2">Patient ID</StyledTypography>
+              </Box>
               <StyledTypography variant="body2">
-                {details?.patient && details.patient.address}
+                {details?.patient_id &&
+                  generateID(details?.patient_id, details.patient.created_time)}
               </StyledTypography>
             </Box>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              margin: "20px 0px",
-            }}
-          >
-            <Box sx={{ width: "30%" }}>
-              <StyledTypography variant="body2">Amount</StyledTypography>
-            </Box>
-            <Box sx={{ width: "70%" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "20px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <StyledTypography variant="body2">
+                  Patient Name
+                </StyledTypography>
+              </Box>
               <StyledTypography variant="body2">
-                {details?.amount} MMK
+                {details?.patient && details.patient.name}
               </StyledTypography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "20px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <StyledTypography variant="body2">
+                  Patient Phone
+                </StyledTypography>
+              </Box>
+              <Box sx={{ width: "70%" }}>
+                <StyledTypography variant="body2">
+                  {details?.patient && details.patient.contact_details}
+                </StyledTypography>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "20px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <StyledTypography variant="body2">
+                  Patient Address
+                </StyledTypography>
+              </Box>
+              <Box sx={{ width: "70%" }}>
+                <StyledTypography variant="body2">
+                  {details?.patient && details.patient.address}
+                </StyledTypography>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "20px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <StyledTypography variant="body2">Amount</StyledTypography>
+              </Box>
+              <Box sx={{ width: "70%" }}>
+                <StyledTypography variant="body2">
+                  {details?.amount} MMK
+                </StyledTypography>
+              </Box>
             </Box>
           </Box>
         </Box>
-      </Box>
-      {/* <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
+        {/* <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
         <Box
           sx={{
             display: "flex",
@@ -266,17 +305,37 @@ const CategoryDetail = () => {
           </Box>
         </Box>
       </Box> */}
-      <Divider />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          padding: "20px 10px",
-        }}
-      ></Box>
-    </Box>
+        <Divider />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            padding: "10px 10px",
+          }}
+        ></Box>
+      </Box>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to cancel the deposit?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={cancelDeposit} autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 
