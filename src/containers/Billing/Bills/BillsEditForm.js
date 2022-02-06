@@ -375,18 +375,27 @@ const BillsEditForm = () => {
                     <Box sx={{ width: "100%" }}>
                       <Typography variant="p">Quantity</Typography>
                     </Box>
-                    <TextField
-                      inputRef={quantityRef}
-                      size="small"
-                      style={{ width: "85%" }}
-                      margin="normal"
-                      type="number"
-                      InputProps={{
-                        inputProps: { min: "0", step: "1" },
+                    <Box
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
                       }}
-                      value={currentQuantity}
-                      onChange={(e) => setCurrentQuantity(e.target.value)}
-                    />
+                    >
+                      <TextField
+                        inputRef={quantityRef}
+                        size="small"
+                        style={{ width: "85%" }}
+                        margin="normal"
+                        type="number"
+                        InputProps={{
+                          inputProps: { min: "0", step: "1" },
+                        }}
+                        value={currentQuantity}
+                        onChange={(e) => setCurrentQuantity(e.target.value)}
+                      />
+                      <Box sx={{ width: "45px" }}></Box>
+                    </Box>
                   </Box>
                   <Box
                     sx={{

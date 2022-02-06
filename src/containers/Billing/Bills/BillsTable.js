@@ -195,6 +195,15 @@ const BillsTable = () => {
 
   return (
     <Box sx={{ width: "100%" }}>
+      <Box display="flex" justifyContent="flex-end">
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={() => history.push(`/dashboard/bills/form`)}
+        >
+          New Bill
+        </Button>
+      </Box>
       <Box display="flex" justifyContent="center" width="100%">
         <Tabs
           value={tab}
@@ -214,6 +223,7 @@ const BillsTable = () => {
           tableName="Bill"
           headCells={headCells}
           rows={draftedRows}
+          addCreate={false}
           onDelete={handleClickOpen}
           onDetail={toDetailFromDrafted}
           deleteBtnName="Cancel"
