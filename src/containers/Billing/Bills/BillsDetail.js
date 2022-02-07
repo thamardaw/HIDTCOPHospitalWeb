@@ -1,6 +1,11 @@
 import {
   Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   IconButton,
   Paper,
@@ -22,6 +27,7 @@ import { useAxios } from "../../../hooks";
 import { useState } from "react";
 import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
+import { useLocation } from "react-router-dom";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.3rem",
@@ -36,12 +42,24 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 const BillsDetail = () => {
   const api = useAxios();
   const history = useHistory();
+  const location = useLocation();
   const receiptRef = useRef();
   const { id, stage } = useParams();
   const [showPay, setShowPay] = useState(false);
   const [bill, setBill] = useState({});
   const [payment, setPayment] = useState({});
   const [totalDeposit, setTotalDeposit] = useState(0);
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const cancelBill = async () => {
+    await api.put(`/api/bill/cancel/${id}`);
+    handleClose();
+    history.goBack();
+  };
 
   const handlePrint = useReactToPrint({
     pageStyle:
@@ -81,7 +99,12 @@ const BillsDetail = () => {
     if (bill) {
       const res = await api.put(`/api/payment/${parseInt(payment.id)}`);
       if (res.status === 200) {
-        history.replace(`/dashboard/bills/details/${id}/completed`);
+        history.replace({
+          pathname: `/dashboard/bills/details/${id}/completed`,
+          state: {
+            from: "bill_process",
+          },
+        });
       }
     }
     return;
@@ -121,47 +144,67 @@ const BillsDetail = () => {
   }, [stage]);
 
   return (
-    <Paper sx={{ width: "100%", mb: 2 }}>
-      <Toolbar>
-        <IconButton
-          sx={{
-            color: "white",
-            backgroundColor: "primary.main",
-            borderRadius: "10%",
-            "&:hover": {
-              backgroundColor: "primary.light",
-            },
-            marginRight: "5px",
-          }}
-          onClick={() => history.replace(`/dashboard/bills/form`)}
-          size="small"
-        >
-          <ArrowBackIosNewIcon size="small" sx={{ fontSize: "1.4rem" }} />
-        </IconButton>
-        <Button
-          variant="contained"
-          size="small"
-          sx={{ marginRight: "5px", display: showPay ? "block" : "none" }}
-          onClick={make_payment}
-        >
-          Record Payment
-        </Button>
-        <Button
-          variant="contained"
-          size="small"
-          sx={{ marginRight: "5px" }}
-          onClick={handlePrint}
-        >
-          Print
-        </Button>
-      </Toolbar>
-      <Container ref={receiptRef}>
-        <Box sx={{ my: "15px" }}>
-          <Typography variant="h6" textAlign="center">
-            Dagon Lin Hospital
-          </Typography>
-          {/* <Box sx={{ height: "15px" }} /> */}
-          {/* <Typography variant="body" component="div">
+    <>
+      <Paper sx={{ width: "100%", mb: 2 }}>
+        <Toolbar>
+          <IconButton
+            sx={{
+              color: "white",
+              backgroundColor: "primary.main",
+              borderRadius: "10%",
+              "&:hover": {
+                backgroundColor: "primary.light",
+              },
+              marginRight: "5px",
+            }}
+            onClick={() => {
+              if (location.state?.from === "bill_process") {
+                history.replace(`/dashboard/bills/form`);
+              } else {
+                history.goBack();
+              }
+            }}
+            size="small"
+          >
+            <ArrowBackIosNewIcon size="small" sx={{ fontSize: "1.4rem" }} />
+          </IconButton>
+          <Button
+            variant="contained"
+            size="small"
+            sx={{ marginRight: "5px", display: showPay ? "block" : "none" }}
+            onClick={make_payment}
+          >
+            Record Payment
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            sx={{ marginRight: "5px" }}
+            onClick={handlePrint}
+          >
+            Print
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            color="error"
+            sx={{
+              marginRight: "5px",
+              display:
+                stage === "draft" || stage === "outstanding" ? "block" : "none",
+            }}
+            onClick={() => setOpen(true)}
+          >
+            Cancel
+          </Button>
+        </Toolbar>
+        <Container ref={receiptRef}>
+          <Box sx={{ my: "15px" }}>
+            <Typography variant="h6" textAlign="center">
+              Dagon Lin Hospital
+            </Typography>
+            {/* <Box sx={{ height: "15px" }} /> */}
+            {/* <Typography variant="body" component="div">
             ID : {bill?.id && generateID(bill?.id, bill?.created_time)}
           </Typography>
           <Typography variant="body" component="div">
@@ -176,199 +219,221 @@ const BillsDetail = () => {
           <Typography variant="body" component="div">
             Address : {bill?.patient_address}
           </Typography> */}
-          <Box sx={{ flexDirection: "column", paddingTop: "15px" }}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                margin: "10px 0px",
-              }}
-            >
-              <Box sx={{ width: "30%" }}>
-                <StyledTypography variant="body">Bill ID</StyledTypography>
-              </Box>
-              <StyledTypography variant="body">
-                {bill?.id && generateID(bill?.id)}
-              </StyledTypography>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                margin: "10px 0px",
-              }}
-            >
-              <Box sx={{ width: "30%" }}>
-                <StyledTypography variant="body">Date</StyledTypography>
-              </Box>
-              <StyledTypography variant="body">
-                {bill?.created_time && bill?.created_time.split("T")[0]}
-              </StyledTypography>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                margin: "10px 0px",
-              }}
-            >
-              <Box sx={{ width: "30%" }}>
-                <StyledTypography variant="body">Time</StyledTypography>
-              </Box>
-              <StyledTypography variant="body">
-                {bill?.created_time &&
-                  new Date(bill.created_time).toLocaleTimeString("en-US", {
-                    hour: "numeric",
-                    minute: "numeric",
-                    hour12: true,
-                  })}
-              </StyledTypography>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                margin: "10px 0px",
-              }}
-            >
-              <Box sx={{ width: "30%" }}>
-                <StyledTypography variant="body">Patient ID</StyledTypography>
-              </Box>
-              <StyledTypography variant="body">
-                {bill?.patient &&
-                  generateID(bill?.patient.id, bill?.patient.created_time)}
-              </StyledTypography>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                margin: "10px 0px",
-              }}
-            >
-              <Box sx={{ width: "30%" }}>
-                <StyledTypography variant="body">Name</StyledTypography>
-              </Box>
-              <StyledTypography variant="body">
-                {bill?.patient_name}
-              </StyledTypography>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                margin: "10px 0px",
-              }}
-            >
-              <Box sx={{ width: "30%" }}>
-                <StyledTypography variant="body">Phone</StyledTypography>
-              </Box>
-              <StyledTypography variant="body">
-                {bill?.patient_phone}
-              </StyledTypography>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                margin: "10px 0px",
-              }}
-            >
-              <Box sx={{ width: "30%" }}>
-                <StyledTypography variant="body">Address</StyledTypography>
-              </Box>
-              <Box sx={{ width: "70%" }}>
+            <Box sx={{ flexDirection: "column", paddingTop: "15px" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  margin: "10px 0px",
+                }}
+              >
+                <Box sx={{ width: "30%" }}>
+                  <StyledTypography variant="body">Bill ID</StyledTypography>
+                </Box>
                 <StyledTypography variant="body">
-                  {bill?.patient_address}
+                  {bill?.id && generateID(bill?.id)}
                 </StyledTypography>
               </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  margin: "10px 0px",
+                }}
+              >
+                <Box sx={{ width: "30%" }}>
+                  <StyledTypography variant="body">Date</StyledTypography>
+                </Box>
+                <StyledTypography variant="body">
+                  {bill?.created_time && bill?.created_time.split("T")[0]}
+                </StyledTypography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  margin: "10px 0px",
+                }}
+              >
+                <Box sx={{ width: "30%" }}>
+                  <StyledTypography variant="body">Time</StyledTypography>
+                </Box>
+                <StyledTypography variant="body">
+                  {bill?.created_time &&
+                    new Date(bill.created_time).toLocaleTimeString("en-US", {
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: true,
+                    })}
+                </StyledTypography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  margin: "10px 0px",
+                }}
+              >
+                <Box sx={{ width: "30%" }}>
+                  <StyledTypography variant="body">Patient ID</StyledTypography>
+                </Box>
+                <StyledTypography variant="body">
+                  {bill?.patient &&
+                    generateID(bill?.patient.id, bill?.patient.created_time)}
+                </StyledTypography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  margin: "10px 0px",
+                }}
+              >
+                <Box sx={{ width: "30%" }}>
+                  <StyledTypography variant="body">Name</StyledTypography>
+                </Box>
+                <StyledTypography variant="body">
+                  {bill?.patient_name}
+                </StyledTypography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  margin: "10px 0px",
+                }}
+              >
+                <Box sx={{ width: "30%" }}>
+                  <StyledTypography variant="body">Phone</StyledTypography>
+                </Box>
+                <StyledTypography variant="body">
+                  {bill?.patient_phone}
+                </StyledTypography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  margin: "10px 0px",
+                }}
+              >
+                <Box sx={{ width: "30%" }}>
+                  <StyledTypography variant="body">Address</StyledTypography>
+                </Box>
+                <Box sx={{ width: "70%" }}>
+                  <StyledTypography variant="body">
+                    {bill?.patient_address}
+                  </StyledTypography>
+                </Box>
+              </Box>
             </Box>
           </Box>
-        </Box>
-        <Box sx={{ my: "15px" }}>
-          <TableContainer>
-            <Table sx={{ minWidth: 380 }} aria-label="simple table">
-              <TableHead sx={{ backgroundColor: "#EBEBEB" }}>
-                <TableRow>
-                  <StyledTableCell>No</StyledTableCell>
-                  <StyledTableCell>Name</StyledTableCell>
-                  <StyledTableCell>Price</StyledTableCell>
-                  <StyledTableCell>Quantity</StyledTableCell>
-                  <StyledTableCell>UOM</StyledTableCell>
-                  <StyledTableCell>SubTotal</StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {bill?.bill_items &&
-                  bill.bill_items.map((row, index) => (
-                    <TableRow
-                      key={index}
-                      sx={{
-                        "&:last-child td, &:last-child th": { border: 0 },
-                      }}
-                    >
-                      <StyledTableCell component="th" scope="row">
-                        {index + 1}
-                        {/* {generateID(row.id, row.created_time)} */}
-                      </StyledTableCell>
-                      <StyledTableCell>{row?.name}</StyledTableCell>
-                      <StyledTableCell>{row?.price}</StyledTableCell>
-                      <StyledTableCell>{row?.quantity}</StyledTableCell>
-                      <StyledTableCell>{row?.uom}</StyledTableCell>
-                      <StyledTableCell>{row?.subtotal}</StyledTableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-        <Box sx={{ paddingBottom: "25px" }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <StyledTypography variant="body">Total : </StyledTypography>
-            <StyledTypography variant="body">
-              {bill?.total_amount}
-            </StyledTypography>
+          <Box sx={{ my: "15px" }}>
+            <TableContainer>
+              <Table sx={{ minWidth: 380 }} aria-label="simple table">
+                <TableHead sx={{ backgroundColor: "#EBEBEB" }}>
+                  <TableRow>
+                    <StyledTableCell>No</StyledTableCell>
+                    <StyledTableCell>Name</StyledTableCell>
+                    <StyledTableCell>Price</StyledTableCell>
+                    <StyledTableCell>Quantity</StyledTableCell>
+                    <StyledTableCell>UOM</StyledTableCell>
+                    <StyledTableCell>SubTotal</StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {bill?.bill_items &&
+                    bill.bill_items.map((row, index) => (
+                      <TableRow
+                        key={index}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <StyledTableCell component="th" scope="row">
+                          {index + 1}
+                          {/* {generateID(row.id, row.created_time)} */}
+                        </StyledTableCell>
+                        <StyledTableCell>{row?.name}</StyledTableCell>
+                        <StyledTableCell>{row?.price}</StyledTableCell>
+                        <StyledTableCell>{row?.quantity}</StyledTableCell>
+                        <StyledTableCell>{row?.uom}</StyledTableCell>
+                        <StyledTableCell>{row?.subtotal}</StyledTableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Box>
-          <Divider sx={{ my: "6px" }} />
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <StyledTypography variant="body">Deposit : </StyledTypography>
-            <StyledTypography variant="body">
-              {stage === "draft" ? totalDeposit : payment?.total_deposit_amount}
-              {stage === "cancelled" && "0"}
-            </StyledTypography>
+          <Box sx={{ paddingBottom: "25px" }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <StyledTypography variant="body">Total : </StyledTypography>
+              <StyledTypography variant="body">
+                {bill?.total_amount}
+              </StyledTypography>
+            </Box>
+            <Divider sx={{ my: "6px" }} />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <StyledTypography variant="body">Deposit : </StyledTypography>
+              <StyledTypography variant="body">
+                {stage === "draft"
+                  ? totalDeposit
+                  : payment?.total_deposit_amount}
+                {stage === "cancelled" && "0"}
+              </StyledTypography>
+            </Box>
+            <Divider sx={{ my: "6px" }} />
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <StyledTypography variant="body">Unpaid : </StyledTypography>
+              <StyledTypography variant="body">
+                {stage === "draft"
+                  ? parseInt(bill?.total_amount) - totalDeposit
+                  : payment?.unpaid_amount}
+                {stage === "cancelled" && bill?.total_amount}
+              </StyledTypography>
+            </Box>
+            <Divider sx={{ my: "6px" }} />
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <StyledTypography variant="body">Created By : </StyledTypography>
+              <StyledTypography variant="body">
+                {bill?.created_user?.username}
+              </StyledTypography>
+            </Box>
           </Box>
-          <Divider sx={{ my: "6px" }} />
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <StyledTypography variant="body">Unpaid : </StyledTypography>
-            <StyledTypography variant="body">
-              {stage === "draft"
-                ? parseInt(bill?.total_amount) - totalDeposit
-                : payment?.unpaid_amount}
-              {stage === "cancelled" && bill?.total_amount}
-            </StyledTypography>
-          </Box>
-          <Divider sx={{ my: "6px" }} />
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <StyledTypography variant="body">Created By : </StyledTypography>
-            <StyledTypography variant="body">
-              {bill?.created_user?.username}
-            </StyledTypography>
-          </Box>
-        </Box>
-      </Container>
-    </Paper>
+        </Container>
+      </Paper>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to cancel the bill?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={cancelBill} autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 
