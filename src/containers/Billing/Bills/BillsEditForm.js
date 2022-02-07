@@ -420,7 +420,7 @@ const BillsEditForm = () => {
                   fullWidth
                   onClick={() => history.goBack()}
                 >
-                  Done
+                  Save Bill
                 </Button>
               </Box>
             </Box>
@@ -541,11 +541,22 @@ const BillsEditForm = () => {
                             <TableCell align="right">{row?.uom}</TableCell>
                             <TableCell align="right">{row?.subtotal}</TableCell>
                             <TableCell align="center">
-                              <Box sx={{ display: "flex" }}>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
                                 <IconButton
                                   aria-label="edit"
                                   color="primary"
                                   onClick={(e) => handleEdit(e, index)}
+                                  sx={{
+                                    padding: "0px",
+                                    margin: "0px",
+                                    marginRight: "5px",
+                                  }}
                                 >
                                   <ModeEditIcon />
                                 </IconButton>
@@ -553,6 +564,7 @@ const BillsEditForm = () => {
                                   aria-label="delete"
                                   color="error"
                                   onClick={() => removeItem(row.id)}
+                                  sx={{ padding: "0px", margin: "0px" }}
                                 >
                                   <DeleteIcon />
                                 </IconButton>

@@ -672,11 +672,22 @@ const BillsForm = () => {
                             {row.price * row.quantity}
                           </TableCell>
                           <TableCell align="center">
-                            <Box sx={{ display: "flex" }}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
                               <IconButton
                                 aria-label="edit"
                                 color="primary"
                                 onClick={(e) => handleEdit(e, index)}
+                                sx={{
+                                  padding: "0px",
+                                  margin: "0px",
+                                  marginRight: "5px",
+                                }}
                               >
                                 <ModeEditIcon />
                               </IconButton>
@@ -684,6 +695,7 @@ const BillsForm = () => {
                                 aria-label="delete"
                                 color="error"
                                 onClick={() => removeItem(index)}
+                                sx={{ padding: "0px", margin: "0px" }}
                               >
                                 <DeleteIcon />
                               </IconButton>
