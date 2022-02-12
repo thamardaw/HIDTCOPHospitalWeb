@@ -30,6 +30,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import LoadingContext from "../../../contexts/LoadingContext";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { BillProcessContext } from "../../../contexts";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -55,6 +56,7 @@ const BillsForm = () => {
     price: 0,
   });
   const { setScreenLoading } = useContext(LoadingContext);
+  const { BillProcess, setBillProcess } = useContext(BillProcessContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const quantityRef = useRef();
@@ -116,6 +118,7 @@ const BillsForm = () => {
       });
       setSalesServiceItem(s);
       setScreenLoading(false);
+      readCacheData();
     } else {
       history.goBack();
     }
@@ -158,11 +161,6 @@ const BillsForm = () => {
     calculateTotal();
   };
 
-  useEffect(() => {
-    getPatientAndSalesServiceItem();
-    // eslint-disable-next-line
-  }, []);
-
   const createBill = async () => {
     if (currentPatient) {
       setLoading(true);
@@ -174,12 +172,34 @@ const BillsForm = () => {
         bill_items: billItems,
       });
       if (res.status === 200) {
+        setBillProcess({
+          currentPatient: null,
+          billItems: [],
+        });
         history.replace(`/dashboard/bills/details/${res.data.id}/draft`);
       }
       setLoading(false);
     }
     return;
   };
+
+  const cacheDataAndPush = (route) => {
+    setBillProcess({
+      currentPatient: currentPatient,
+      billItems: billItems,
+    });
+    history.push(route);
+  };
+
+  const readCacheData = () => {
+    setBillItems(BillProcess.billItems);
+    setCurrectPatient(BillProcess.currentPatient);
+  };
+
+  useEffect(() => {
+    getPatientAndSalesServiceItem();
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <>
@@ -195,7 +215,13 @@ const BillsForm = () => {
               },
               marginRight: "5px",
             }}
-            onClick={() => history.goBack()}
+            onClick={() => {
+              setBillProcess({
+                currentPatient: null,
+                billItems: [],
+              });
+              history.goBack();
+            }}
             size="small"
           >
             <ArrowBackIosNewIcon size="small" sx={{ fontSize: "1.4rem" }} />
@@ -400,6 +426,9 @@ const BillsForm = () => {
                           </Box>
                         );
                       }}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
                       style={{ width: "90%" }}
                       onChange={(event, newValue) => {
                         if (newValue) {
@@ -423,7 +452,9 @@ const BillsForm = () => {
                       size="small"
                       color="primary"
                       sx={{ marginTop: "5px" }}
-                      onClick={() => history.push("/dashboard/patient/form")}
+                      onClick={() =>
+                        cacheDataAndPush("/dashboard/patient/form")
+                      }
                     >
                       <AddIcon fontSize="large" />
                     </IconButton>
@@ -484,7 +515,7 @@ const BillsForm = () => {
                         color="primary"
                         sx={{ marginTop: "5px" }}
                         onClick={() =>
-                          history.push("/dashboard/salesServiceItem/form")
+                          cacheDataAndPush("/dashboard/salesServiceItem/form")
                         }
                       >
                         <AddIcon fontSize="large" />
@@ -555,6 +586,10 @@ const BillsForm = () => {
                     setCurrectPatient(null);
                     setCurrentSSI(null);
                     setCurrentQuantity(0);
+                    setBillProcess({
+                      currentPatient: null,
+                      billItems: [],
+                    });
                   }}
                 >
                   Cancel

@@ -29,6 +29,7 @@ import { styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton";
 import LoadingContext from "../../../contexts/LoadingContext";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -160,6 +161,21 @@ const BillsEditForm = () => {
     <>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <Toolbar>
+          <IconButton
+            sx={{
+              color: "white",
+              backgroundColor: "primary.main",
+              borderRadius: "10%",
+              "&:hover": {
+                backgroundColor: "primary.light",
+              },
+              marginRight: "5px",
+            }}
+            onClick={() => history.goBack()}
+            size="small"
+          >
+            <ArrowBackIosNewIcon size="small" sx={{ fontSize: "1.4rem" }} />
+          </IconButton>
           <Typography
             variant="h6"
             component="div"
@@ -315,7 +331,9 @@ const BillsEditForm = () => {
                     }}
                   >
                     <Box sx={{ width: "100%" }}>
-                      <Typography variant="p">Sales & Service Item</Typography>
+                      <Typography variant="p">
+                        Select Sales & Service Item
+                      </Typography>
                     </Box>
                     {/* <TextField size="small" fullWidth margin="dense" />
                      */}

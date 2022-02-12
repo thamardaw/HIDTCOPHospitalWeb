@@ -12,6 +12,7 @@ import { Deposit } from "./Billing/Deposit";
 // import { Payment } from "./Billing/Payment";
 import { DailyClosing } from "./DailyClosing";
 import { LoadingProvider } from "../contexts/LoadingContext";
+import { BillProcessProvider } from "../contexts/BillProcessContext";
 
 const drawerWidth = 240;
 
@@ -45,20 +46,22 @@ function Dashboard(props) {
       >
         <Toolbar />
         <LoadingProvider>
-          <Switch>
-            <Route path={`${path}/patient`} component={Patient} />
-            <Route path={`${path}/uom`} component={Uom} />
-            <Route path={`${path}/category`} component={Category} />
-            <Route
-              path={`${path}/salesServiceItem`}
-              component={SalesServiceItem}
-            />
-            <Route path={`${path}/bills`} component={Bills} />
-            {/* <Route path={`${path}/payment`} component={Payment} /> */}
-            <Route path={`${path}/deposit`} component={Deposit} />
-            <Route path={`${path}/dailyClosing`} component={DailyClosing} />
-            <Redirect to={`${path}/patient`} />
-          </Switch>
+          <BillProcessProvider>
+            <Switch>
+              <Route path={`${path}/patient`} component={Patient} />
+              <Route path={`${path}/uom`} component={Uom} />
+              <Route path={`${path}/category`} component={Category} />
+              <Route
+                path={`${path}/salesServiceItem`}
+                component={SalesServiceItem}
+              />
+              <Route path={`${path}/bills`} component={Bills} />
+              {/* <Route path={`${path}/payment`} component={Payment} /> */}
+              <Route path={`${path}/deposit`} component={Deposit} />
+              <Route path={`${path}/dailyClosing`} component={DailyClosing} />
+              <Redirect to={`${path}/patient`} />
+            </Switch>
+          </BillProcessProvider>
         </LoadingProvider>
         <Footer />
       </Box>
