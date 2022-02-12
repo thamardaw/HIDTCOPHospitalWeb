@@ -5,14 +5,14 @@ const BillProcessContext = createContext();
 export default BillProcessContext;
 
 export const BillProcessProvider = ({ children }) => {
-  const [billProcess, setBillProcess] = useState({
-    billItems: [],
-    currentPatient: null,
-  });
+  const [currentPatient, setCurrectPatient] = useState(null);
+  const [billItems, setBillItems] = useState([]);
 
   let contextData = {
-    BillProcess: billProcess,
-    setBillProcess: setBillProcess,
+    currentPatient: currentPatient,
+    setCurrectPatient: setCurrectPatient,
+    billItems: billItems,
+    setBillItems: setBillItems,
   };
 
   return (
