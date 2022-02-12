@@ -30,6 +30,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import LoadingContext from "../../../contexts/LoadingContext";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { BillProcessContext } from "../../../contexts";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -42,10 +43,8 @@ const BillsForm = () => {
   const api = useAxios();
   const [patient, setPatient] = useState([]);
   const [salesServiceItem, setSalesServiceItem] = useState([]);
-  const [currentPatient, setCurrectPatient] = useState(null);
   const [currentSSI, setCurrentSSI] = useState(null);
   const [currentQuantity, setCurrentQuantity] = useState(0);
-  const [billItems, setBillItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -55,6 +54,8 @@ const BillsForm = () => {
     price: 0,
   });
   const { setScreenLoading } = useContext(LoadingContext);
+  const { currentPatient, setCurrectPatient, billItems, setBillItems } =
+    useContext(BillProcessContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const quantityRef = useRef();
@@ -71,6 +72,7 @@ const BillsForm = () => {
     });
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -115,6 +117,10 @@ const BillsForm = () => {
         };
       });
       setSalesServiceItem(s);
+      calculateTotal();
+      if (currentPatient) {
+        getDepositByPatientId(currentPatient.id);
+      }
       setScreenLoading(false);
     } else {
       history.goBack();
@@ -158,11 +164,6 @@ const BillsForm = () => {
     calculateTotal();
   };
 
-  useEffect(() => {
-    getPatientAndSalesServiceItem();
-    // eslint-disable-next-line
-  }, []);
-
   const createBill = async () => {
     if (currentPatient) {
       setLoading(true);
@@ -174,12 +175,21 @@ const BillsForm = () => {
         bill_items: billItems,
       });
       if (res.status === 200) {
+        setBillItems([]);
+        setCurrectPatient(null);
+        setCurrentSSI(null);
+        setCurrentQuantity(0);
         history.replace(`/dashboard/bills/details/${res.data.id}/draft`);
       }
       setLoading(false);
     }
     return;
   };
+
+  useEffect(() => {
+    getPatientAndSalesServiceItem();
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <>
@@ -195,7 +205,11 @@ const BillsForm = () => {
               },
               marginRight: "5px",
             }}
-            onClick={() => history.goBack()}
+            onClick={() => {
+              history.goBack();
+              setBillItems([]);
+              setCurrectPatient(null);
+            }}
             size="small"
           >
             <ArrowBackIosNewIcon size="small" sx={{ fontSize: "1.4rem" }} />
@@ -400,6 +414,9 @@ const BillsForm = () => {
                           </Box>
                         );
                       }}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
                       style={{ width: "90%" }}
                       onChange={(event, newValue) => {
                         if (newValue) {
