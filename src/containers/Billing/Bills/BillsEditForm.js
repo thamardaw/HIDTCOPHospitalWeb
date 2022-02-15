@@ -44,7 +44,7 @@ const BillsEditForm = () => {
   const [details, setDetails] = useState([]);
   const [salesServiceItem, setSalesServiceItem] = useState([]);
   const [currentSSI, setCurrentSSI] = useState(null);
-  const [currentQuantity, setCurrentQuantity] = useState(0);
+  const [currentQuantity, setCurrentQuantity] = useState(1);
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [loading, setLoading] = useState(false);
   const { setScreenLoading } = useContext(LoadingContext);

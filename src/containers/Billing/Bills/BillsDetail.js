@@ -34,10 +34,15 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
   fontWeight: 500,
 }));
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  fontSize: "1.2rem",
-  fontWeight: 500,
-}));
+const StyledTableCell = styled(TableCell)(
+  ({ theme, backgroundColor, maxWidth }) => ({
+    backgroundColor: backgroundColor,
+    fontSize: "1.2rem",
+    fontWeight: 500,
+    wordWrap: "break-word",
+    maxWidth: maxWidth,
+  })
+);
 
 const BillsDetail = () => {
   const api = useAxios();
@@ -340,12 +345,18 @@ const BillsDetail = () => {
               <Table sx={{ minWidth: 380 }} aria-label="simple table">
                 <TableHead sx={{ backgroundColor: "#EBEBEB" }}>
                   <TableRow>
-                    <StyledTableCell>No</StyledTableCell>
-                    <StyledTableCell>Name</StyledTableCell>
-                    <StyledTableCell>Price</StyledTableCell>
-                    <StyledTableCell>Quantity</StyledTableCell>
-                    <StyledTableCell>UOM</StyledTableCell>
-                    <StyledTableCell>SubTotal</StyledTableCell>
+                    {/* <StyledTableCell>No</StyledTableCell> */}
+                    <StyledTableCell maxWidth="130px">Name</StyledTableCell>
+                    <StyledTableCell maxWidth="75px" align="right">
+                      Price
+                    </StyledTableCell>
+                    <StyledTableCell maxWidth="55px" align="right">
+                      Qty
+                    </StyledTableCell>
+                    {/* <StyledTableCell>UOM</StyledTableCell> */}
+                    <StyledTableCell maxWidth="120px" align="right">
+                      SubTotal
+                    </StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -357,15 +368,22 @@ const BillsDetail = () => {
                           "&:last-child td, &:last-child th": { border: 0 },
                         }}
                       >
-                        <StyledTableCell component="th" scope="row">
+                        {/* <StyledTableCell component="th" scope="row">
                           {index + 1}
-                          {/* {generateID(row.id, row.created_time)} */}
+                        </StyledTableCell> */}
+                        <StyledTableCell maxWidth="130px">
+                          {row?.name}
                         </StyledTableCell>
-                        <StyledTableCell>{row?.name}</StyledTableCell>
-                        <StyledTableCell>{row?.price}</StyledTableCell>
-                        <StyledTableCell>{row?.quantity}</StyledTableCell>
-                        <StyledTableCell>{row?.uom}</StyledTableCell>
-                        <StyledTableCell>{row?.subtotal}</StyledTableCell>
+                        <StyledTableCell maxWidth="75px" align="right">
+                          {row?.price}
+                        </StyledTableCell>
+                        <StyledTableCell maxWidth="55px" align="right">
+                          {row?.quantity}
+                        </StyledTableCell>
+                        {/* <StyledTableCell>{row?.uom}</StyledTableCell> */}
+                        <StyledTableCell maxWidth="120px" align="right">
+                          {row?.subtotal}
+                        </StyledTableCell>
                       </TableRow>
                     ))}
                 </TableBody>

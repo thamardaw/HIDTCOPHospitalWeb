@@ -373,6 +373,7 @@ const CustomTable = ({
     if (event.target.value.length === 0) {
       setDataRows(rows);
     } else {
+      setPage(0);
       setDataRows(arraySearch(rows, event.target.value, headCells));
     }
   };
