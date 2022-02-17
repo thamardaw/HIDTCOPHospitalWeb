@@ -30,7 +30,6 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import LoadingContext from "../../../contexts/LoadingContext";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#EBEBEB",
