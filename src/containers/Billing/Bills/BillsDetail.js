@@ -108,9 +108,9 @@ const BillsDetail = () => {
       if (res.status === 200) {
         history.replace({
           pathname: `/dashboard/bills/details/${id}/completed`,
-          state: {
-            from: "bill_process",
-          },
+          // state: {
+          //   from: "bill_process",
+          // },
         });
       }
     }
