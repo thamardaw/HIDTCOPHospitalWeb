@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useCallback, useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { CustomTable, TabPanel } from "../../../components";
 import LoadingContext from "../../../contexts/LoadingContext";
 import { useAxios } from "../../../hooks";
@@ -43,6 +44,7 @@ const headCells = [
 ];
 const DepositTable = () => {
   const api = useAxios();
+  const history = useHistory();
   const [activeRows, setActiveRows] = useState([]);
   const [usedRows, setUsedRows] = useState([]);
   const [cancelledRows, setCancelledRows] = useState([]);
@@ -137,6 +139,15 @@ const DepositTable = () => {
 
   return (
     <Box sx={{ width: "100%" }}>
+      <Box display="flex" justifyContent="flex-end">
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={() => history.push(`/dashboard/deposit/form`)}
+        >
+          New Deposit
+        </Button>
+      </Box>
       <Box display="flex" justifyContent="center" width="100%">
         <Tabs
           value={tab}
@@ -156,7 +167,16 @@ const DepositTable = () => {
           headCells={headCells}
           rows={activeRows}
           onDelete={handleClickOpen}
+          onDetail={(id) =>
+            history.push({
+              pathname: `/dashboard/deposit/details/${id}`,
+              state: {
+                from: "active",
+              },
+            })
+          }
           addEdit={false}
+          addCreate={false}
           deleteBtnName="Cancel"
         />
       </TabPanel>

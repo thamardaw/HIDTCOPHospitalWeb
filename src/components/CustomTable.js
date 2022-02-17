@@ -342,7 +342,7 @@ const CustomTable = ({
   detailBtnName = "Details",
   deleteBtnName = "Delete",
 }) => {
-  const [order, setOrder] = useState("asc");
+  const [order, setOrder] = useState("desc");
   const [orderBy, setOrderBy] = useState("id");
   const [selected, setSelected] = useState([]);
   const [dataRows, setDataRows] = useState([]);
@@ -373,6 +373,7 @@ const CustomTable = ({
     if (event.target.value.length === 0) {
       setDataRows(rows);
     } else {
+      setPage(0);
       setDataRows(arraySearch(rows, event.target.value, headCells));
     }
   };

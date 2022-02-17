@@ -29,7 +29,7 @@ import { styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton";
 import LoadingContext from "../../../contexts/LoadingContext";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
-
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#EBEBEB",
@@ -43,7 +43,7 @@ const BillsEditForm = () => {
   const [details, setDetails] = useState([]);
   const [salesServiceItem, setSalesServiceItem] = useState([]);
   const [currentSSI, setCurrentSSI] = useState(null);
-  const [currentQuantity, setCurrentQuantity] = useState(0);
+  const [currentQuantity, setCurrentQuantity] = useState(1);
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [loading, setLoading] = useState(false);
   const { setScreenLoading } = useContext(LoadingContext);
@@ -160,6 +160,21 @@ const BillsEditForm = () => {
     <>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <Toolbar>
+          <IconButton
+            sx={{
+              color: "white",
+              backgroundColor: "primary.main",
+              borderRadius: "10%",
+              "&:hover": {
+                backgroundColor: "primary.light",
+              },
+              marginRight: "5px",
+            }}
+            onClick={() => history.goBack()}
+            size="small"
+          >
+            <ArrowBackIosNewIcon size="small" sx={{ fontSize: "1.4rem" }} />
+          </IconButton>
           <Typography
             variant="h6"
             component="div"
@@ -315,7 +330,9 @@ const BillsEditForm = () => {
                     }}
                   >
                     <Box sx={{ width: "100%" }}>
-                      <Typography variant="p">Sales & Service Item</Typography>
+                      <Typography variant="p">
+                        Select Sales & Service Item
+                      </Typography>
                     </Box>
                     {/* <TextField size="small" fullWidth margin="dense" />
                      */}
@@ -375,18 +392,27 @@ const BillsEditForm = () => {
                     <Box sx={{ width: "100%" }}>
                       <Typography variant="p">Quantity</Typography>
                     </Box>
-                    <TextField
-                      inputRef={quantityRef}
-                      size="small"
-                      style={{ width: "85%" }}
-                      margin="normal"
-                      type="number"
-                      InputProps={{
-                        inputProps: { min: "0", step: "1" },
+                    <Box
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
                       }}
-                      value={currentQuantity}
-                      onChange={(e) => setCurrentQuantity(e.target.value)}
-                    />
+                    >
+                      <TextField
+                        inputRef={quantityRef}
+                        size="small"
+                        style={{ width: "85%" }}
+                        margin="normal"
+                        type="number"
+                        InputProps={{
+                          inputProps: { min: "0", step: "1" },
+                        }}
+                        value={currentQuantity}
+                        onChange={(e) => setCurrentQuantity(e.target.value)}
+                      />
+                      <Box sx={{ width: "45px" }}></Box>
+                    </Box>
                   </Box>
                   <Box
                     sx={{
@@ -411,7 +437,7 @@ const BillsEditForm = () => {
                   fullWidth
                   onClick={() => history.goBack()}
                 >
-                  Done
+                  Save Bill
                 </Button>
               </Box>
             </Box>
@@ -532,11 +558,22 @@ const BillsEditForm = () => {
                             <TableCell align="right">{row?.uom}</TableCell>
                             <TableCell align="right">{row?.subtotal}</TableCell>
                             <TableCell align="center">
-                              <Box sx={{ display: "flex" }}>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
                                 <IconButton
                                   aria-label="edit"
                                   color="primary"
                                   onClick={(e) => handleEdit(e, index)}
+                                  sx={{
+                                    padding: "0px",
+                                    margin: "0px",
+                                    marginRight: "5px",
+                                  }}
                                 >
                                   <ModeEditIcon />
                                 </IconButton>
@@ -544,6 +581,7 @@ const BillsEditForm = () => {
                                   aria-label="delete"
                                   color="error"
                                   onClick={() => removeItem(row.id)}
+                                  sx={{ padding: "0px", margin: "0px" }}
                                 >
                                   <DeleteIcon />
                                 </IconButton>

@@ -65,7 +65,12 @@ const DepositForm = () => {
       ...details,
     });
     if (res.status === 200) {
-      history.replace(`/dashboard/deposit/details/${generateID(res.data.id)}`);
+      history.replace({
+        pathname: `/dashboard/deposit/details/${generateID(res.data.id)}`,
+        state: {
+          from: "active",
+        },
+      });
     }
     setLoading(false);
   };
@@ -212,7 +217,7 @@ const DepositForm = () => {
                     setDetails({ ...details, amount: e.target.value })
                   }
                 />
-                <Box sx={{ width: "50px" }}></Box>
+                <Box sx={{ width: "45px" }}></Box>
               </Box>
             </Box>
             <Box

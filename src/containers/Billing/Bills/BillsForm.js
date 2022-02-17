@@ -29,6 +29,8 @@ import { styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton";
 import LoadingContext from "../../../contexts/LoadingContext";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { BillProcessContext } from "../../../contexts";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -41,10 +43,8 @@ const BillsForm = () => {
   const api = useAxios();
   const [patient, setPatient] = useState([]);
   const [salesServiceItem, setSalesServiceItem] = useState([]);
-  const [currentPatient, setCurrectPatient] = useState(null);
   const [currentSSI, setCurrentSSI] = useState(null);
-  const [currentQuantity, setCurrentQuantity] = useState(0);
-  const [billItems, setBillItems] = useState([]);
+  const [currentQuantity, setCurrentQuantity] = useState(1);
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -54,6 +54,8 @@ const BillsForm = () => {
     price: 0,
   });
   const { setScreenLoading } = useContext(LoadingContext);
+  const { currentPatient, setCurrectPatient, billItems, setBillItems } =
+    useContext(BillProcessContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const quantityRef = useRef();
@@ -70,6 +72,7 @@ const BillsForm = () => {
     });
     setAnchorEl(event.currentTarget);
   };
+  
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -114,6 +117,10 @@ const BillsForm = () => {
         };
       });
       setSalesServiceItem(s);
+      calculateTotal();
+      if (currentPatient) {
+        getDepositByPatientId(currentPatient.id);
+      }
       setScreenLoading(false);
     } else {
       history.goBack();
@@ -157,11 +164,6 @@ const BillsForm = () => {
     calculateTotal();
   };
 
-  useEffect(() => {
-    getPatientAndSalesServiceItem();
-    // eslint-disable-next-line
-  }, []);
-
   const createBill = async () => {
     if (currentPatient) {
       setLoading(true);
@@ -173,6 +175,10 @@ const BillsForm = () => {
         bill_items: billItems,
       });
       if (res.status === 200) {
+        setBillItems([]);
+        setCurrectPatient(null);
+        setCurrentSSI(null);
+        setCurrentQuantity(0);
         history.replace(`/dashboard/bills/details/${res.data.id}/draft`);
       }
       setLoading(false);
@@ -180,10 +186,34 @@ const BillsForm = () => {
     return;
   };
 
+  useEffect(() => {
+    getPatientAndSalesServiceItem();
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <Toolbar>
+          <IconButton
+            sx={{
+              color: "white",
+              backgroundColor: "primary.main",
+              borderRadius: "10%",
+              "&:hover": {
+                backgroundColor: "primary.light",
+              },
+              marginRight: "5px",
+            }}
+            onClick={() => {
+              history.goBack();
+              setBillItems([]);
+              setCurrectPatient(null);
+            }}
+            size="small"
+          >
+            <ArrowBackIosNewIcon size="small" sx={{ fontSize: "1.4rem" }} />
+          </IconButton>
           <Typography
             variant="h6"
             component="div"
@@ -384,6 +414,9 @@ const BillsForm = () => {
                           </Box>
                         );
                       }}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
                       style={{ width: "90%" }}
                       onChange={(event, newValue) => {
                         if (newValue) {
@@ -485,18 +518,27 @@ const BillsForm = () => {
                     <Box sx={{ width: "100%" }}>
                       <Typography variant="p">Quantity</Typography>
                     </Box>
-                    <TextField
-                      inputRef={quantityRef}
-                      size="small"
-                      style={{ width: "85%" }}
-                      margin="normal"
-                      type="number"
-                      InputProps={{
-                        inputProps: { min: "0", step: "1" },
+                    <Box
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
                       }}
-                      value={currentQuantity}
-                      onChange={(e) => setCurrentQuantity(e.target.value)}
-                    />
+                    >
+                      <TextField
+                        inputRef={quantityRef}
+                        size="small"
+                        style={{ width: "85%" }}
+                        margin="normal"
+                        type="number"
+                        InputProps={{
+                          inputProps: { min: "0", step: "1" },
+                        }}
+                        value={currentQuantity}
+                        onChange={(e) => setCurrentQuantity(e.target.value)}
+                      />
+                      <Box sx={{ width: "45px" }}></Box>
+                    </Box>
                   </Box>
                   <Box
                     sx={{
@@ -525,7 +567,12 @@ const BillsForm = () => {
                 <Button
                   variant="outlined"
                   fullWidth
-                  onClick={() => history.goBack()}
+                  onClick={() => {
+                    setBillItems([]);
+                    setCurrectPatient(null);
+                    setCurrentSSI(null);
+                    setCurrentQuantity(0);
+                  }}
                 >
                   Cancel
                 </Button>
@@ -642,11 +689,22 @@ const BillsForm = () => {
                             {row.price * row.quantity}
                           </TableCell>
                           <TableCell align="center">
-                            <Box sx={{ display: "flex" }}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
                               <IconButton
                                 aria-label="edit"
                                 color="primary"
                                 onClick={(e) => handleEdit(e, index)}
+                                sx={{
+                                  padding: "0px",
+                                  margin: "0px",
+                                  marginRight: "5px",
+                                }}
                               >
                                 <ModeEditIcon />
                               </IconButton>
@@ -654,6 +712,7 @@ const BillsForm = () => {
                                 aria-label="delete"
                                 color="error"
                                 onClick={() => removeItem(index)}
+                                sx={{ padding: "0px", margin: "0px" }}
                               >
                                 <DeleteIcon />
                               </IconButton>
