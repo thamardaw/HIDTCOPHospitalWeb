@@ -344,7 +344,12 @@ const BillsDetail = () => {
           <Box sx={{ my: "15px" }}>
             <TableContainer>
               <Table sx={{ minWidth: 380 }} aria-label="simple table">
-                <TableHead sx={{ backgroundColor: "#EBEBEB" }}>
+                <TableHead
+                  sx={{
+                    backgroundColor: "#EBEBEB",
+                    display: "table-row-group",
+                  }}
+                >
                   <TableRow>
                     {/* <StyledTableCell>No</StyledTableCell> */}
                     <StyledTableCell maxWidth="130px">Name</StyledTableCell>
