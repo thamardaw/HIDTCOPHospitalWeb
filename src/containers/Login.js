@@ -43,7 +43,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   flexDirection: "column",
   alignItems: "center",
   [theme.breakpoints.down("sm")]: {
-    height: "92%",
+    boxShadow: "none",
   },
 }));
 
