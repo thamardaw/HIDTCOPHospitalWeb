@@ -57,6 +57,10 @@ const Login = () => {
   const [details, setDetails] = useState({ username: "", password: "" });
   const [loading, setLoading] = useState(false);
 
+  const handleChange = (e) => {
+    setDetails({ ...details, [e.target.name]: e.target.value });
+  };
+
   const submitHandler = async (e) => {
     setLoading(true);
     e.preventDefault();
@@ -75,11 +79,7 @@ const Login = () => {
             sx={{ marginBottom: "10px" }}
           >
             <InputLabel>Username</InputLabel>
-            <Input
-              onChange={(e) =>
-                setDetails({ ...details, username: e.target.value })
-              }
-            />
+            <Input name="username" onChange={handleChange} />
           </FormControl>
           <FormControl
             fullWidth
@@ -100,9 +100,8 @@ const Login = () => {
                   </IconButton>
                 </InputAdornment>
               }
-              onChange={(e) =>
-                setDetails({ ...details, password: e.target.value })
-              }
+              name="password"
+              onChange={handleChange}
             />
           </FormControl>
           <LoadingButton

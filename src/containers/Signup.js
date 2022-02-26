@@ -96,12 +96,17 @@ const Signup = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const handleChange = (e) => {
+    setDetails({ ...details, [e.target.name]: e.target.value });
+  };
+
   const submitHandler = async (e) => {
     setLoading(true);
     e.preventDefault();
     if (details.password !== details.confirmPassword) {
       message({ status: "error", detail: "Passwords do not match." });
       openAlert(true);
+      setLoading(false);
       return;
     }
     const res = await axios.post(
@@ -138,11 +143,7 @@ const Signup = () => {
             sx={{ marginBottom: "10px" }}
           >
             <InputLabel>Username</InputLabel>
-            <Input
-              onChange={(e) =>
-                setDetails({ ...details, username: e.target.value })
-              }
-            />
+            <Input name="username" onChange={handleChange} />
           </FormControl>
           <FormControl
             fullWidth
@@ -163,9 +164,8 @@ const Signup = () => {
                   </IconButton>
                 </InputAdornment>
               }
-              onChange={(e) =>
-                setDetails({ ...details, password: e.target.value })
-              }
+              name="password"
+              onChange={handleChange}
             />
           </FormControl>
           <FormControl
@@ -187,9 +187,8 @@ const Signup = () => {
                   </IconButton>
                 </InputAdornment>
               }
-              onChange={(e) =>
-                setDetails({ ...details, confirmPassword: e.target.value })
-              }
+              name="confirmPassword"
+              onChange={handleChange}
             />
           </FormControl>
           <TextField
@@ -200,7 +199,8 @@ const Signup = () => {
             variant="standard"
             sx={{ marginBottom: "10px" }}
             value={details.role}
-            onChange={(e) => setDetails({ ...details, role: e.target.value })}
+            name="role"
+            onChange={handleChange}
           >
             <MenuItem value="Admin">Admin</MenuItem>
             <MenuItem value="Receptionist">Receptionist</MenuItem>

@@ -67,6 +67,10 @@ const ResetPassword = () => {
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const handleChange = (e) => {
+    setDetails({ ...details, [e.target.name]: e.target.value });
+  };
+
   const submitHandler = async (e) => {
     setLoading(true);
     e.preventDefault();
@@ -74,6 +78,7 @@ const ResetPassword = () => {
     if (details.newPassword !== details.confirmNewPassword) {
       message({ status: "error", detail: "Passwords do not match." });
       openAlert(true);
+      setLoading(false);
       return;
     }
     const res = await axios.put(
@@ -110,11 +115,7 @@ const ResetPassword = () => {
             sx={{ marginBottom: "10px" }}
           >
             <InputLabel>Username</InputLabel>
-            <Input
-              onChange={(e) =>
-                setDetails({ ...details, username: e.target.value })
-              }
-            />
+            <Input name="username" onChange={handleChange} />
           </FormControl>
           <FormControl
             fullWidth
@@ -135,9 +136,8 @@ const ResetPassword = () => {
                   </IconButton>
                 </InputAdornment>
               }
-              onChange={(e) =>
-                setDetails({ ...details, oldPassword: e.target.value })
-              }
+              name="oldPassword"
+              onChange={handleChange}
             />
           </FormControl>
           <FormControl
@@ -159,9 +159,8 @@ const ResetPassword = () => {
                   </IconButton>
                 </InputAdornment>
               }
-              onChange={(e) =>
-                setDetails({ ...details, newPassword: e.target.value })
-              }
+              name="newPassword"
+              onChange={handleChange}
             />
           </FormControl>
           <FormControl
@@ -189,12 +188,8 @@ const ResetPassword = () => {
                   </IconButton>
                 </InputAdornment>
               }
-              onChange={(e) =>
-                setDetails({
-                  ...details,
-                  confirmNewPassword: e.target.value,
-                })
-              }
+              name="confirmNewPassword"
+              onChange={handleChange}
             />
           </FormControl>
           <LoadingButton
