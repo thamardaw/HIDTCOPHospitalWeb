@@ -30,6 +30,8 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import LoadingContext from "../../../contexts/LoadingContext";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { getComparator, stableSort } from "../../../utils/sorting";
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#EBEBEB",
@@ -542,7 +544,10 @@ const BillsEditForm = () => {
                     </TableHead>
                     <TableBody>
                       {details?.bill_items &&
-                        details?.bill_items.map((row, index) => (
+                        stableSort(
+                          details.bill_items,
+                          getComparator("desc", "id")
+                        ).map((row, index) => (
                           <TableRow
                             key={row.id}
                             sx={{

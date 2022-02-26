@@ -28,6 +28,7 @@ import { useState } from "react";
 import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
 import { useLocation } from "react-router-dom";
+import { getComparator, stableSort } from "../../../utils/sorting";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.3rem",
@@ -106,9 +107,9 @@ const BillsDetail = () => {
       if (res.status === 200) {
         history.replace({
           pathname: `/dashboard/bills/details/${id}/completed`,
-          // state: {
-          //   from: "bill_process",
-          // },
+          state: {
+            from: "bill_process",
+          },
         });
       }
     }
@@ -361,31 +362,33 @@ const BillsDetail = () => {
                 </TableHead>
                 <TableBody>
                   {bill?.bill_items &&
-                    bill.bill_items.map((row, index) => (
-                      <TableRow
-                        key={index}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        {/* <StyledTableCell component="th" scope="row">
+                    stableSort(bill.bill_items, getComparator("asc", "id")).map(
+                      (row, index) => (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          {/* <StyledTableCell component="th" scope="row">
                           {index + 1}
                         </StyledTableCell> */}
-                        <StyledTableCell maxWidth="130px">
-                          {row?.name}
-                        </StyledTableCell>
-                        <StyledTableCell maxWidth="75px" align="right">
-                          {row?.price}
-                        </StyledTableCell>
-                        <StyledTableCell maxWidth="55px" align="right">
-                          {row?.quantity}
-                        </StyledTableCell>
-                        {/* <StyledTableCell>{row?.uom}</StyledTableCell> */}
-                        <StyledTableCell maxWidth="120px" align="right">
-                          {row?.subtotal}
-                        </StyledTableCell>
-                      </TableRow>
-                    ))}
+                          <StyledTableCell maxWidth="130px">
+                            {row?.name}
+                          </StyledTableCell>
+                          <StyledTableCell maxWidth="75px" align="right">
+                            {row?.price}
+                          </StyledTableCell>
+                          <StyledTableCell maxWidth="55px" align="right">
+                            {row?.quantity}
+                          </StyledTableCell>
+                          {/* <StyledTableCell>{row?.uom}</StyledTableCell> */}
+                          <StyledTableCell maxWidth="120px" align="right">
+                            {row?.subtotal}
+                          </StyledTableCell>
+                        </TableRow>
+                      )
+                    )}
                 </TableBody>
               </Table>
             </TableContainer>

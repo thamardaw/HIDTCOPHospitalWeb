@@ -72,7 +72,7 @@ const BillsForm = () => {
     });
     setAnchorEl(event.currentTarget);
   };
-  
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -167,12 +167,13 @@ const BillsForm = () => {
   const createBill = async () => {
     if (currentPatient) {
       setLoading(true);
+      const billItems_copy = [...billItems];
       const res = await api.post(`/api/bill/`, {
         patient_id: parseInt(currentPatient.id.split("-")[1]),
         patient_name: currentPatient.name,
         patient_phone: currentPatient.contactDetails,
         patient_address: currentPatient.address,
-        bill_items: billItems,
+        bill_items: billItems_copy.reverse(),
       });
       if (res.status === 200) {
         setBillItems([]);
