@@ -30,7 +30,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import LoadingContext from "../../../contexts/LoadingContext";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { BillProcessContext } from "../../../contexts";
+import { CacheContext } from "../../../contexts";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -54,8 +54,9 @@ const BillsForm = () => {
     price: 0,
   });
   const { setScreenLoading } = useContext(LoadingContext);
+  const { bill_process } = useContext(CacheContext);
   const { currentPatient, setCurrectPatient, billItems, setBillItems } =
-    useContext(BillProcessContext);
+    bill_process;
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const quantityRef = useRef();

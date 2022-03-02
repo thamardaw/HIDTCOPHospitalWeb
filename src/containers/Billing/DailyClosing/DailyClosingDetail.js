@@ -15,8 +15,8 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router-dom";
 import { Box } from "@mui/system";
 import { useEffect, useRef, useState } from "react";
-import { useAxios } from "../../hooks";
-import { generateID } from "../../utils/generateID";
+import { useAxios } from "../../../hooks";
+import { generateID } from "../../../utils/generateID";
 import { useReactToPrint } from "react-to-print";
 
 const DailyClosingDetail = () => {

@@ -10,9 +10,9 @@ import { SalesServiceItem } from "./Billing/SalesServiceItem";
 import { Bills } from "./Billing/Bills";
 import { Deposit } from "./Billing/Deposit";
 // import { Payment } from "./Billing/Payment";
-import { DailyClosing } from "./DailyClosing";
+import { DailyClosing } from "./Billing/DailyClosing";
 import { LoadingProvider } from "../contexts/LoadingContext";
-import { BillProcessProvider } from "../contexts/BillProcessContext";
+import { CacheProvider } from "../contexts/CacheContext";
 
 const drawerWidth = 240;
 
@@ -46,7 +46,7 @@ function Dashboard(props) {
       >
         <Toolbar />
         <LoadingProvider>
-          <BillProcessProvider>
+          <CacheProvider>
             <Switch>
               <Route path={`${path}/patient`} component={Patient} />
               <Route path={`${path}/uom`} component={Uom} />
@@ -61,7 +61,7 @@ function Dashboard(props) {
               <Route path={`${path}/dailyClosing`} component={DailyClosing} />
               <Redirect to={`${path}/patient`} />
             </Switch>
-          </BillProcessProvider>
+          </CacheProvider>
         </LoadingProvider>
         <Footer />
       </Box>
