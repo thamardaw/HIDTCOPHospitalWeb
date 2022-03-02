@@ -6,12 +6,10 @@ import {
   DialogContentText,
   DialogTitle,
   Divider,
-  IconButton,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
 import { useEffect, useRef, useState } from "react";
@@ -19,6 +17,7 @@ import { generateID } from "../../../utils/generateID";
 import { useReactToPrint } from "react-to-print";
 import { styled } from "@mui/material/styles";
 import { useLocation } from "react-router-dom";
+import { BackButton } from "../../../components";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.3rem",
@@ -78,21 +77,7 @@ const CategoryDetail = () => {
           variant="dense"
           disableGutters={true}
         >
-          <IconButton
-            sx={{
-              color: "white",
-              backgroundColor: "primary.main",
-              borderRadius: "10%",
-              "&:hover": {
-                backgroundColor: "primary.light",
-              },
-              marginRight: "10px",
-            }}
-            onClick={() => history.goBack()}
-            size="small"
-          >
-            <ArrowBackIosNewIcon size="small" />
-          </IconButton>
+          <BackButton backFunction={() => history.goBack()} />
           <Typography variant="h5" sx={{ flexGrow: 1 }}>
             Details
           </Typography>

@@ -1,17 +1,16 @@
 import {
   Divider,
-  IconButton,
   MenuItem,
   TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../hooks";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { BackButton } from "../../components";
 
 const PatientForm = () => {
   const history = useHistory();
@@ -79,21 +78,7 @@ const PatientForm = () => {
         variant="dense"
         disableGutters={true}
       >
-        <IconButton
-          sx={{
-            color: "white",
-            backgroundColor: "primary.main",
-            borderRadius: "10%",
-            "&:hover": {
-              backgroundColor: "primary.light",
-            },
-            marginRight: "10px",
-          }}
-          onClick={() => history.goBack()}
-          size="small"
-        >
-          <ArrowBackIosNewIcon size="small" />
-        </IconButton>
+        <BackButton backFunction={() => history.goBack()} />
         <Typography variant="h5">{id ? "Edit" : "New"}</Typography>
       </Toolbar>
       <Divider />

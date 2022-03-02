@@ -7,7 +7,6 @@ import {
   DialogContentText,
   DialogTitle,
   Divider,
-  IconButton,
   Paper,
   Table,
   TableBody,
@@ -18,7 +17,6 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router-dom";
 import { Box } from "@mui/system";
 import { useEffect, useRef } from "react";
@@ -29,6 +27,7 @@ import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
 import { useLocation } from "react-router-dom";
 import { getComparator, stableSort } from "../../../utils/sorting";
+import { BackButton } from "../../../components";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.3rem",
@@ -153,27 +152,15 @@ const BillsDetail = () => {
     <>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <Toolbar>
-          <IconButton
-            sx={{
-              color: "white",
-              backgroundColor: "primary.main",
-              borderRadius: "10%",
-              "&:hover": {
-                backgroundColor: "primary.light",
-              },
-              marginRight: "5px",
-            }}
-            onClick={() => {
+          <BackButton
+            backFunction={() => {
               if (location.state?.from === "bill_process") {
                 history.replace(`/dashboard/bills/form`);
               } else {
                 history.goBack();
               }
             }}
-            size="small"
-          >
-            <ArrowBackIosNewIcon size="small" sx={{ fontSize: "1.4rem" }} />
-          </IconButton>
+          />
           <Button
             variant="contained"
             size="small"

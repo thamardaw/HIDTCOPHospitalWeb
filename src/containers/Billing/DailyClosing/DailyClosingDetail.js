@@ -1,7 +1,6 @@
 import {
   Button,
   Divider,
-  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -11,13 +10,13 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router-dom";
 import { Box } from "@mui/system";
 import { useEffect, useRef, useState } from "react";
 import { useAxios } from "../../../hooks";
 import { generateID } from "../../../utils/generateID";
 import { useReactToPrint } from "react-to-print";
+import { BackButton } from "../../../components";
 
 const DailyClosingDetail = () => {
   const history = useHistory();
@@ -84,21 +83,7 @@ const DailyClosingDetail = () => {
         variant="dense"
         disableGutters={true}
       >
-        <IconButton
-          sx={{
-            color: "white",
-            backgroundColor: "primary.main",
-            borderRadius: "10%",
-            "&:hover": {
-              backgroundColor: "primary.light",
-            },
-            marginRight: "10px",
-          }}
-          onClick={() => history.goBack()}
-          size="small"
-        >
-          <ArrowBackIosNewIcon size="small" />
-        </IconButton>
+        <BackButton backFunction={() => history.goBack()} />
         <Typography variant="h5" sx={{ flexGrow: 1 }}>
           Detail
         </Typography>

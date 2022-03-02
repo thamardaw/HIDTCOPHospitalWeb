@@ -34,7 +34,7 @@ const ResponsiveDrawer = ({
   const [open, setOpen] = useState(true);
 
   const handleClick = (path) => {
-    history.push(path);
+    return (e) => history.push(path);
   };
 
   const openAccordionList = () => {
@@ -80,7 +80,7 @@ const ResponsiveDrawer = ({
                 }
                 fullWidth
                 startIcon={<ReceiptIcon />}
-                onClick={() => handleClick(`${url}/bills`)}
+                onClick={handleClick(`${url}/bills`)}
                 sx={{
                   display: "flex",
                   justifyContent: location.pathname.includes("/bills")
@@ -99,7 +99,7 @@ const ResponsiveDrawer = ({
                 }
                 fullWidth
                 startIcon={<AccountBalanceIcon />}
-                onClick={() => handleClick(`${url}/deposit`)}
+                onClick={handleClick(`${url}/deposit`)}
                 sx={{
                   display: "flex",
                   justifyContent: location.pathname.includes("/deposit")
@@ -120,7 +120,7 @@ const ResponsiveDrawer = ({
                 }
                 fullWidth
                 startIcon={<AnalyticsIcon />}
-                onClick={() => handleClick(`${url}/dailyClosing`)}
+                onClick={handleClick(`${url}/dailyClosing`)}
                 sx={{
                   display: "flex",
                   justifyContent: location.pathname.includes("/dailyClosing")
@@ -139,7 +139,7 @@ const ResponsiveDrawer = ({
                 }
                 fullWidth
                 startIcon={<SquareFootIcon />}
-                onClick={() => handleClick(`${url}/uom`)}
+                onClick={handleClick(`${url}/uom`)}
                 sx={{
                   display: "flex",
                   justifyContent: location.pathname.includes("/uom")
@@ -158,7 +158,7 @@ const ResponsiveDrawer = ({
                 }
                 fullWidth
                 startIcon={<CategoryIcon />}
-                onClick={() => handleClick(`${url}/category`)}
+                onClick={handleClick(`${url}/category`)}
                 sx={{
                   display: "flex",
                   justifyContent: location.pathname.includes("/category")
@@ -179,7 +179,7 @@ const ResponsiveDrawer = ({
                 }
                 fullWidth
                 startIcon={<EventNoteIcon />}
-                onClick={() => handleClick(`${url}/salesServiceItem`)}
+                onClick={handleClick(`${url}/salesServiceItem`)}
                 sx={{
                   display: "flex",
                   justifyContent: location.pathname.includes(
@@ -202,7 +202,7 @@ const ResponsiveDrawer = ({
             }
             fullWidth
             startIcon={<PeopleIcon />}
-            onClick={() => handleClick(`${url}/patient`)}
+            onClick={handleClick(`${url}/patient`)}
             sx={{
               display: "flex",
               justifyContent: location.pathname.includes("/patient")

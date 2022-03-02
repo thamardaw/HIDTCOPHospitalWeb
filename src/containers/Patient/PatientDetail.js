@@ -1,10 +1,10 @@
-import { Divider, IconButton, Toolbar, Typography } from "@mui/material";
+import { Divider, Toolbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../hooks";
 import { useEffect, useState } from "react";
 import { generateID } from "../../utils/generateID";
+import { BackButton } from "../../components";
 
 const PatientDetail = () => {
   const history = useHistory();
@@ -37,21 +37,7 @@ const PatientDetail = () => {
         variant="dense"
         disableGutters={true}
       >
-        <IconButton
-          sx={{
-            color: "white",
-            backgroundColor: "primary.main",
-            borderRadius: "10%",
-            "&:hover": {
-              backgroundColor: "primary.light",
-            },
-            marginRight: "10px",
-          }}
-          onClick={() => history.goBack()}
-          size="small"
-        >
-          <ArrowBackIosNewIcon size="small" />
-        </IconButton>
+        <BackButton backFunction={() => history.goBack()} />
         <Typography variant="h5">Details</Typography>
       </Toolbar>
       <Divider />
