@@ -188,7 +188,6 @@ const SalesServiceItemForm = () => {
           </TextField>
         </Box>
       </Box>
-
       <Divider />
       <Box
         sx={{

@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
 import { useEffect, useState } from "react";
-import { BackButton } from "../../../components";
+import { BackButton, DetailsRow } from "../../../components";
 
 const UomDetail = () => {
   const history = useHistory();
@@ -27,7 +27,7 @@ const UomDetail = () => {
     // eslint-disable-next-line
   }, [id]);
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, mb: 1 }}>
       <Toolbar
         sx={{
           display: "flex",
@@ -41,50 +41,11 @@ const UomDetail = () => {
       </Toolbar>
       <Divider />
       <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            margin: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              Name
-            </Typography>
-          </Box>
-          <Typography variant="body2">{details?.name}</Typography>
-        </Box>
+        <DetailsRow name="Name" value={details?.name} />
         <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            margin: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              Description
-            </Typography>
-          </Box>
-          <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">{details?.description}</Typography>
-          </Box>
-        </Box>
+        <DetailsRow name="Description" value={details?.description} />
       </Box>
       <Divider />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          padding: "20px 10px",
-        }}
-      ></Box>
     </Box>
   );
 };

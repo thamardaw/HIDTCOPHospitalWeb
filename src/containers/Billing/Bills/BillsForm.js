@@ -195,7 +195,7 @@ const BillsForm = () => {
 
   return (
     <>
-      <Paper sx={{ width: "100%", mb: 2 }}>
+      <Paper sx={{ width: "100%", mb: 1 }}>
         <Toolbar>
           <BackButton
             backFunction={() => {

@@ -68,7 +68,7 @@ const CategoryDetail = () => {
   }, [id]);
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1, mb: 1 }}>
         <Toolbar
           sx={{
             display: "flex",
@@ -291,15 +291,6 @@ const CategoryDetail = () => {
         </Box>
       </Box> */}
         <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            padding: "10px 10px",
-          }}
-        ></Box>
       </Box>
       <Dialog
         open={open}
