@@ -136,7 +136,7 @@ const DepositForm = () => {
                   value={details?.patient}
                   options={patient}
                   getOptionLabel={(option) => `${option.name}, ${option.id}`}
-                  style={{ width: "900%" }}
+                  style={{ width: "90%" }}
                   onChange={(event, newValue) => {
                     if (newValue) {
                       setDetails({

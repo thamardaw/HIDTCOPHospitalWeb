@@ -26,6 +26,10 @@ const SalesServiceItemForm = () => {
   const [category, setCategory] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const handleChange = (e) => {
+    setDetails({ ...details, [e.target.name]: e.target.value });
+  };
+
   const getUOMAndCategory = async () => {
     const [uom, category] = await Promise.all([
       api.get("/api/uom/"),
@@ -110,7 +114,8 @@ const SalesServiceItemForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.name || ""}
-            onChange={(e) => setDetails({ ...details, name: e.target.value })}
+            name="name"
+            onChange={handleChange}
           />
         </Box>
         <Box
@@ -128,7 +133,8 @@ const SalesServiceItemForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.price || ""}
-            onChange={(e) => setDetails({ ...details, price: e.target.value })}
+            name="price"
+            onChange={handleChange}
           />
         </Box>
         <Box
@@ -149,7 +155,8 @@ const SalesServiceItemForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.uom_id || ""}
-            onChange={(e) => setDetails({ ...details, uom_id: e.target.value })}
+            name="uom_id"
+            onChange={handleChange}
           >
             {uom.map((u) => (
               <MenuItem key={u.id} value={u.id}>
@@ -176,9 +183,8 @@ const SalesServiceItemForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.category_id || ""}
-            onChange={(e) =>
-              setDetails({ ...details, category_id: e.target.value })
-            }
+            name="category_id"
+            onChange={handleChange}
           >
             {category.map((c) => (
               <MenuItem key={c.id} value={c.id}>
