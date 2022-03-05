@@ -12,6 +12,7 @@ import { Box } from "@mui/material";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { CustomTable, TabPanel } from "../../../components";
+import { CacheContext } from "../../../contexts";
 import LoadingContext from "../../../contexts/LoadingContext";
 import { useAxios } from "../../../hooks";
 import { generateID } from "../../../utils/generateID";
@@ -58,10 +59,14 @@ const BillsTable = () => {
   const [cancelledRows, setCancelledRows] = useState([]);
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
-  const [tab, setTab] = useState(0);
+  // const [tab, setTab] = useState(false);
   const { setScreenLoading } = useContext(LoadingContext);
+  const { table, viewTab } = useContext(CacheContext);
+  const { resetTable } = table;
+  const { tab, setTab } = viewTab;
 
   const handleTabChange = (event, newTab) => {
+    resetTable();
     setTab(newTab);
   };
 

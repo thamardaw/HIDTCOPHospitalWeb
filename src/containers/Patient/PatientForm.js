@@ -26,6 +26,10 @@ const PatientForm = () => {
     address: "",
   });
 
+  const handleChange = (e) => {
+    setDetails({ ...details, [e.target.name]: e.target.value });
+  };
+
   const getData = async () => {
     const res = await api.get(`/api/patients/${parseInt(id.split("-")[1])}`);
     if (res.status === 200) {
@@ -68,6 +72,7 @@ const PatientForm = () => {
     }
     // eslint-disable-next-line
   }, [id]);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Toolbar
@@ -98,7 +103,8 @@ const PatientForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.name || ""}
-            onChange={(e) => setDetails({ ...details, name: e.target.value })}
+            name="name"
+            onChange={handleChange}
           />
         </Box>
         <Box
@@ -116,7 +122,8 @@ const PatientForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.age || ""}
-            onChange={(e) => setDetails({ ...details, age: e.target.value })}
+            name="age"
+            onChange={handleChange}
           />
         </Box>
         <Box
@@ -134,9 +141,8 @@ const PatientForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.contact_details || ""}
-            onChange={(e) =>
-              setDetails({ ...details, contact_details: e.target.value })
-            }
+            name="contact_details"
+            onChange={handleChange}
           />
         </Box>
         <Box
@@ -158,7 +164,8 @@ const PatientForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.gender || ""}
-            onChange={(e) => setDetails({ ...details, gender: e.target.value })}
+            name="gender"
+            onChange={handleChange}
           >
             <MenuItem value="male">Male</MenuItem>
             <MenuItem value="female">Female</MenuItem>
@@ -180,12 +187,10 @@ const PatientForm = () => {
             margin="dense"
             placeholder="YYYY-MM-DD"
             value={details?.date_of_birth || ""}
-            onChange={(e) =>
-              setDetails({ ...details, date_of_birth: e.target.value })
-            }
+            name="date_of_birth"
+            onChange={handleChange}
           />
         </Box>
-
         <Box
           sx={{
             display: "flex",
@@ -201,9 +206,8 @@ const PatientForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.address || ""}
-            onChange={(e) =>
-              setDetails({ ...details, address: e.target.value })
-            }
+            name="address"
+            onChange={handleChange}
           />
         </Box>
       </Box>

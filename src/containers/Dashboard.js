@@ -30,23 +30,23 @@ function Dashboard(props) {
         drawerWidth={drawerWidth}
         handleDrawerToggle={handleDrawerToggle}
       />
-      <ResponsiveDrawer
-        drawerWidth={drawerWidth}
-        mobileOpen={mobileOpen}
-        handleDrawerToggle={handleDrawerToggle}
-      />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 1,
-          width: "100%",
-          // width: { sm: `calc(100% - ${drawerWidth}px)` },
-        }}
-      >
-        <Toolbar />
-        <LoadingProvider>
-          <CacheProvider>
+      <CacheProvider>
+        <ResponsiveDrawer
+          drawerWidth={drawerWidth}
+          mobileOpen={mobileOpen}
+          handleDrawerToggle={handleDrawerToggle}
+        />
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 1,
+            width: "100%",
+            // width: { sm: `calc(100% - ${drawerWidth}px)` },
+          }}
+        >
+          <Toolbar />
+          <LoadingProvider>
             <Switch>
               <Route path={`${path}/patient`} component={Patient} />
               <Route path={`${path}/uom`} component={Uom} />
@@ -61,10 +61,10 @@ function Dashboard(props) {
               <Route path={`${path}/dailyClosing`} component={DailyClosing} />
               <Redirect to={`${path}/patient`} />
             </Switch>
-          </CacheProvider>
-        </LoadingProvider>
-        <Footer />
-      </Box>
+          </LoadingProvider>
+          <Footer />
+        </Box>
+      </CacheProvider>
     </Box>
   );
 }

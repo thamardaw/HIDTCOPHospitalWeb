@@ -16,9 +16,10 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import ReceiptIcon from "@mui/icons-material/Receipt";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { CacheContext } from "../contexts";
 
 const ResponsiveDrawer = ({
   window,
@@ -32,9 +33,18 @@ const ResponsiveDrawer = ({
   const history = useHistory();
   const { url } = useRouteMatch();
   const [open, setOpen] = useState(true);
+  const { table, viewTab } = useContext(CacheContext);
+  const { resetTable } = table;
+  const { resetTab } = viewTab;
 
   const handleClick = (path) => {
-    return (e) => history.push(path);
+    return (e) => {
+      if (location.pathname !== path) {
+        resetTable();
+        resetTab();
+      }
+      history.push(path);
+    };
   };
 
   const openAccordionList = () => {

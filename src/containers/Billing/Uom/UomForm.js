@@ -16,6 +16,10 @@ const UomForm = () => {
   });
   const [loading, setLoading] = useState(false);
 
+  const handleChange = (e) => {
+    setDetails({ ...details, [e.target.name]: e.target.value });
+  };
+
   const getData = async () => {
     const res = await api.get(`/api/uom/${parseInt(id)}`);
     if (res.status === 200) {
@@ -54,6 +58,7 @@ const UomForm = () => {
     }
     // eslint-disable-next-line
   }, [id]);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Toolbar
@@ -84,7 +89,8 @@ const UomForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.name || ""}
-            onChange={(e) => setDetails({ ...details, name: e.target.value })}
+            name="name"
+            onChange={handleChange}
           />
         </Box>
         <Box
@@ -102,9 +108,8 @@ const UomForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.description || ""}
-            onChange={(e) =>
-              setDetails({ ...details, description: e.target.value })
-            }
+            name="description"
+            onChange={handleChange}
           />
         </Box>
       </Box>
