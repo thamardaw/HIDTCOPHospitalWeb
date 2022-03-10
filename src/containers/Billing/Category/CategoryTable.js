@@ -36,11 +36,11 @@ const CategoryTable = () => {
   const api = useAxios();
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
-  const [id, setId] = useState("");
+  const [selected, setSelected] = useState([]);
   const { setScreenLoading } = useContext(LoadingContext);
 
-  const handleClickOpen = (id) => {
-    setId(id);
+  const handleClickOpen = (arr) => {
+    setSelected(arr);
     setOpen(true);
   };
 
@@ -67,8 +67,18 @@ const CategoryTable = () => {
   }, []);
 
   const deleteItem = async () => {
-    await api.delete(`/api/category/${parseInt(id)}`);
+    if (selected.length === 0) {
+      return;
+    } else if (selected.length === 1) {
+      await api.delete(`/api/category/${parseInt(selected[0].id)}`);
+    } else if (selected.length > 1) {
+      const listOfId = selected.map((item) => item.id);
+      await api.post(`/api/category/bulk`, {
+        listOfId: listOfId,
+      });
+    }
     handleClose();
+    setSelected([]);
     getData();
   };
 
@@ -84,6 +94,7 @@ const CategoryTable = () => {
         headCells={headCells}
         rows={rows}
         onDelete={handleClickOpen}
+        enableMultipleDelete={true}
       />
       <Dialog
         open={open}
