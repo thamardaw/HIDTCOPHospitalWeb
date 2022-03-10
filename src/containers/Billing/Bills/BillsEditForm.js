@@ -105,7 +105,13 @@ const BillsEditForm = () => {
     const res = await api.get(`/api/bill/${parseInt(id.split("-")[1])}`);
     if (res.status === 200) {
       getDepositByPatientId(res.data.patient.id);
-      setDetails({ ...res.data });
+      setDetails({
+        ...res.data,
+        bill_items: stableSort(
+          res.data.bill_items,
+          getComparator("desc", "id")
+        ),
+      });
     } else {
       history.goBack();
     }
@@ -530,10 +536,7 @@ const BillsEditForm = () => {
                     </TableHead>
                     <TableBody>
                       {details?.bill_items &&
-                        stableSort(
-                          details.bill_items,
-                          getComparator("desc", "id")
-                        ).map((row, index) => (
+                        details.bill_items.map((row, index) => (
                           <TableRow
                             key={row.id}
                             sx={{
