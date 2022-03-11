@@ -1,7 +1,6 @@
 import {
   Button,
   Divider,
-  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -13,16 +12,16 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory } from "react-router-dom";
 import { Box } from "@mui/system";
 import { useContext, useState } from "react";
-import { AuthContext } from "../../contexts";
-import { useAxios } from "../../hooks";
-import { generateID } from "../../utils/generateID";
+import { AuthContext } from "../../../contexts";
+import { useAxios } from "../../../hooks";
+import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
 import { useEffect } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { BackButton } from "../../../components";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -148,21 +147,7 @@ const DailyClosingForm = () => {
         variant="dense"
         disableGutters={true}
       >
-        <IconButton
-          sx={{
-            color: "white",
-            backgroundColor: "primary.main",
-            borderRadius: "10%",
-            "&:hover": {
-              backgroundColor: "primary.light",
-            },
-            marginRight: "10px",
-          }}
-          onClick={() => history.goBack()}
-          size="small"
-        >
-          <ArrowBackIosNewIcon size="small" />
-        </IconButton>
+        <BackButton backFunction={() => history.goBack()}/>
         <Typography variant="h5">New</Typography>
       </Toolbar>
       <Divider />

@@ -1,8 +1,8 @@
 import { Box } from "@mui/system";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { CustomTable } from "../../components";
-import LoadingContext from "../../contexts/LoadingContext";
-import { useAxios } from "../../hooks";
+import { CustomTable } from "../../../components";
+import LoadingContext from "../../../contexts/LoadingContext";
+import { useAxios } from "../../../hooks";
 
 const headCells = [
   {

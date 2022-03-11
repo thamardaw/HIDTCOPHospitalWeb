@@ -18,9 +18,10 @@ import { styled, useTheme } from "@mui/material/styles";
 import { Button, InputBase, useMediaQuery } from "@mui/material";
 import { useHistory, useRouteMatch } from "react-router";
 import { Search } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
 import { getComparator, stableSort } from "../utils/sorting";
+import { CacheContext } from "../contexts";
 
 const SearchContainer = styled("div")(({ theme }) => ({
   display: "flex",
@@ -315,16 +316,18 @@ const CustomTable = ({
   detailBtnName = "Details",
   deleteBtnName = "Delete",
 }) => {
-  const [order, setOrder] = useState("desc");
-  const [orderBy, setOrderBy] = useState("id");
   const [selected, setSelected] = useState([]);
   const [dataRows, setDataRows] = useState([]);
-  const [page, setPage] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"), {
     defaultMatches: true,
   });
-  const [rowsPerPage, setRowsPerPage] = useState(25);
+  // const [order, setOrder] = useState("desc");
+  // const [orderBy, setOrderBy] = useState("id");
+  // const [page, setPage] = useState(0);
+  // const [rowsPerPage, setRowsPerPage] = useState(25);
+  const { table } = useContext(CacheContext);
+  const { page, setPage, rowsPerPage, setRowsPerPage, order, setOrder,orderBy,setOrderBy} = table;
 
   const arraySearch = (array, keyword, objKeys) => {
     const searchItem = keyword.toLowerCase();

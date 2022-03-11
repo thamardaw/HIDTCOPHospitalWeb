@@ -1,17 +1,16 @@
 import {
   Divider,
-  IconButton,
   MenuItem,
   TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { BackButton } from "../../../components";
 
 const SalesServiceItemForm = () => {
   const history = useHistory();
@@ -26,6 +25,10 @@ const SalesServiceItemForm = () => {
   const [uom, setUom] = useState([]);
   const [category, setCategory] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setDetails({ ...details, [e.target.name]: e.target.value });
+  };
 
   const getUOMAndCategory = async () => {
     const [uom, category] = await Promise.all([
@@ -91,21 +94,7 @@ const SalesServiceItemForm = () => {
         variant="dense"
         disableGutters={true}
       >
-        <IconButton
-          sx={{
-            color: "white",
-            backgroundColor: "primary.main",
-            borderRadius: "10%",
-            "&:hover": {
-              backgroundColor: "primary.light",
-            },
-            marginRight: "10px",
-          }}
-          onClick={() => history.goBack()}
-          size="small"
-        >
-          <ArrowBackIosNewIcon size="small" />
-        </IconButton>
+        <BackButton backFunction={() => history.goBack()} />
         <Typography variant="h5">{id ? "Edit" : "New"}</Typography>
       </Toolbar>
       <Divider />
@@ -125,7 +114,8 @@ const SalesServiceItemForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.name || ""}
-            onChange={(e) => setDetails({ ...details, name: e.target.value })}
+            name="name"
+            onChange={handleChange}
           />
         </Box>
         <Box
@@ -143,7 +133,8 @@ const SalesServiceItemForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.price || ""}
-            onChange={(e) => setDetails({ ...details, price: e.target.value })}
+            name="price"
+            onChange={handleChange}
           />
         </Box>
         <Box
@@ -164,7 +155,8 @@ const SalesServiceItemForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.uom_id || ""}
-            onChange={(e) => setDetails({ ...details, uom_id: e.target.value })}
+            name="uom_id"
+            onChange={handleChange}
           >
             {uom.map((u) => (
               <MenuItem key={u.id} value={u.id}>
@@ -191,9 +183,8 @@ const SalesServiceItemForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.category_id || ""}
-            onChange={(e) =>
-              setDetails({ ...details, category_id: e.target.value })
-            }
+            name="category_id"
+            onChange={handleChange}
           >
             {category.map((c) => (
               <MenuItem key={c.id} value={c.id}>
@@ -203,7 +194,6 @@ const SalesServiceItemForm = () => {
           </TextField>
         </Box>
       </Box>
-
       <Divider />
       <Box
         sx={{
