@@ -58,7 +58,7 @@ const BillsTable = () => {
   const [completedRows, setCompletedRows] = useState([]);
   const [cancelledRows, setCancelledRows] = useState([]);
   const [open, setOpen] = useState(false);
-  const [id, setId] = useState("");
+  const [selected, setSelected] = useState([]);
   // const [tab, setTab] = useState(false);
   const { setScreenLoading } = useContext(LoadingContext);
   const { table, viewTab } = useContext(CacheContext);
@@ -70,8 +70,8 @@ const BillsTable = () => {
     setTab(newTab);
   };
 
-  const handleClickOpen = (id) => {
-    setId(id);
+  const handleClickOpen = (arr) => {
+    setSelected(arr);
     setOpen(true);
   };
 
@@ -182,8 +182,12 @@ const BillsTable = () => {
   }, []);
 
   const cancelBill = async () => {
-    await api.put(`/api/bill/cancel/${parseInt(id.split("-")[1])}`);
+    if (selected.length === 0) {
+      return;
+    }
+    await api.put(`/api/bill/cancel/${parseInt(selected[0].id.split("-")[1])}`);
     handleClose();
+    setSelected([]);
     getDraftedData();
     getOutstandingData();
     getCompletedData();

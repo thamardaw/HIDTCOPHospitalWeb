@@ -7,10 +7,8 @@ export default CacheContext;
 
 export const CacheProvider = ({ children }) => {
   // const location = useLocation();
-  const [bill_process, setBill_process] = useState({
-    currentPatient: null,
-    billItems: [],
-  });
+  const [currentPatient, setCurrentPatient] = useState(null);
+  const [billItems, setBillItems] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [order, setOrder] = useState("desc");
@@ -34,12 +32,10 @@ export const CacheProvider = ({ children }) => {
 
   let contextData = {
     bill_process: {
-      currentPatient: bill_process.currentPatient,
-      setCurrectPatient: (value) =>
-        setBill_process({ ...bill_process, currentPatient: value }),
-      billItems: bill_process.billItems,
-      setBillItems: (value) =>
-        setBill_process({ ...bill_process, billItems: value }),
+      currentPatient: currentPatient,
+      setCurrectPatient: setCurrentPatient,
+      billItems: billItems,
+      setBillItems: setBillItems,
     },
     table: {
       page: page,
