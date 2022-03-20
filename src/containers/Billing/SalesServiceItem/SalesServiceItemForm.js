@@ -39,10 +39,6 @@ const SalesServiceItemForm = () => {
     setDetails({ ...details, [e.target.name]: e.target.value });
   };
 
-  const handleChange = (e) => {
-    setDetails({ ...details, [e.target.name]: e.target.value });
-  };
-
   const getUOMAndCategory = async () => {
     const [uom, category] = await Promise.all([
       api.get("/api/uom/"),
