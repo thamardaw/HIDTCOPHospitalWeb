@@ -17,6 +17,7 @@ import * as XLSX from "xlsx";
 import { useAxios } from "../hooks";
 import { arrayEquals } from "../utils/arrayEquals";
 import { SnackbarContext } from "../contexts";
+import { LoadingButton } from "@mui/lab";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -69,6 +70,7 @@ const CSVUploadDialog = ({ open, handleClose, columns }) => {
   const [data, setData] = useState([]);
   const [errors, setErrors] = useState([]);
   const { openAlert, message } = useContext(SnackbarContext);
+  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef();
 
   const showAlert = (status, detail) => {
@@ -128,7 +130,6 @@ const CSVUploadDialog = ({ open, handleClose, columns }) => {
             obj[headers[j]] = d;
           }
         }
-
         // remove the blank rows
         if (Object.values(obj).filter((x) => x).length > 0) {
           list.push(obj);
@@ -158,9 +159,11 @@ const CSVUploadDialog = ({ open, handleClose, columns }) => {
   };
 
   const upload = async (e) => {
+    setLoading(true);
     e.preventDefault();
     const res = await api.post(`/api/salesServiceItem/bulk_create`, data);
     processResponse(res);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -215,9 +218,9 @@ const CSVUploadDialog = ({ open, handleClose, columns }) => {
                 {error}
               </Alert>
             ))}
-            <Button variant="contained" type="submit">
+            <LoadingButton loading={loading} variant="contained" type="submit">
               Upload
-            </Button>
+            </LoadingButton>
           </Box>
         </Form>
       </DialogContent>
