@@ -348,6 +348,7 @@ const CustomTable = ({
   // const [page, setPage] = useState(0);
   // const [rowsPerPage, setRowsPerPage] = useState(25);
   const { table } = useContext(CacheContext);
+
   const {
     page,
     setPage,
