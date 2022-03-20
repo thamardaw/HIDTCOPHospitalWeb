@@ -9,7 +9,7 @@ import { BackButton } from "../../../components";
 const UomForm = () => {
   const history = useHistory();
   const { id } = useParams();
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [details, setDetails] = useState({
     name: "",
     description: "",

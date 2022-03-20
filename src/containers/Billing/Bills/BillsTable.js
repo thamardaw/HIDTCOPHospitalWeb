@@ -51,7 +51,7 @@ const headCells = [
 ];
 
 const BillsTable = () => {
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const history = useHistory();
   const [draftedRows, setDraftedRows] = useState([]);
   const [outstandingRows, setOutstandingRows] = useState([]);

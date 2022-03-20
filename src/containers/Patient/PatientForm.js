@@ -15,7 +15,7 @@ import { BackButton } from "../../components";
 const PatientForm = () => {
   const history = useHistory();
   const { id } = useParams();
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({
     name: "",

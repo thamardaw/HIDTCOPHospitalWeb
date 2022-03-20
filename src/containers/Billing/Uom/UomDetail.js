@@ -8,7 +8,7 @@ import { BackButton, DetailsRow } from "../../../components";
 const UomDetail = () => {
   const history = useHistory();
   const { id } = useParams();
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [details, setDetails] = useState({});
 
   const getData = async () => {

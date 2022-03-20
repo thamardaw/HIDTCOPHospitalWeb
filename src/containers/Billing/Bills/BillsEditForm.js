@@ -40,7 +40,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const BillsEditForm = () => {
   const history = useHistory();
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const { id } = useParams();
   const [details, setDetails] = useState([]);
   const [salesServiceItem, setSalesServiceItem] = useState([]);

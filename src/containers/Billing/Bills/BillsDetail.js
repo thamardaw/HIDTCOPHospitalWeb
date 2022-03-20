@@ -45,7 +45,7 @@ const StyledTableCell = styled(TableCell)(
 );
 
 const BillsDetail = () => {
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const history = useHistory();
   const location = useLocation();
   const receiptRef = useRef();

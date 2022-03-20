@@ -45,7 +45,7 @@ const headCells = [
   },
 ];
 const SalesServiceItemTable = () => {
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState([]);
