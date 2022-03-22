@@ -79,7 +79,8 @@ const CSVUploadDialog = ({ open, handleClose, columns }) => {
   };
 
   const processResponse = (res) => {
-    const regex = /\([0-9]+\)/i;
+    const key = /\([^)]*\)/i;
+    const value = /\([0-9]+\)/i;
     if (res.status === 200) {
       showAlert(res.status, res.data.detail);
       handleClose();
@@ -91,15 +92,11 @@ const CSVUploadDialog = ({ open, handleClose, columns }) => {
       });
       setErrors(errors);
     } else if (res.status === 400) {
-      if (res.data.detail.includes("category")) {
-        setErrors([
-          `Category ID - ${res.data.detail.match(regex)[0]} does not exist.`,
-        ]);
-      } else if (res.data.detail.includes("uom")) {
-        setErrors([
-          `UOM ID - ${res.data.detail.match(regex)[0]} does not exist.`,
-        ]);
-      }
+      setErrors([
+        `${res.data.detail.match(key)[0]} - ${
+          res.data.detail.match(value)[0]
+        } does not exist.`,
+      ]);
     }
     fileInputRef.current.value = null;
   };
