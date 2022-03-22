@@ -85,7 +85,9 @@ const CSVUploadDialog = ({ open, handleClose, columns }) => {
       handleClose();
     } else if (res.status === 422) {
       const errors = res.data.detail.map((error) => {
-        return `Row ${error.loc[1]} - Column ${error.loc[2]} : ${error.msg}`;
+        return `Row ${error.loc[1] + 2} - Column ${error.loc[2]} : ${
+          error.msg
+        }`;
       });
       setErrors(errors);
     } else if (res.status === 400) {
