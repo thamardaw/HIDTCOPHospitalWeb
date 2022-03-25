@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
-const useAxios = () => {
+const useAxios = (props) => {
   const { authTokens, setUser, setAuthTokens, logoutUser } =
     useContext(AuthContext);
   let { openAlert, message } = useContext(SnackbarContext);
@@ -49,16 +49,18 @@ const useAxios = () => {
 
   axiosInstance.interceptors.response.use((res) => {
     if (res.config.method !== "get") {
-      if (res.status === 200) {
-        message({ status: res.status, detail: res.data.detail });
-        openAlert(true);
-      } else {
-        if (res.status === 422) {
-          message({ status: res.status, detail: res.data.detail[0].msg });
-          openAlert(true);
-        } else {
+      if (props?.autoSnackbar) {
+        if (res.status === 200) {
           message({ status: res.status, detail: res.data.detail });
           openAlert(true);
+        } else {
+          if (res.status === 422) {
+            message({ status: res.status, detail: res.data.detail[0].msg });
+            openAlert(true);
+          } else {
+            message({ status: res.status, detail: res.data.detail });
+            openAlert(true);
+          }
         }
       }
     }

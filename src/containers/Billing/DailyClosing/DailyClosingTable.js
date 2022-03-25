@@ -61,7 +61,7 @@ const headCells = [
   },
 ];
 const DailyClosingTable = () => {
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [rows, setRows] = useState([]);
   const { setScreenLoading } = useContext(LoadingContext);
 

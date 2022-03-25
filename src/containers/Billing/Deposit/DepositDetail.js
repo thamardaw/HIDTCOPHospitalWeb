@@ -28,7 +28,7 @@ const CategoryDetail = () => {
   const history = useHistory();
   const location = useLocation();
   const { id } = useParams();
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [details, setDetails] = useState({});
   const [open, setOpen] = useState(false);
   const depositRef = useRef();

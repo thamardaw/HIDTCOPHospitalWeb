@@ -19,7 +19,7 @@ import { BackButton } from "../../../components";
 
 const DepositForm = () => {
   const history = useHistory();
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [details, setDetails] = useState({
     patient_id: null,
     patient: null,

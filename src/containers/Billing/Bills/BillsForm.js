@@ -40,7 +40,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const BillsForm = () => {
   const history = useHistory();
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [patient, setPatient] = useState([]);
   const [salesServiceItem, setSalesServiceItem] = useState([]);
   const [currentSSI, setCurrentSSI] = useState(null);

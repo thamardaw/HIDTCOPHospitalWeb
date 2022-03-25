@@ -43,7 +43,7 @@ const headCells = [
   },
 ];
 const DepositTable = () => {
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const history = useHistory();
   const [activeRows, setActiveRows] = useState([]);
   const [usedRows, setUsedRows] = useState([]);

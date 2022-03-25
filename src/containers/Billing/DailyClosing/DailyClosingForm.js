@@ -32,7 +32,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 const DailyClosingForm = () => {
   const history = useHistory();
   let { user } = useContext(AuthContext);
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [bills, setBills] = useState([]);
   const [billLimit, setBillLimit] = useState({
     from: 0,
@@ -147,7 +147,7 @@ const DailyClosingForm = () => {
         variant="dense"
         disableGutters={true}
       >
-        <BackButton backFunction={() => history.goBack()}/>
+        <BackButton backFunction={() => history.goBack()} />
         <Typography variant="h5">New</Typography>
       </Toolbar>
       <Divider />
