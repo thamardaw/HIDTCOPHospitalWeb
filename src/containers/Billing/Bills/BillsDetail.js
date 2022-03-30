@@ -28,6 +28,7 @@ import { styled } from "@mui/material/styles";
 import { useLocation } from "react-router-dom";
 import { getComparator, stableSort } from "../../../utils/sorting";
 import { BackButton } from "../../../components";
+import { constants } from "../../../utils/constants";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.3rem",
@@ -71,9 +72,9 @@ const BillsDetail = () => {
       "@media print { body { -webkit-print-color-adjust: exact; } @page { size: A4; margin: 200mm !important }}",
     content: () => receiptRef.current,
     onAfterPrint: () => {
-      if (stage === "draft") {
-        to_print();
-      }
+      // if (stage === "draft") {
+      //   to_print();
+      // }
     },
   });
 
@@ -180,6 +181,17 @@ const BillsDetail = () => {
           <Button
             variant="contained"
             size="small"
+            sx={{
+              marginRight: "5px",
+              display: stage === "draft" ? "block" : "none",
+            }}
+            onClick={to_print}
+          >
+            Finalize
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
             color="error"
             sx={{
               marginRight: "5px",
@@ -194,7 +206,7 @@ const BillsDetail = () => {
         <Container ref={receiptRef}>
           <Box sx={{ my: "15px" }}>
             <Typography variant="h6" textAlign="center">
-              Dagon Lin Hospital
+              {constants.hospital_name}
             </Typography>
             {/* <Box sx={{ height: "15px" }} /> */}
             {/* <Typography variant="body" component="div">

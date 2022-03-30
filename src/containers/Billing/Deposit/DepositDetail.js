@@ -18,6 +18,7 @@ import { useReactToPrint } from "react-to-print";
 import { styled } from "@mui/material/styles";
 import { useLocation } from "react-router-dom";
 import { BackButton } from "../../../components";
+import { constants } from "../../../utils/constants";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.3rem",
@@ -104,7 +105,7 @@ const CategoryDetail = () => {
             textAlign="center"
             sx={{ marginTop: "20px" }}
           >
-            Dagon Lin Hospital
+            {constants.hospital_name}
           </Typography>
           <Typography
             variant="h6"
