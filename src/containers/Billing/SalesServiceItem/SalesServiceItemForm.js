@@ -9,9 +9,10 @@ import {
 import { Box } from "@mui/system";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { BackButton, CSVUploadDialog } from "../../../components";
+import { AuthContext } from "../../../contexts";
 
 const SalesServiceItemForm = () => {
   const history = useHistory();
@@ -27,6 +28,7 @@ const SalesServiceItemForm = () => {
   const [category, setCategory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const { user } = useContext(AuthContext);
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -214,14 +216,16 @@ const SalesServiceItemForm = () => {
             padding: "20px 10px",
           }}
         >
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{ marginRight: "5px", display: id ? "none" : "block" }}
-            onClick={handleOpenDialog}
-          >
-            Upload
-          </Button>
+          {user.role === "Admin" && (
+            <Button
+              variant="outlined"
+              size="small"
+              sx={{ marginRight: "5px", display: id ? "none" : "block" }}
+              onClick={handleOpenDialog}
+            >
+              Upload
+            </Button>
+          )}
           <LoadingButton
             loading={loading}
             variant="contained"
