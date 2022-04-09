@@ -206,7 +206,6 @@ const BillsDetail = () => {
           >
             Finalize
           </Button>
-
           <Button
             variant="contained"
             size="small"
