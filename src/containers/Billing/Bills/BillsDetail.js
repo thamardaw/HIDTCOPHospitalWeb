@@ -56,6 +56,7 @@ const BillsDetail = () => {
   const [payment, setPayment] = useState({});
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [open, setOpen] = useState(false);
+  const [dateState, setDateState] = useState(new Date());
 
   const handleClose = () => {
     setOpen(false);
@@ -124,6 +125,9 @@ const BillsDetail = () => {
     return;
   };
 
+  const to_edit = () => {
+    history.push(`/dashboard/bills/form/-${id}`);
+  };
   // const formatAMPM = (date) => {
   //   let hours = date.getHours();
   //   let minutes = date.getMinutes();
@@ -136,6 +140,7 @@ const BillsDetail = () => {
   // };
 
   useEffect(() => {
+    const intervalId = setInterval(() => setDateState(new Date()), 30000);
     if (
       stage === "draft" ||
       stage === "outstanding" ||
@@ -146,6 +151,7 @@ const BillsDetail = () => {
     } else {
       history.goBack();
     }
+    return () => clearInterval(intervalId);
     // eslint-disable-next-line
   }, [stage]);
 
@@ -169,6 +175,17 @@ const BillsDetail = () => {
             onClick={make_payment}
           >
             Record Payment
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            sx={{
+              marginRight: "5px",
+              display: stage === "draft" ? "block" : "none",
+            }}
+            onClick={to_edit}
+          >
+            Edit
           </Button>
           <Button
             variant="contained"
@@ -252,7 +269,12 @@ const BillsDetail = () => {
                   <StyledTypography variant="body">Date</StyledTypography>
                 </Box>
                 <StyledTypography variant="body">
-                  {bill?.created_time && bill?.created_time.split("T")[0]}
+                  {/* {bill?.created_time && bill?.created_time.split("T")[0]} */}
+                  {dateState.toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
                 </StyledTypography>
               </Box>
               <Box
@@ -267,12 +289,17 @@ const BillsDetail = () => {
                   <StyledTypography variant="body">Time</StyledTypography>
                 </Box>
                 <StyledTypography variant="body">
-                  {bill?.created_time &&
+                  {/* {bill?.created_time &&
                     new Date(bill.created_time).toLocaleTimeString("en-US", {
                       hour: "numeric",
                       minute: "numeric",
                       hour12: true,
-                    })}
+                    })} */}
+                  {dateState.toLocaleString("en-US", {
+                    hour: "numeric",
+                    minute: "numeric",
+                    hour12: true,
+                  })}
                 </StyledTypography>
               </Box>
               <Box

@@ -94,7 +94,7 @@ const UomTable = () => {
         headCells={headCells}
         rows={rows}
         onDelete={handleClickOpen}
-        enableMultipleDelete={true}
+        enableMultipleDelete={false}
       />
       <Dialog
         open={open}
