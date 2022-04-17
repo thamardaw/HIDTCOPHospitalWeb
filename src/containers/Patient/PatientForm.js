@@ -22,7 +22,7 @@ const PatientForm = () => {
     age: "",
     contact_details: "",
     gender: "",
-    date_of_birth: "",
+    date_of_birth: null,
     address: "",
   });
 
@@ -43,6 +43,7 @@ const PatientForm = () => {
     setLoading(true);
     const res = await api.post(`/api/patients/`, {
       ...details,
+      date_of_birth: details.date_of_birth || null,
     });
     if (res.status === 200) {
       history.goBack();
@@ -57,7 +58,7 @@ const PatientForm = () => {
       age: details.age,
       contact_details: details.contact_details,
       gender: details.gender,
-      date_of_birth: details.date_of_birth,
+      date_of_birth: details.date_of_birth || null,
       address: details.address,
     });
     if (res.status === 200) {
