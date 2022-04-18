@@ -45,7 +45,7 @@ const BillsEditForm = () => {
   const [details, setDetails] = useState([]);
   const [salesServiceItem, setSalesServiceItem] = useState([]);
   const [currentSSI, setCurrentSSI] = useState(null);
-  const [currentQuantity, setCurrentQuantity] = useState(1);
+  const [currentQuantity, setCurrentQuantity] = useState(0);
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [loading, setLoading] = useState(false);
   const { setScreenLoading } = useContext(LoadingContext);
@@ -144,6 +144,7 @@ const BillsEditForm = () => {
     );
     if (res.status === 200) {
       getData();
+      setCurrentQuantity(0);
     }
     setLoading(false);
     SSIRef.current.focus();

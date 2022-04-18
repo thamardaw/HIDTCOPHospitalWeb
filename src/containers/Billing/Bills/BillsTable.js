@@ -48,6 +48,12 @@ const headCells = [
     disablePadding: false,
     label: "Total Amount",
   },
+  {
+    id: "date",
+    numeric: false,
+    disablePadding: false,
+    label: "Date",
+  },
 ];
 
 const BillsTable = () => {
@@ -115,6 +121,7 @@ const BillsTable = () => {
           phone: row.patient_phone,
           address: row.patient_address,
           totalAmount: row.total_amount,
+          date: row.created_time.split("T")[0],
         };
       });
       setDraftedRows(data);
@@ -135,6 +142,7 @@ const BillsTable = () => {
           phone: row.patient_phone,
           address: row.patient_address,
           totalAmount: row.total_amount,
+          date: row.created_time.split("T")[0],
         };
       });
       setOutstandingRows(data);
@@ -154,6 +162,7 @@ const BillsTable = () => {
           phone: row.patient_phone,
           address: row.patient_address,
           totalAmount: row.total_amount,
+          date: row.created_time.split("T")[0],
         };
       });
       setCompletedRows(data);
@@ -173,6 +182,7 @@ const BillsTable = () => {
           phone: row.patient_phone,
           address: row.patient_address,
           totalAmount: row.total_amount,
+          date: row.created_time.split("T")[0],
         };
       });
       setCancelledRows(data);
