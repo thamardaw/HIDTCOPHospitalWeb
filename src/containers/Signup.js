@@ -204,6 +204,7 @@ const Signup = () => {
           >
             <MenuItem value="Admin">Admin</MenuItem>
             <MenuItem value="Receptionist">Receptionist</MenuItem>
+            <MenuItem value="Cashier">Cashier</MenuItem>
           </TextField>
           <LoadingButton
             fullWidth

@@ -41,6 +41,12 @@ const headCells = [
     disablePadding: false,
     label: "Amount",
   },
+  {
+    id: "date",
+    numeric: false,
+    disablePadding: false,
+    label: "Date",
+  },
 ];
 const DepositTable = () => {
   const api = useAxios({ autoSnackbar: true });
@@ -77,6 +83,7 @@ const DepositTable = () => {
           patient_name: row.patient.name,
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount,
+          date: row.created_time.split("T")[0],
         };
       });
       setActiveRows(data);
@@ -96,6 +103,7 @@ const DepositTable = () => {
           patient_name: row.patient.name,
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount,
+          date: row.created_time.split("T")[0],
         };
       });
       setUsedRows(data);
@@ -114,6 +122,7 @@ const DepositTable = () => {
           patient_name: row.patient.name,
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount,
+          date: row.created_time.split("T")[0],
         };
       });
       setCancelledRows(data);
