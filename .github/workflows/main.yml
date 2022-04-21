@@ -29,5 +29,9 @@ jobs:
         with:
           context: .
           push: true
-          build-args: BASE_URL=http://192.168.100.25:8000
+          build-args: |
+            BASE_URL=http://192.168.100.25:8000
+            THEME=#03C0C1
+            TITLE="Dagon Lin"
+            TITLE_SHORT=DGL
           tags: jasoniv/hidtcophospitalweb:latest
