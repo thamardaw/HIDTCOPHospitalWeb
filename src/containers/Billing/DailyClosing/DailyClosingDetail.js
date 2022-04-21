@@ -1,7 +1,6 @@
 import {
   Button,
   Divider,
-  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -11,18 +10,18 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router-dom";
 import { Box } from "@mui/system";
 import { useEffect, useRef, useState } from "react";
-import { useAxios } from "../../hooks";
-import { generateID } from "../../utils/generateID";
+import { useAxios } from "../../../hooks";
+import { generateID } from "../../../utils/generateID";
 import { useReactToPrint } from "react-to-print";
+import { BackButton, DetailsRow } from "../../../components";
 
 const DailyClosingDetail = () => {
   const history = useHistory();
   const { id } = useParams();
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [details, setDetails] = useState({});
   const [bills, setBills] = useState([]);
   const [deposits, setDeposits] = useState([]);
@@ -75,7 +74,7 @@ const DailyClosingDetail = () => {
     // eslint-disable-next-line
   }, [id]);
   return (
-    <Box sx={{ width: "100%", mb: 2 }}>
+    <Box sx={{ width: "100%", mb: 1 }}>
       <Toolbar
         sx={{
           display: "flex",
@@ -84,21 +83,7 @@ const DailyClosingDetail = () => {
         variant="dense"
         disableGutters={true}
       >
-        <IconButton
-          sx={{
-            color: "white",
-            backgroundColor: "primary.main",
-            borderRadius: "10%",
-            "&:hover": {
-              backgroundColor: "primary.light",
-            },
-            marginRight: "10px",
-          }}
-          onClick={() => history.goBack()}
-          size="small"
-        >
-          <ArrowBackIosNewIcon size="small" />
-        </IconButton>
+        <BackButton backFunction={() => history.goBack()} />
         <Typography variant="h5" sx={{ flexGrow: 1 }}>
           Detail
         </Typography>
@@ -111,37 +96,17 @@ const DailyClosingDetail = () => {
         sx={{ flexDirection: "column", padding: "20px 10px" }}
         ref={dailyClosingRef}
       >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            padding: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p" sx={{ fontWeight: "bold" }}>
-              In Charge Name
-            </Typography>
-          </Box>
-          <Typography variant="p">{details?.created_user?.username}</Typography>
-        </Box>
+        <DetailsRow
+          name="In Charge Name"
+          value={details?.created_user?.username}
+          textVariant="p"
+        />
         <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            padding: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p" sx={{ fontWeight: "bold" }}>
-              Opening Balance
-            </Typography>
-          </Box>
-          <Typography variant="p">{details?.opening_balance}</Typography>
-        </Box>
+        <DetailsRow
+          name="Opening Balance"
+          value={details?.opening_balance}
+          textVariant="p"
+        />
         <TableContainer sx={{ marginTop: "15px" }}>
           <Table sx={{ minWidth: 380 }} size="small">
             <TableHead sx={{ backgroundColor: "#EBEBEB" }}>
@@ -175,7 +140,6 @@ const DailyClosingDetail = () => {
             </TableBody>
           </Table>
         </TableContainer>
-
         <TableContainer sx={{ marginTop: "15px" }}>
           <Table sx={{ minWidth: 380 }} size="small">
             <TableHead sx={{ backgroundColor: "#EBEBEB" }}>
@@ -205,70 +169,25 @@ const DailyClosingDetail = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            padding: "10px 0px",
-            marginTop: "10px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p" sx={{ fontWeight: "bold" }}>
-              Total
-            </Typography>
-          </Box>
-          <Typography variant="p">{details?.grand_total}</Typography>
-        </Box>
+        <DetailsRow name="Total" value={details?.grand_total} textVariant="p" />
         <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            padding: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p" sx={{ fontWeight: "bold" }}>
-              Actual Amount
-            </Typography>
-          </Box>
-          <Typography variant="p">{details?.actual_amount}</Typography>
-        </Box>
+        <DetailsRow
+          name="Actual Amount"
+          value={details?.actual_amount}
+          textVariant="p"
+        />
         <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            padding: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p" sx={{ fontWeight: "bold" }}>
-              Adjustment
-            </Typography>
-          </Box>
-          <Typography variant="p">{details?.adjusted_amount}</Typography>
-        </Box>
+        <DetailsRow
+          name="Adjustment"
+          value={details?.adjusted_amount}
+          textVariant="p"
+        />
         <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            padding: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p" sx={{ fontWeight: "bold" }}>
-              Remark
-            </Typography>
-          </Box>
-          <Typography variant="p">{details?.adjusted_reason}</Typography>
-        </Box>
+        <DetailsRow
+          name="Remark"
+          value={details?.adjusted_reason}
+          textVariant="p"
+        />
       </Box>
     </Box>
   );

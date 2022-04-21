@@ -15,6 +15,7 @@ import React, { useContext, useState } from "react";
 import { AuthContext } from "../contexts";
 import BadgeIcon from "@mui/icons-material/Badge";
 import PersonIcon from "@mui/icons-material/Person";
+import { constants } from "../utils/constants";
 
 const Appbar = ({ drawerWidth, handleDrawerToggle }) => {
   let { user, logoutUser } = useContext(AuthContext);
@@ -47,7 +48,7 @@ const Appbar = ({ drawerWidth, handleDrawerToggle }) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            HIDTCOP
+            {constants.name}
           </Typography>
           <IconButton sx={{ color: "white" }} onClick={handleClick}>
             <AccountCircleIcon />

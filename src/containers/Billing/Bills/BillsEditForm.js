@@ -29,7 +29,8 @@ import { styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton";
 import LoadingContext from "../../../contexts/LoadingContext";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { getComparator, stableSort } from "../../../utils/sorting";
+import { BackButton } from "../../../components";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#EBEBEB",
@@ -38,7 +39,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const BillsEditForm = () => {
   const history = useHistory();
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const { id } = useParams();
   const [details, setDetails] = useState([]);
   const [salesServiceItem, setSalesServiceItem] = useState([]);
@@ -103,7 +104,13 @@ const BillsEditForm = () => {
     const res = await api.get(`/api/bill/${parseInt(id.split("-")[1])}`);
     if (res.status === 200) {
       getDepositByPatientId(res.data.patient.id);
-      setDetails({ ...res.data });
+      setDetails({
+        ...res.data,
+        bill_items: stableSort(
+          res.data.bill_items,
+          getComparator("desc", "id")
+        ),
+      });
     } else {
       history.goBack();
     }
@@ -136,6 +143,7 @@ const BillsEditForm = () => {
     );
     if (res.status === 200) {
       getData();
+      setCurrentQuantity(0);
     }
     setLoading(false);
     SSIRef.current.focus();
@@ -158,23 +166,9 @@ const BillsEditForm = () => {
 
   return (
     <>
-      <Paper sx={{ width: "100%", mb: 2 }}>
+      <Paper sx={{ width: "100%", mb: 1 }}>
         <Toolbar>
-          <IconButton
-            sx={{
-              color: "white",
-              backgroundColor: "primary.main",
-              borderRadius: "10%",
-              "&:hover": {
-                backgroundColor: "primary.light",
-              },
-              marginRight: "5px",
-            }}
-            onClick={() => history.goBack()}
-            size="small"
-          >
-            <ArrowBackIosNewIcon size="small" sx={{ fontSize: "1.4rem" }} />
-          </IconButton>
+          <BackButton backFunction={() => history.goBack()} />
           <Typography
             variant="h6"
             component="div"
@@ -542,7 +536,7 @@ const BillsEditForm = () => {
                     </TableHead>
                     <TableBody>
                       {details?.bill_items &&
-                        details?.bill_items.map((row, index) => (
+                        details.bill_items.map((row, index) => (
                           <TableRow
                             key={row.id}
                             sx={{

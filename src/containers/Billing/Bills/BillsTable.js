@@ -12,6 +12,7 @@ import { Box } from "@mui/material";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { CustomTable, TabPanel } from "../../../components";
+import { CacheContext } from "../../../contexts";
 import LoadingContext from "../../../contexts/LoadingContext";
 import { useAxios } from "../../../hooks";
 import { generateID } from "../../../utils/generateID";
@@ -47,26 +48,36 @@ const headCells = [
     disablePadding: false,
     label: "Total Amount",
   },
+  {
+    id: "date",
+    numeric: false,
+    disablePadding: false,
+    label: "Date",
+  },
 ];
 
 const BillsTable = () => {
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const history = useHistory();
   const [draftedRows, setDraftedRows] = useState([]);
   const [outstandingRows, setOutstandingRows] = useState([]);
   const [completedRows, setCompletedRows] = useState([]);
   const [cancelledRows, setCancelledRows] = useState([]);
   const [open, setOpen] = useState(false);
-  const [id, setId] = useState("");
-  const [tab, setTab] = useState(0);
+  const [selected, setSelected] = useState([]);
+  // const [tab, setTab] = useState(false);
   const { setScreenLoading } = useContext(LoadingContext);
+  const { table, viewTab } = useContext(CacheContext);
+  const { resetTable } = table;
+  const { tab, setTab } = viewTab;
 
   const handleTabChange = (event, newTab) => {
+    resetTable();
     setTab(newTab);
   };
 
-  const handleClickOpen = (id) => {
-    setId(id);
+  const handleClickOpen = (arr) => {
+    setSelected(arr);
     setOpen(true);
   };
 
@@ -110,6 +121,7 @@ const BillsTable = () => {
           phone: row.patient_phone,
           address: row.patient_address,
           totalAmount: row.total_amount,
+          date: row.created_time.split("T")[0],
         };
       });
       setDraftedRows(data);
@@ -130,6 +142,7 @@ const BillsTable = () => {
           phone: row.patient_phone,
           address: row.patient_address,
           totalAmount: row.total_amount,
+          date: row.created_time.split("T")[0],
         };
       });
       setOutstandingRows(data);
@@ -149,6 +162,7 @@ const BillsTable = () => {
           phone: row.patient_phone,
           address: row.patient_address,
           totalAmount: row.total_amount,
+          date: row.created_time.split("T")[0],
         };
       });
       setCompletedRows(data);
@@ -168,6 +182,7 @@ const BillsTable = () => {
           phone: row.patient_phone,
           address: row.patient_address,
           totalAmount: row.total_amount,
+          date: row.created_time.split("T")[0],
         };
       });
       setCancelledRows(data);
@@ -177,8 +192,12 @@ const BillsTable = () => {
   }, []);
 
   const cancelBill = async () => {
-    await api.put(`/api/bill/cancel/${parseInt(id.split("-")[1])}`);
+    if (selected.length === 0) {
+      return;
+    }
+    await api.put(`/api/bill/cancel/${parseInt(selected[0].id.split("-")[1])}`);
     handleClose();
+    setSelected([]);
     getDraftedData();
     getOutstandingData();
     getCompletedData();

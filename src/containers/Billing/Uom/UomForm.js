@@ -1,26 +1,24 @@
-import {
-  Divider,
-  IconButton,
-  TextField,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { Divider, TextField, Toolbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { BackButton } from "../../../components";
 
 const UomForm = () => {
   const history = useHistory();
   const { id } = useParams();
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [details, setDetails] = useState({
     name: "",
     description: "",
   });
   const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setDetails({ ...details, [e.target.name]: e.target.value });
+  };
 
   const getData = async () => {
     const res = await api.get(`/api/uom/${parseInt(id)}`);
@@ -60,6 +58,7 @@ const UomForm = () => {
     }
     // eslint-disable-next-line
   }, [id]);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Toolbar
@@ -70,21 +69,7 @@ const UomForm = () => {
         variant="dense"
         disableGutters={true}
       >
-        <IconButton
-          sx={{
-            color: "white",
-            backgroundColor: "primary.main",
-            borderRadius: "10%",
-            "&:hover": {
-              backgroundColor: "primary.light",
-            },
-            marginRight: "10px",
-          }}
-          onClick={() => history.goBack()}
-          size="small"
-        >
-          <ArrowBackIosNewIcon size="small" />
-        </IconButton>
+        <BackButton backFunction={() => history.goBack()} />
         <Typography variant="h5">{id ? "Edit" : "New"}</Typography>
       </Toolbar>
       <Divider />
@@ -104,7 +89,8 @@ const UomForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.name || ""}
-            onChange={(e) => setDetails({ ...details, name: e.target.value })}
+            name="name"
+            onChange={handleChange}
           />
         </Box>
         <Box
@@ -122,9 +108,8 @@ const UomForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.description || ""}
-            onChange={(e) =>
-              setDetails({ ...details, description: e.target.value })
-            }
+            name="description"
+            onChange={handleChange}
           />
         </Box>
       </Box>

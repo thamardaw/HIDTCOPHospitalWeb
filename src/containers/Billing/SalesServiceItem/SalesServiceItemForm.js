@@ -1,22 +1,23 @@
 import {
+  Button,
   Divider,
-  IconButton,
   MenuItem,
   TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { BackButton, CSVUploadDialog } from "../../../components";
+import { AuthContext } from "../../../contexts";
 
 const SalesServiceItemForm = () => {
   const history = useHistory();
   const { id } = useParams();
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [details, setDetails] = useState({
     name: "",
     price: "",
@@ -26,6 +27,19 @@ const SalesServiceItemForm = () => {
   const [uom, setUom] = useState([]);
   const [category, setCategory] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const { user } = useContext(AuthContext);
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleChange = (e) => {
+    setDetails({ ...details, [e.target.name]: e.target.value });
+  };
 
   const getUOMAndCategory = async () => {
     const [uom, category] = await Promise.all([
@@ -82,149 +96,153 @@ const SalesServiceItemForm = () => {
     // eslint-disable-next-line
   }, [id]);
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Toolbar
-        sx={{
-          display: "flex",
-          paddingLeft: "12px",
-        }}
-        variant="dense"
-        disableGutters={true}
-      >
-        <IconButton
-          sx={{
-            color: "white",
-            backgroundColor: "primary.main",
-            borderRadius: "10%",
-            "&:hover": {
-              backgroundColor: "primary.light",
-            },
-            marginRight: "10px",
-          }}
-          onClick={() => history.goBack()}
-          size="small"
-        >
-          <ArrowBackIosNewIcon size="small" />
-        </IconButton>
-        <Typography variant="h5">{id ? "Edit" : "New"}</Typography>
-      </Toolbar>
-      <Divider />
-      <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
-        <Box
+    <>
+      <Box sx={{ flexGrow: 1 }}>
+        <Toolbar
           sx={{
             display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
+            paddingLeft: "12px",
           }}
+          variant="dense"
+          disableGutters={true}
         >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Name</Typography>
-          </Box>
-          <TextField
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            value={details?.name || ""}
-            onChange={(e) => setDetails({ ...details, name: e.target.value })}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Price</Typography>
-          </Box>
-          <TextField
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            value={details?.price || ""}
-            onChange={(e) => setDetails({ ...details, price: e.target.value })}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">UOM</Typography>
-          </Box>
-          <TextField
-            select
-            fullWidth
-            label="UOM"
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            value={details?.uom_id || ""}
-            onChange={(e) => setDetails({ ...details, uom_id: e.target.value })}
+          <BackButton backFunction={() => history.goBack()} />
+          <Typography variant="h5">{id ? "Edit" : "New"}</Typography>
+        </Toolbar>
+        <Divider />
+        <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
           >
-            {uom.map((u) => (
-              <MenuItem key={u.id} value={u.id}>
-                {u.name}
-              </MenuItem>
-            ))}
-          </TextField>
+            <Box sx={{ width: "30%" }}>
+              <Typography variant="p">Name</Typography>
+            </Box>
+            <TextField
+              size="small"
+              sx={{ width: "70%" }}
+              margin="dense"
+              value={details?.name || ""}
+              name="name"
+              onChange={handleChange}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Box sx={{ width: "30%" }}>
+              <Typography variant="p">Price</Typography>
+            </Box>
+            <TextField
+              size="small"
+              sx={{ width: "70%" }}
+              margin="dense"
+              value={details?.price || ""}
+              name="price"
+              onChange={handleChange}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Box sx={{ width: "30%" }}>
+              <Typography variant="p">UOM</Typography>
+            </Box>
+            <TextField
+              select
+              fullWidth
+              label="UOM"
+              size="small"
+              sx={{ width: "70%" }}
+              margin="dense"
+              value={details?.uom_id || ""}
+              name="uom_id"
+              onChange={handleChange}
+            >
+              {uom.map((u) => (
+                <MenuItem key={u.id} value={u.id}>
+                  {u.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Box sx={{ width: "30%" }}>
+              <Typography variant="p">Category</Typography>
+            </Box>
+            <TextField
+              select
+              fullWidth
+              label="Category"
+              size="small"
+              sx={{ width: "70%" }}
+              margin="dense"
+              value={details?.category_id || ""}
+              name="category_id"
+              onChange={handleChange}
+            >
+              {category.map((c) => (
+                <MenuItem key={c.id} value={c.id}>
+                  {c.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
         </Box>
+        <Divider />
         <Box
           sx={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            justifyContent: "flex-end",
+            padding: "20px 10px",
           }}
         >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Category</Typography>
-          </Box>
-          <TextField
-            select
-            fullWidth
-            label="Category"
+          {user.role === "Admin" && (
+            <Button
+              variant="outlined"
+              size="small"
+              sx={{ marginRight: "5px", display: id ? "none" : "block" }}
+              onClick={handleOpenDialog}
+            >
+              Upload
+            </Button>
+          )}
+          <LoadingButton
+            loading={loading}
+            variant="contained"
             size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            value={details?.category_id || ""}
-            onChange={(e) =>
-              setDetails({ ...details, category_id: e.target.value })
-            }
+            sx={{ marginRight: "5px" }}
+            onClick={id ? update : createNew}
           >
-            {category.map((c) => (
-              <MenuItem key={c.id} value={c.id}>
-                {c.name}
-              </MenuItem>
-            ))}
-          </TextField>
+            Save
+          </LoadingButton>
         </Box>
       </Box>
-
-      <Divider />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          padding: "20px 10px",
-        }}
-      >
-        <LoadingButton
-          loading={loading}
-          variant="contained"
-          size="small"
-          sx={{ marginRight: "5px" }}
-          onClick={id ? update : createNew}
-        >
-          Save
-        </LoadingButton>
-      </Box>
-    </Box>
+      <CSVUploadDialog
+        open={openDialog}
+        handleClose={handleCloseDialog}
+        columns={["name", "price", "uom_id", "category_id"]}
+      />
+    </>
   );
 };
 

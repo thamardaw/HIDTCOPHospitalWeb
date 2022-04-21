@@ -29,8 +29,8 @@ import { styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton";
 import LoadingContext from "../../../contexts/LoadingContext";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { BillProcessContext } from "../../../contexts";
+import { CacheContext } from "../../../contexts";
+import { BackButton } from "../../../components";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -40,11 +40,11 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const BillsForm = () => {
   const history = useHistory();
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [patient, setPatient] = useState([]);
   const [salesServiceItem, setSalesServiceItem] = useState([]);
   const [currentSSI, setCurrentSSI] = useState(null);
-  const [currentQuantity, setCurrentQuantity] = useState(1);
+  const [currentQuantity, setCurrentQuantity] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -54,8 +54,9 @@ const BillsForm = () => {
     price: 0,
   });
   const { setScreenLoading } = useContext(LoadingContext);
+  const { bill_process } = useContext(CacheContext);
   const { currentPatient, setCurrectPatient, billItems, setBillItems } =
-    useContext(BillProcessContext);
+    bill_process;
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const quantityRef = useRef();
@@ -72,7 +73,7 @@ const BillsForm = () => {
     });
     setAnchorEl(event.currentTarget);
   };
-  
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -167,12 +168,13 @@ const BillsForm = () => {
   const createBill = async () => {
     if (currentPatient) {
       setLoading(true);
+      const billItems_copy = [...billItems];
       const res = await api.post(`/api/bill/`, {
         patient_id: parseInt(currentPatient.id.split("-")[1]),
         patient_name: currentPatient.name,
         patient_phone: currentPatient.contactDetails,
         patient_address: currentPatient.address,
-        bill_items: billItems,
+        bill_items: billItems_copy.reverse(),
       });
       if (res.status === 200) {
         setBillItems([]);
@@ -193,27 +195,15 @@ const BillsForm = () => {
 
   return (
     <>
-      <Paper sx={{ width: "100%", mb: 2 }}>
+      <Paper sx={{ width: "100%", mb: 1 }}>
         <Toolbar>
-          <IconButton
-            sx={{
-              color: "white",
-              backgroundColor: "primary.main",
-              borderRadius: "10%",
-              "&:hover": {
-                backgroundColor: "primary.light",
-              },
-              marginRight: "5px",
-            }}
-            onClick={() => {
+          <BackButton
+            backFunction={() => {
               history.goBack();
               setBillItems([]);
               setCurrectPatient(null);
             }}
-            size="small"
-          >
-            <ArrowBackIosNewIcon size="small" sx={{ fontSize: "1.4rem" }} />
-          </IconButton>
+          />
           <Typography
             variant="h6"
             component="div"

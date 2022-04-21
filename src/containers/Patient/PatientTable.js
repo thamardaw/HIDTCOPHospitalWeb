@@ -11,109 +11,8 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { CustomTable } from "../../components";
 import LoadingContext from "../../contexts/LoadingContext";
 import { useAxios } from "../../hooks";
+import { extractID } from "../../utils/extractID";
 import { generateID } from "../../utils/generateID";
-
-// const ButtonContainer = styled(Box)(({ theme }) => ({
-//   [theme.breakpoints.down("md")]: {
-//     display: "none",
-//   },
-// }));
-
-// function createData(id, name, gender, dataOfBirth, age, address, contact) {
-//   return {
-//     id,
-//     name,
-//     age,
-//     contact,
-//     gender,
-//     dataOfBirth,
-//     address,
-//   };
-// }
-
-// const rows = [
-//   createData(
-//     "DGL-0001-2021",
-//     "Ye Yint Aung",
-//     "Male",
-//     "1997-03-02",
-//     24,
-//     "Yangon, Insein Township",
-//     "09798865233"
-//   ),
-//   createData(
-//     "DGL-0002-2021",
-//     "Zay Maw",
-//     "Male",
-//     "2003-03-02",
-//     18,
-//     "Yangon, Hlaing Township",
-//     "09798865233"
-//   ),
-//   createData(
-//     "DGL-0003-2021",
-//     "Aye Hla",
-//     "Female",
-//     "2005-03-02",
-//     16,
-//     "Yangon, Tharkayta Township",
-//     "09654865288"
-//   ),
-//   createData(
-//     "DGL-0004-2021",
-//     "Kyaw Kyaw",
-//     "Male",
-//     "2000-03-02",
-//     21,
-//     "Yangon, Sanchaung Township",
-//     "09798005233"
-//   ),
-//   createData(
-//     "DGL-0005-2021",
-//     "Aye Aung",
-//     "Male",
-//     "2002-03-27",
-//     19,
-//     "Yangon, Hlaing Township",
-//     "09798865233"
-//   ),
-//   createData(
-//     "DGL-0006-2021",
-//     "Aye Hla",
-//     "Female",
-//     "2005-03-02",
-//     16,
-//     "Yangon, Tharkayta Township",
-//     "09654865288"
-//   ),
-//   createData(
-//     "DGL-0007-2021",
-//     "Ye Yint Aung",
-//     "Male",
-//     "2021-03-02",
-//     24,
-//     "Yangon, Insein Township",
-//     "09798865233"
-//   ),
-//   createData(
-//     "DGL-0008-2021",
-//     "Zay Maw",
-//     "Male",
-//     "2005-03-02",
-//     16,
-//     "Yangon, Hlaing Township",
-//     "09798865233"
-//   ),
-//   createData(
-//     "DGL-0009-2021",
-//     "Aye Hla",
-//     "Female",
-//     "2005-03-02",
-//     16,
-//     "Yangon, Tharkayta Township",
-//     "09654865288"
-//   ),
-// ];
 
 const headCells = [
   {
@@ -166,14 +65,14 @@ const headCells = [
   },
 ];
 const PatientTable = () => {
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
-  const [id, setId] = useState("");
+  const [selected, setSelected] = useState([]);
   const { setScreenLoading } = useContext(LoadingContext);
 
-  const handleClickOpen = (id) => {
-    setId(id);
+  const handleClickOpen = (arr) => {
+    setSelected(arr);
     setOpen(true);
   };
 
@@ -213,12 +112,22 @@ const PatientTable = () => {
   }, []);
 
   const deleteItem = async () => {
-    try {
-      await api.delete(`/api/patients/${parseInt(id.split("-")[1])}`);
-    } catch (e) {
-      console.log(e.response.data.detail);
+    if (selected.length === 0) {
+      return;
+    } else if (selected.length === 1) {
+      await api.delete(
+        `/api/patients/${parseInt(selected[0].id.split("-")[1])}`
+      );
+    } else if (selected.length > 1) {
+      const extractedID = selected.map((item) => {
+        return extractID(item.id);
+      });
+      await api.post(`/api/patients/bulk`, {
+        listOfId: extractedID,
+      });
     }
     handleClose();
+    setSelected([]);
     getData();
   };
 
@@ -270,6 +179,7 @@ const PatientTable = () => {
         headCells={headCells}
         rows={rows}
         onDelete={handleClickOpen}
+        enableMultipleDelete={false}
       />
       <Dialog
         open={open}

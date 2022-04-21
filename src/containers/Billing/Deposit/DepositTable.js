@@ -41,15 +41,21 @@ const headCells = [
     disablePadding: false,
     label: "Amount",
   },
+  {
+    id: "date",
+    numeric: false,
+    disablePadding: false,
+    label: "Date",
+  },
 ];
 const DepositTable = () => {
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const history = useHistory();
   const [activeRows, setActiveRows] = useState([]);
   const [usedRows, setUsedRows] = useState([]);
   const [cancelledRows, setCancelledRows] = useState([]);
   const [open, setOpen] = useState(false);
-  const [id, setId] = useState("");
+  const [selected, setSelected] = useState([]);
   const [tab, setTab] = useState(0);
   const { setScreenLoading } = useContext(LoadingContext);
 
@@ -57,8 +63,8 @@ const DepositTable = () => {
     setTab(newTab);
   };
 
-  const handleClickOpen = (id) => {
-    setId(id);
+  const handleClickOpen = (arr) => {
+    setSelected(arr);
     setOpen(true);
   };
 
@@ -77,6 +83,7 @@ const DepositTable = () => {
           patient_name: row.patient.name,
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount,
+          date: row.created_time.split("T")[0],
         };
       });
       setActiveRows(data);
@@ -96,6 +103,7 @@ const DepositTable = () => {
           patient_name: row.patient.name,
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount,
+          date: row.created_time.split("T")[0],
         };
       });
       setUsedRows(data);
@@ -114,6 +122,7 @@ const DepositTable = () => {
           patient_name: row.patient.name,
           patient_id: generateID(row.patient_id, row.patient.created_time),
           amount: row.amount,
+          date: row.created_time.split("T")[0],
         };
       });
       setCancelledRows(data);
@@ -123,8 +132,14 @@ const DepositTable = () => {
   }, []);
 
   const cancelDeposit = async () => {
-    await api.put(`/api/deposit/cancel/${parseInt(id.split("-")[1])}`);
+    if (selected.length === 0) {
+      return;
+    }
+    await api.put(
+      `/api/deposit/cancel/${parseInt(selected[0].id.split("-")[1])}`
+    );
     handleClose();
+    setSelected([]);
     getActiveDeposit();
     getUsedDeposit();
     getCancelledDeposit();

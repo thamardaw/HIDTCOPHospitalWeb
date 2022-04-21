@@ -7,7 +7,6 @@ import {
   DialogContentText,
   DialogTitle,
   Divider,
-  IconButton,
   Paper,
   Table,
   TableBody,
@@ -18,7 +17,6 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router-dom";
 import { Box } from "@mui/system";
 import { useEffect, useRef } from "react";
@@ -28,6 +26,9 @@ import { useState } from "react";
 import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
 import { useLocation } from "react-router-dom";
+import { getComparator, stableSort } from "../../../utils/sorting";
+import { BackButton } from "../../../components";
+import { constants } from "../../../utils/constants";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.3rem",
@@ -45,7 +46,7 @@ const StyledTableCell = styled(TableCell)(
 );
 
 const BillsDetail = () => {
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const history = useHistory();
   const location = useLocation();
   const receiptRef = useRef();
@@ -55,6 +56,7 @@ const BillsDetail = () => {
   const [payment, setPayment] = useState({});
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [open, setOpen] = useState(false);
+  const [dateState, setDateState] = useState(new Date());
 
   const handleClose = () => {
     setOpen(false);
@@ -71,9 +73,9 @@ const BillsDetail = () => {
       "@media print { body { -webkit-print-color-adjust: exact; } @page { size: A4; margin: 200mm !important }}",
     content: () => receiptRef.current,
     onAfterPrint: () => {
-      if (stage === "draft") {
-        to_print();
-      }
+      // if (stage === "draft") {
+      //   to_print();
+      // }
     },
   });
 
@@ -106,9 +108,9 @@ const BillsDetail = () => {
       if (res.status === 200) {
         history.replace({
           pathname: `/dashboard/bills/details/${id}/completed`,
-          // state: {
-          //   from: "bill_process",
-          // },
+          state: {
+            from: "bill_process",
+          },
         });
       }
     }
@@ -123,6 +125,9 @@ const BillsDetail = () => {
     return;
   };
 
+  const to_edit = () => {
+    history.push(`/dashboard/bills/form/-${id}`);
+  };
   // const formatAMPM = (date) => {
   //   let hours = date.getHours();
   //   let minutes = date.getMinutes();
@@ -135,6 +140,7 @@ const BillsDetail = () => {
   // };
 
   useEffect(() => {
+    const intervalId = setInterval(() => setDateState(new Date()), 30000);
     if (
       stage === "draft" ||
       stage === "outstanding" ||
@@ -145,34 +151,23 @@ const BillsDetail = () => {
     } else {
       history.goBack();
     }
+    return () => clearInterval(intervalId);
     // eslint-disable-next-line
   }, [stage]);
 
   return (
     <>
-      <Paper sx={{ width: "100%", mb: 2 }}>
+      <Paper sx={{ width: "100%", mb: 1 }}>
         <Toolbar>
-          <IconButton
-            sx={{
-              color: "white",
-              backgroundColor: "primary.main",
-              borderRadius: "10%",
-              "&:hover": {
-                backgroundColor: "primary.light",
-              },
-              marginRight: "5px",
-            }}
-            onClick={() => {
+          <BackButton
+            backFunction={() => {
               if (location.state?.from === "bill_process") {
                 history.replace(`/dashboard/bills/form`);
               } else {
                 history.goBack();
               }
             }}
-            size="small"
-          >
-            <ArrowBackIosNewIcon size="small" sx={{ fontSize: "1.4rem" }} />
-          </IconButton>
+          />
           <Button
             variant="contained"
             size="small"
@@ -184,10 +179,32 @@ const BillsDetail = () => {
           <Button
             variant="contained"
             size="small"
+            sx={{
+              marginRight: "5px",
+              display: stage === "draft" ? "block" : "none",
+            }}
+            onClick={to_edit}
+          >
+            Edit
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
             sx={{ marginRight: "5px" }}
             onClick={handlePrint}
           >
             Print
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            sx={{
+              marginRight: "5px",
+              display: stage === "draft" ? "block" : "none",
+            }}
+            onClick={to_print}
+          >
+            Finalize
           </Button>
           <Button
             variant="contained"
@@ -206,7 +223,7 @@ const BillsDetail = () => {
         <Container ref={receiptRef}>
           <Box sx={{ my: "15px" }}>
             <Typography variant="h6" textAlign="center">
-              Dagon Lin Hospital
+              {constants.hospital_name}
             </Typography>
             {/* <Box sx={{ height: "15px" }} /> */}
             {/* <Typography variant="body" component="div">
@@ -252,7 +269,12 @@ const BillsDetail = () => {
                   <StyledTypography variant="body">Date</StyledTypography>
                 </Box>
                 <StyledTypography variant="body">
-                  {bill?.created_time && bill?.created_time.split("T")[0]}
+                  {/* {bill?.created_time && bill?.created_time.split("T")[0]} */}
+                  {dateState.toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
                 </StyledTypography>
               </Box>
               <Box
@@ -267,12 +289,17 @@ const BillsDetail = () => {
                   <StyledTypography variant="body">Time</StyledTypography>
                 </Box>
                 <StyledTypography variant="body">
-                  {bill?.created_time &&
+                  {/* {bill?.created_time &&
                     new Date(bill.created_time).toLocaleTimeString("en-US", {
                       hour: "numeric",
                       minute: "numeric",
                       hour12: true,
-                    })}
+                    })} */}
+                  {dateState.toLocaleString("en-US", {
+                    hour: "numeric",
+                    minute: "numeric",
+                    hour12: true,
+                  })}
                 </StyledTypography>
               </Box>
               <Box
@@ -343,7 +370,12 @@ const BillsDetail = () => {
           <Box sx={{ my: "15px" }}>
             <TableContainer>
               <Table sx={{ minWidth: 380 }} aria-label="simple table">
-                <TableHead sx={{ backgroundColor: "#EBEBEB" }}>
+                <TableHead
+                  sx={{
+                    backgroundColor: "#EBEBEB",
+                    display: "table-row-group",
+                  }}
+                >
                   <TableRow>
                     {/* <StyledTableCell>No</StyledTableCell> */}
                     <StyledTableCell maxWidth="130px">Name</StyledTableCell>
@@ -361,31 +393,33 @@ const BillsDetail = () => {
                 </TableHead>
                 <TableBody>
                   {bill?.bill_items &&
-                    bill.bill_items.map((row, index) => (
-                      <TableRow
-                        key={index}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        {/* <StyledTableCell component="th" scope="row">
+                    stableSort(bill.bill_items, getComparator("asc", "id")).map(
+                      (row, index) => (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          {/* <StyledTableCell component="th" scope="row">
                           {index + 1}
                         </StyledTableCell> */}
-                        <StyledTableCell maxWidth="130px">
-                          {row?.name}
-                        </StyledTableCell>
-                        <StyledTableCell maxWidth="75px" align="right">
-                          {row?.price}
-                        </StyledTableCell>
-                        <StyledTableCell maxWidth="55px" align="right">
-                          {row?.quantity}
-                        </StyledTableCell>
-                        {/* <StyledTableCell>{row?.uom}</StyledTableCell> */}
-                        <StyledTableCell maxWidth="120px" align="right">
-                          {row?.subtotal}
-                        </StyledTableCell>
-                      </TableRow>
-                    ))}
+                          <StyledTableCell maxWidth="130px">
+                            {row?.name}
+                          </StyledTableCell>
+                          <StyledTableCell maxWidth="75px" align="right">
+                            {row?.price}
+                          </StyledTableCell>
+                          <StyledTableCell maxWidth="55px" align="right">
+                            {row?.quantity}
+                          </StyledTableCell>
+                          {/* <StyledTableCell>{row?.uom}</StyledTableCell> */}
+                          <StyledTableCell maxWidth="120px" align="right">
+                            {row?.subtotal}
+                          </StyledTableCell>
+                        </TableRow>
+                      )
+                    )}
                 </TableBody>
               </Table>
             </TableContainer>

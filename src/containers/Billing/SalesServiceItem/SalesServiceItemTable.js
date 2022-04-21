@@ -45,14 +45,14 @@ const headCells = [
   },
 ];
 const SalesServiceItemTable = () => {
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
-  const [id, setId] = useState("");
+  const [selected, setSelected] = useState([]);
   const { setScreenLoading } = useContext(LoadingContext);
 
-  const handleClickOpen = (id) => {
-    setId(id);
+  const handleClickOpen = (arr) => {
+    setSelected(arr);
     setOpen(true);
   };
 
@@ -81,8 +81,18 @@ const SalesServiceItemTable = () => {
   }, []);
 
   const deleteItem = async () => {
-    await api.delete(`/api/salesServiceItem/${parseInt(id)}`);
+    if (selected.length === 0) {
+      return;
+    } else if (selected.length === 1) {
+      await api.delete(`/api/salesServiceItem/${parseInt(selected[0].id)}`);
+    } else if (selected.length > 1) {
+      const listOfId = selected.map((item) => item.id);
+      await api.post(`/api/salesServiceItem/bulk`, {
+        listOfId: listOfId,
+      });
+    }
     handleClose();
+    setSelected([]);
     getData();
   };
 
@@ -98,6 +108,7 @@ const SalesServiceItemTable = () => {
         headCells={headCells}
         rows={rows}
         onDelete={handleClickOpen}
+        enableMultipleDelete={false}
       />
       <Dialog
         open={open}

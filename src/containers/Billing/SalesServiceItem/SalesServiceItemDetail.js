@@ -1,14 +1,14 @@
-import { Divider, IconButton, Toolbar, Typography } from "@mui/material";
+import { Divider, Toolbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
 import { useEffect, useState } from "react";
+import { BackButton, DetailsRow } from "../../../components";
 
 const SalesServiceItemDetail = () => {
   const history = useHistory();
   const { id } = useParams();
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [details, setDetails] = useState({});
 
   const getData = async () => {
@@ -27,7 +27,7 @@ const SalesServiceItemDetail = () => {
     // eslint-disable-next-line
   }, [id]);
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, mb: 1 }}>
       <Toolbar
         sx={{
           display: "flex",
@@ -36,106 +36,20 @@ const SalesServiceItemDetail = () => {
         variant="dense"
         disableGutters={true}
       >
-        <IconButton
-          sx={{
-            color: "white",
-            backgroundColor: "primary.main",
-            borderRadius: "10%",
-            "&:hover": {
-              backgroundColor: "primary.light",
-            },
-            marginRight: "10px",
-          }}
-          onClick={() => history.goBack()}
-          size="small"
-        >
-          <ArrowBackIosNewIcon size="small" />
-        </IconButton>
+        <BackButton backFunction={() => history.goBack()} />
         <Typography variant="h5">Details</Typography>
       </Toolbar>
       <Divider />
       <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            margin: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              Name
-            </Typography>
-          </Box>
-
-          <Typography variant="body2">{details?.name}</Typography>
-        </Box>
+        <DetailsRow name="Name" value={details?.name} />
         <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            margin: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              Price
-            </Typography>
-          </Box>
-          <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">{details?.price}</Typography>
-          </Box>
-        </Box>
+        <DetailsRow name="Price" value={details?.price} />
         <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            margin: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              UOM
-            </Typography>
-          </Box>
-          <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">{details?.uom?.name}</Typography>
-          </Box>
-        </Box>
+        <DetailsRow name="UOM" value={details?.uom?.name} />
         <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            margin: "10px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              Category
-            </Typography>
-          </Box>
-          <Box sx={{ width: "70%" }}>
-            <Typography variant="body2">{details?.category?.name}</Typography>
-          </Box>
-        </Box>
+        <DetailsRow name="Category" value={details?.category?.name} />
       </Box>
       <Divider />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          padding: "20px 10px",
-        }}
-      ></Box>
     </Box>
   );
 };

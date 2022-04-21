@@ -1,31 +1,34 @@
 import {
   Divider,
-  IconButton,
   MenuItem,
   TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../hooks";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { BackButton } from "../../components";
 
 const PatientForm = () => {
   const history = useHistory();
   const { id } = useParams();
-  const api = useAxios();
+  const api = useAxios({ autoSnackbar: true });
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({
     name: "",
     age: "",
     contact_details: "",
     gender: "",
-    date_of_birth: "",
+    date_of_birth: null,
     address: "",
   });
+
+  const handleChange = (e) => {
+    setDetails({ ...details, [e.target.name]: e.target.value });
+  };
 
   const getData = async () => {
     const res = await api.get(`/api/patients/${parseInt(id.split("-")[1])}`);
@@ -40,6 +43,7 @@ const PatientForm = () => {
     setLoading(true);
     const res = await api.post(`/api/patients/`, {
       ...details,
+      date_of_birth: details.date_of_birth || null,
     });
     if (res.status === 200) {
       history.goBack();
@@ -54,7 +58,7 @@ const PatientForm = () => {
       age: details.age,
       contact_details: details.contact_details,
       gender: details.gender,
-      date_of_birth: details.date_of_birth,
+      date_of_birth: details.date_of_birth || null,
       address: details.address,
     });
     if (res.status === 200) {
@@ -69,6 +73,7 @@ const PatientForm = () => {
     }
     // eslint-disable-next-line
   }, [id]);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Toolbar
@@ -79,21 +84,7 @@ const PatientForm = () => {
         variant="dense"
         disableGutters={true}
       >
-        <IconButton
-          sx={{
-            color: "white",
-            backgroundColor: "primary.main",
-            borderRadius: "10%",
-            "&:hover": {
-              backgroundColor: "primary.light",
-            },
-            marginRight: "10px",
-          }}
-          onClick={() => history.goBack()}
-          size="small"
-        >
-          <ArrowBackIosNewIcon size="small" />
-        </IconButton>
+        <BackButton backFunction={() => history.goBack()} />
         <Typography variant="h5">{id ? "Edit" : "New"}</Typography>
       </Toolbar>
       <Divider />
@@ -113,7 +104,8 @@ const PatientForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.name || ""}
-            onChange={(e) => setDetails({ ...details, name: e.target.value })}
+            name="name"
+            onChange={handleChange}
           />
         </Box>
         <Box
@@ -131,7 +123,8 @@ const PatientForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.age || ""}
-            onChange={(e) => setDetails({ ...details, age: e.target.value })}
+            name="age"
+            onChange={handleChange}
           />
         </Box>
         <Box
@@ -149,9 +142,8 @@ const PatientForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.contact_details || ""}
-            onChange={(e) =>
-              setDetails({ ...details, contact_details: e.target.value })
-            }
+            name="contact_details"
+            onChange={handleChange}
           />
         </Box>
         <Box
@@ -173,7 +165,8 @@ const PatientForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.gender || ""}
-            onChange={(e) => setDetails({ ...details, gender: e.target.value })}
+            name="gender"
+            onChange={handleChange}
           >
             <MenuItem value="male">Male</MenuItem>
             <MenuItem value="female">Female</MenuItem>
@@ -195,12 +188,10 @@ const PatientForm = () => {
             margin="dense"
             placeholder="YYYY-MM-DD"
             value={details?.date_of_birth || ""}
-            onChange={(e) =>
-              setDetails({ ...details, date_of_birth: e.target.value })
-            }
+            name="date_of_birth"
+            onChange={handleChange}
           />
         </Box>
-
         <Box
           sx={{
             display: "flex",
@@ -216,9 +207,8 @@ const PatientForm = () => {
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.address || ""}
-            onChange={(e) =>
-              setDetails({ ...details, address: e.target.value })
-            }
+            name="address"
+            onChange={handleChange}
           />
         </Box>
       </Box>

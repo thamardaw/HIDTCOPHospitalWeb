@@ -18,8 +18,10 @@ import { styled, useTheme } from "@mui/material/styles";
 import { Button, InputBase, useMediaQuery } from "@mui/material";
 import { useHistory, useRouteMatch } from "react-router";
 import { Search } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
+import { getComparator, stableSort } from "../utils/sorting";
+import { CacheContext } from "../contexts";
 
 const SearchContainer = styled("div")(({ theme }) => ({
   display: "flex",
@@ -40,34 +42,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "black",
   marginLeft: theme.spacing(1),
 }));
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
 
 function EnhancedTableHead(props) {
   const {
@@ -153,14 +127,17 @@ const EnhancedTableToolbar = (props) => {
     editBtnName,
     deleteBtnName,
     detailBtnName,
+    enableMultipleDelete,
   } = props;
   const history = useHistory();
   const { url } = useRouteMatch();
   const [CSV, setCSV] = useState({});
+
   const deleteItem = (event) => {
     onSelectAllClick(event);
-    onDelete(selected[0].id);
+    onDelete(selected);
   };
+
   const createItem = () => {
     if (onCreate) {
       onCreate();
@@ -176,6 +153,7 @@ const EnhancedTableToolbar = (props) => {
       history.push(`${url}/form/${selected[0].id}`);
     }
   };
+
   const readItem = () => {
     if (onDetail) {
       onDetail(selected[0].id);
@@ -183,12 +161,14 @@ const EnhancedTableToolbar = (props) => {
       history.push(`${url}/details/${selected[0].id}`);
     }
   };
+
   useEffect(() => {
     const h = headCells.map((headCell) => {
       return { label: headCell.label, key: headCell.id };
     });
     setCSV({ data: selected, headers: h, filename: `${tableName}.csv` });
   }, [headCells, selected, tableName]);
+
   return (
     <Toolbar
       sx={{
@@ -250,7 +230,7 @@ const EnhancedTableToolbar = (props) => {
                   {detailBtnName}
                 </Button>
               )}
-              {addDelete && (
+              { addDelete && (
                 <Button
                   variant="contained"
                   color="error"
@@ -263,20 +243,33 @@ const EnhancedTableToolbar = (props) => {
               )}
             </>
           ) : (
-            addcsv && (
-              <CSVLink
-                {...CSV}
-                style={{ color: "inherit", textDecoration: "inherit" }}
-              >
+            <>
+              {addcsv && (
+                <CSVLink
+                  {...CSV}
+                  style={{ color: "inherit", textDecoration: "inherit" }}
+                >
+                  <Button
+                    variant="contained"
+                    size="small"
+                    sx={{ marginRight: "5px" }}
+                  >
+                    CSV
+                  </Button>
+                </CSVLink>
+              )}
+              { addDelete && enableMultipleDelete && (
                 <Button
                   variant="contained"
+                  color="error"
                   size="small"
                   sx={{ marginRight: "5px" }}
+                  onClick={deleteItem}
                 >
-                  CSV
+                  {deleteBtnName}
                 </Button>
-              </CSVLink>
-            )
+              )}
+            </>
           )}
         </>
       ) : (
@@ -321,6 +314,7 @@ EnhancedTableToolbar.propTypes = {
   editBtnName: PropTypes.string,
   deleteBtnName: PropTypes.string,
   detailBtnName: PropTypes.string,
+  enableMultipleDelete: PropTypes.bool,
 };
 
 // HeadCells ID have to be match with row's object key beause they two are dependent for sorting function
@@ -341,17 +335,30 @@ const CustomTable = ({
   editBtnName = "Edit",
   detailBtnName = "Details",
   deleteBtnName = "Delete",
+  enableMultipleDelete = false,
 }) => {
-  const [order, setOrder] = useState("desc");
-  const [orderBy, setOrderBy] = useState("id");
   const [selected, setSelected] = useState([]);
   const [dataRows, setDataRows] = useState([]);
-  const [page, setPage] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"), {
     defaultMatches: true,
   });
-  const [rowsPerPage, setRowsPerPage] = useState(25);
+  // const [order, setOrder] = useState("desc");
+  // const [orderBy, setOrderBy] = useState("id");
+  // const [page, setPage] = useState(0);
+  // const [rowsPerPage, setRowsPerPage] = useState(25);
+  const { table } = useContext(CacheContext);
+
+  const {
+    page,
+    setPage,
+    rowsPerPage,
+    setRowsPerPage,
+    order,
+    setOrder,
+    orderBy,
+    setOrderBy,
+  } = table;
 
   const arraySearch = (array, keyword, objKeys) => {
     const searchItem = keyword.toLowerCase();
@@ -449,6 +456,7 @@ const CustomTable = ({
           editBtnName={editBtnName}
           deleteBtnName={deleteBtnName}
           detailBtnName={detailBtnName}
+          enableMultipleDelete={enableMultipleDelete}
         />
         <TableContainer>
           <Table
