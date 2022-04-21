@@ -1,9 +1,10 @@
 import { createTheme } from "@mui/material/styles";
+import { constants } from "./utils/constants";
 
 export const theme = createTheme({
-  //   palette: {
-  //     primary: {
-  //       main: "#7CFC00",
-  //     },
-  //   },
+  palette: {
+    primary: {
+      main: constants.primary_color,
+    },
+  },
 });
