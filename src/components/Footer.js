@@ -11,7 +11,7 @@ const Footer = () => {
         sx={{ flexGrow: 1 }}
         textAlign="center"
       >
-        HIDTCOP - Developed By Magix Support © 2021
+        HIDTCOP - Software for Hospitals © 2021
       </Typography>
     </Toolbar>
   );
