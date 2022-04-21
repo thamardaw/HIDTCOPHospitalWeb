@@ -31,7 +31,6 @@ import LoadingContext from "../../../contexts/LoadingContext";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { getComparator, stableSort } from "../../../utils/sorting";
 import { BackButton } from "../../../components";
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#EBEBEB",
@@ -45,7 +44,7 @@ const BillsEditForm = () => {
   const [details, setDetails] = useState([]);
   const [salesServiceItem, setSalesServiceItem] = useState([]);
   const [currentSSI, setCurrentSSI] = useState(null);
-  const [currentQuantity, setCurrentQuantity] = useState(0);
+  const [currentQuantity, setCurrentQuantity] = useState(1);
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [loading, setLoading] = useState(false);
   const { setScreenLoading } = useContext(LoadingContext);
