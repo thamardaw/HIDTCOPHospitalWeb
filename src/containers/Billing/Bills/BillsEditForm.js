@@ -31,7 +31,6 @@ import LoadingContext from "../../../contexts/LoadingContext";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { getComparator, stableSort } from "../../../utils/sorting";
 import { BackButton } from "../../../components";
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#EBEBEB",
