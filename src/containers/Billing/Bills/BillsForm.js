@@ -82,6 +82,7 @@ const BillsForm = () => {
     billItems[editingItem.index].quantity = editingItem.quantity;
     setBillItems([...billItems]);
     handleClose();
+    calculateTotal();
     setEditingItem({
       index: 0,
       quantity: 0,
