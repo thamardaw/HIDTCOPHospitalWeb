@@ -99,7 +99,7 @@ const PatientTable = () => {
           age: row.age,
           contactDetails: row.contact_details,
           gender: row.gender,
-          dataOfBirth: row.date_of_birth,
+          dataOfBirth: row.date_of_birth || "",
           address: row.address,
           dateAndTime: dateAndTime,
         };
