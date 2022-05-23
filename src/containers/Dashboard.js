@@ -10,6 +10,7 @@ import { SalesServiceItem } from "./Billing/SalesServiceItem";
 import { Bills } from "./Billing/Bills";
 import { Deposit } from "./Billing/Deposit";
 import { DailyClosing } from "./Billing/DailyClosing";
+import { InventoryItem } from "./Inventory/InventoryItem";
 import { LoadingProvider } from "../contexts/LoadingContext";
 import { CacheProvider } from "../contexts/CacheContext";
 
@@ -55,6 +56,10 @@ function Dashboard(props) {
               <Route path={`${path}/bills`} component={Bills} />
               <Route path={`${path}/deposit`} component={Deposit} />
               <Route path={`${path}/dailyClosing`} component={DailyClosing} />
+              <Route
+                path={`${path}/inventory_item`}
+                component={InventoryItem}
+              />
               <Redirect to={`${path}/patient`} />
             </Switch>
           </LoadingProvider>
