@@ -16,6 +16,9 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
+import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import React, { useContext, useState } from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
@@ -32,7 +35,8 @@ const ResponsiveDrawer = ({
   const location = useLocation();
   const history = useHistory();
   const { url } = useRouteMatch();
-  const [open, setOpen] = useState(true);
+  const [openBilling, setBillingOpen] = useState(true);
+  const [openInventory, setOpenInventory] = useState(true);
   const { table, viewTab } = useContext(CacheContext);
   const { resetTable } = table;
   const { resetTab } = viewTab;
@@ -47,8 +51,12 @@ const ResponsiveDrawer = ({
     };
   };
 
-  const openAccordionList = () => {
-    setOpen(!open);
+  const openBillingAccordionList = () => {
+    setBillingOpen(!openBilling);
+  };
+
+  const openInventroyAccordionList = () => {
+    setOpenInventory(!openInventory);
   };
 
   const drawer = (
@@ -56,7 +64,7 @@ const ResponsiveDrawer = ({
       <Toolbar />
       <Divider />
       <List>
-        <ListItem onClick={openAccordionList}>
+        <ListItem onClick={openBillingAccordionList}>
           <Button
             size="small"
             variant={
@@ -77,10 +85,10 @@ const ResponsiveDrawer = ({
             }}
           >
             Billing
-            {open ? <ExpandLess /> : <ExpandMore />}
+            {openBilling ? <ExpandLess /> : <ExpandMore />}
           </Button>
         </ListItem>
-        <Collapse in={open} timeout="auto" unmountOnExit>
+        <Collapse in={openBilling} timeout="auto" unmountOnExit>
           <List component="div" disablePadding sx={{ paddingLeft: "8px" }}>
             <ListItem>
               <Button
@@ -200,6 +208,87 @@ const ResponsiveDrawer = ({
                 }}
               >
                 Sales & Service Item
+              </Button>
+            </ListItem>
+          </List>
+        </Collapse>
+        <ListItem onClick={openInventroyAccordionList}>
+          <Button
+            size="small"
+            fullWidth
+            startIcon={<InventoryIcon />}
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+            }}
+          >
+            Inventroy
+            {openInventory ? <ExpandLess /> : <ExpandMore />}
+          </Button>
+        </ListItem>
+        <Collapse in={openInventory} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding sx={{ paddingLeft: "8px" }}>
+            <ListItem>
+              <Button
+                size="small"
+                variant={
+                  location.pathname.includes("/pharmacy_item")
+                    ? "contained"
+                    : "text"
+                }
+                fullWidth
+                startIcon={<EventNoteIcon />}
+                onClick={handleClick(`${url}/pharmacy_item`)}
+                sx={{
+                  display: "flex",
+                  justifyContent: location.pathname.includes("/pharmacy_item")
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              >
+                Pharmacy Item
+              </Button>
+            </ListItem>
+            <ListItem>
+              <Button
+                size="small"
+                variant={
+                  location.pathname.includes("/inventory_item")
+                    ? "contained"
+                    : "text"
+                }
+                fullWidth
+                startIcon={<Inventory2RoundedIcon />}
+                onClick={handleClick(`${url}/inventory_item`)}
+                sx={{
+                  display: "flex",
+                  justifyContent: location.pathname.includes("/inventory_item")
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              >
+                Inventory Item
+              </Button>
+            </ListItem>
+            <ListItem>
+              <Button
+                size="small"
+                variant={
+                  location.pathname.includes("/transaction")
+                    ? "contained"
+                    : "text"
+                }
+                fullWidth
+                startIcon={<ReceiptLongRoundedIcon />}
+                onClick={handleClick(`${url}/transaction`)}
+                sx={{
+                  display: "flex",
+                  justifyContent: location.pathname.includes("/transaction")
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              >
+                Transaction
               </Button>
             </ListItem>
           </List>
