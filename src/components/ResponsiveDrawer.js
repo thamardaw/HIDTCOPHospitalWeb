@@ -223,6 +223,13 @@ const ResponsiveDrawer = ({
             size="small"
             fullWidth
             startIcon={<InventoryIcon />}
+            variant={
+              location.pathname.includes("/pharmacy_item") ||
+              location.pathname.includes("/inventory_item") ||
+              location.pathname.includes("/inventory_transaction")
+                ? "contained"
+                : "text"
+            }
             sx={{
               display: "flex",
               justifyContent: "flex-start",
