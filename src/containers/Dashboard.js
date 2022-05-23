@@ -13,6 +13,7 @@ import { DailyClosing } from "./Billing/DailyClosing";
 import { InventoryItem } from "./Inventory/InventoryItem";
 import { LoadingProvider } from "../contexts/LoadingContext";
 import { CacheProvider } from "../contexts/CacheContext";
+import { InventoryTransaction } from "./Inventory/InventoryTransaction";
 
 const drawerWidth = 240;
 
@@ -59,6 +60,10 @@ function Dashboard(props) {
               <Route
                 path={`${path}/inventory_item`}
                 component={InventoryItem}
+              />
+              <Route
+                path={`${path}/inventory_transaction`}
+                component={InventoryTransaction}
               />
               <Redirect to={`${path}/patient`} />
             </Switch>
