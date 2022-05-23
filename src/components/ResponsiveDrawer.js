@@ -20,6 +20,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import React, { useContext, useState } from "react";
+import { styled } from "@mui/material/styles";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { CacheContext } from "../contexts";
@@ -100,6 +101,7 @@ const ResponsiveDrawer = ({
                 startIcon={<ReceiptIcon />}
                 onClick={handleClick(`${url}/bills`)}
                 sx={{
+                  padding: "2px",
                   display: "flex",
                   justifyContent: location.pathname.includes("/bills")
                     ? "flex-end"
@@ -119,6 +121,7 @@ const ResponsiveDrawer = ({
                 startIcon={<AccountBalanceIcon />}
                 onClick={handleClick(`${url}/deposit`)}
                 sx={{
+                  padding: "2px",
                   display: "flex",
                   justifyContent: location.pathname.includes("/deposit")
                     ? "flex-end"
@@ -140,6 +143,7 @@ const ResponsiveDrawer = ({
                 startIcon={<AnalyticsIcon />}
                 onClick={handleClick(`${url}/dailyClosing`)}
                 sx={{
+                  padding: "2px",
                   display: "flex",
                   justifyContent: location.pathname.includes("/dailyClosing")
                     ? "flex-end"
@@ -159,6 +163,7 @@ const ResponsiveDrawer = ({
                 startIcon={<SquareFootIcon />}
                 onClick={handleClick(`${url}/uom`)}
                 sx={{
+                  padding: "2px",
                   display: "flex",
                   justifyContent: location.pathname.includes("/uom")
                     ? "flex-end"
@@ -178,6 +183,7 @@ const ResponsiveDrawer = ({
                 startIcon={<CategoryIcon />}
                 onClick={handleClick(`${url}/category`)}
                 sx={{
+                  padding: "2px",
                   display: "flex",
                   justifyContent: location.pathname.includes("/category")
                     ? "flex-end"
@@ -199,6 +205,7 @@ const ResponsiveDrawer = ({
                 startIcon={<EventNoteIcon />}
                 onClick={handleClick(`${url}/salesServiceItem`)}
                 sx={{
+                  padding: "2px",
                   display: "flex",
                   justifyContent: location.pathname.includes(
                     "/salesServiceItem"
@@ -240,6 +247,7 @@ const ResponsiveDrawer = ({
                 startIcon={<EventNoteIcon />}
                 onClick={handleClick(`${url}/pharmacy_item`)}
                 sx={{
+                  padding: "2px",
                   display: "flex",
                   justifyContent: location.pathname.includes("/pharmacy_item")
                     ? "flex-end"
@@ -261,6 +269,7 @@ const ResponsiveDrawer = ({
                 startIcon={<Inventory2RoundedIcon />}
                 onClick={handleClick(`${url}/inventory_item`)}
                 sx={{
+                  padding: "2px",
                   display: "flex",
                   justifyContent: location.pathname.includes("/inventory_item")
                     ? "flex-end"
@@ -274,21 +283,24 @@ const ResponsiveDrawer = ({
               <Button
                 size="small"
                 variant={
-                  location.pathname.includes("/transaction")
+                  location.pathname.includes("/inventory_transaction")
                     ? "contained"
                     : "text"
                 }
                 fullWidth
                 startIcon={<ReceiptLongRoundedIcon />}
-                onClick={handleClick(`${url}/transaction`)}
+                onClick={handleClick(`${url}/inventory_transaction`)}
                 sx={{
+                  padding: "2px",
                   display: "flex",
-                  justifyContent: location.pathname.includes("/transaction")
+                  justifyContent: location.pathname.includes(
+                    "/inventory_transaction"
+                  )
                     ? "flex-end"
                     : "flex-start",
                 }}
               >
-                Transaction
+                Inventory Transaction
               </Button>
             </ListItem>
           </List>
@@ -303,6 +315,7 @@ const ResponsiveDrawer = ({
             startIcon={<PeopleIcon />}
             onClick={handleClick(`${url}/patient`)}
             sx={{
+              padding: "2px",
               display: "flex",
               justifyContent: location.pathname.includes("/patient")
                 ? "flex-end"
