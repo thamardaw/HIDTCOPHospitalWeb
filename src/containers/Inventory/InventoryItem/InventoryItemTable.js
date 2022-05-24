@@ -80,7 +80,7 @@ const InventoryItemTable = () => {
 
   return (
     <CustomTable
-      tableName="Pharmacy Item"
+      tableName="Inventory Item"
       headCells={headCells}
       rows={rows}
       onDelete={handleClickOpen}
