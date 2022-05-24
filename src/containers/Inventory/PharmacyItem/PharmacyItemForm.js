@@ -1,6 +1,7 @@
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
+  Checkbox,
   Divider,
   MenuItem,
   TextField,
@@ -19,6 +20,7 @@ const PharmacyItemForm = () => {
   const api = useAxios({ autoSnackbar: true });
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({});
+  const [checked, setChecked] = useState(false);
 
   const handleChange = (e) => {
     setDetails({ ...details, [e.target.name]: e.target.value });
@@ -196,6 +198,148 @@ const PharmacyItemForm = () => {
             onChange={handleChange}
           />
         </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Box sx={{ width: "30%" }}>
+            <Typography variant="p">Create Inventory</Typography>
+          </Box>
+          <Checkbox
+            size="large"
+            sx={{ paddingLeft: 0 }}
+            checked={checked}
+            onChange={() => setChecked(!checked)}
+          />
+        </Box>
+        {checked && (
+          <>
+            {" "}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="p">Balance</Typography>
+              </Box>
+              <TextField
+                size="small"
+                sx={{ width: "70%" }}
+                margin="dense"
+                value={details?.balance || ""}
+                name="balance"
+                onChange={handleChange}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="p">Unit</Typography>
+              </Box>
+              <TextField
+                select
+                fullWidth
+                label="Unit"
+                size="small"
+                sx={{ width: "70%" }}
+                margin="dense"
+                value={details?.unit || ""}
+                name="unit"
+                onChange={handleChange}
+              >
+                {/* <MenuItem value="male">Male</MenuItem> */}
+              </TextField>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="p">Expiry Date</Typography>
+              </Box>
+              <TextField
+                size="small"
+                sx={{ width: "70%" }}
+                margin="dense"
+                placeholder="YYYY-MM-DD"
+                value={details?.expiry_date || ""}
+                name="expiry_date"
+                onChange={handleChange}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="p">Batch</Typography>
+              </Box>
+              <TextField
+                size="small"
+                sx={{ width: "70%" }}
+                margin="dense"
+                value={details?.batch || ""}
+                name="batch"
+                onChange={handleChange}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="p">Purchasing Price</Typography>
+              </Box>
+              <TextField
+                size="small"
+                sx={{ width: "70%" }}
+                margin="dense"
+                value={details?.purchasing_price || ""}
+                name="purchasing_price"
+                onChange={handleChange}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="p">Selling Price</Typography>
+              </Box>
+              <TextField
+                size="small"
+                sx={{ width: "70%" }}
+                margin="dense"
+                value={details?.selling_price || ""}
+                name="selling_price"
+                onChange={handleChange}
+              />
+            </Box>
+          </>
+        )}
       </Box>
       <Divider />
       <Box
