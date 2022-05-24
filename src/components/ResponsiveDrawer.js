@@ -309,6 +309,30 @@ const ResponsiveDrawer = ({
                 Inventory Transaction
               </Button>
             </ListItem>
+            <ListItem>
+              <Button
+                size="small"
+                variant={
+                  location.pathname.includes("/transaction_type")
+                    ? "contained"
+                    : "text"
+                }
+                fullWidth
+                startIcon={<ReceiptLongRoundedIcon />}
+                onClick={handleClick(`${url}/transaction_type`)}
+                sx={{
+                  padding: "2px",
+                  display: "flex",
+                  justifyContent: location.pathname.includes(
+                    "/transaction_type"
+                  )
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              >
+                Transaction Type
+              </Button>
+            </ListItem>
           </List>
         </Collapse>
         <ListItem>
