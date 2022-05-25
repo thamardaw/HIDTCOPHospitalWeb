@@ -1,3 +1,8 @@
+import { useContext, useState } from "react";
+import { LoadingContext } from "../../../contexts";
+import { useAxios } from "../../../hooks";
+import { CustomInventoryTransactionTable } from "../../../components";
+
 const headCells = [
   {
     id: "id",
@@ -42,10 +47,16 @@ const headCells = [
     label: "Unit",
   },
   {
-    id: "purchasing_price",
+    id: "op_balance",
     numeric: false,
     disablePadding: false,
-    label: "Purchasing Price",
+    label: "Op Balance",
+  },
+  {
+    id: "cl_balance",
+    numeric: false,
+    disablePadding: false,
+    label: "CL Balance",
   },
   {
     id: "selling_price",
@@ -54,15 +65,40 @@ const headCells = [
     label: "Selling Price",
   },
   {
-    id: "total",
+    id: "opening_balance",
     numeric: false,
     disablePadding: false,
-    label: "Total",
+    label: "Opening Balance",
+  },
+  {
+    id: "note",
+    numeric: false,
+    disablePadding: false,
+    label: "Note",
   },
 ];
 
 const InventoryTransactionTable = () => {
-  return <h1>Inventory tac Table</h1>;
+  const api = useAxios({ autoSnackbar: true });
+  const [rows, setRows] = useState([{ id: "1" }]);
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState([]);
+  const { setScreenLoading } = useContext(LoadingContext);
+
+  const handleClickOpen = (arr) => {
+    setSelected(arr);
+    setOpen(true);
+  };
+
+  return (
+    <CustomInventoryTransactionTable
+      tableName="Inventory Transaction"
+      headCells={headCells}
+      rows={rows}
+      onDelete={handleClickOpen}
+      enableMultipleDelete={false}
+    />
+  );
 };
 
 export default InventoryTransactionTable;

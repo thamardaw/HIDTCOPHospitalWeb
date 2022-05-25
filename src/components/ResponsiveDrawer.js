@@ -23,6 +23,7 @@ import React, { useContext, useState } from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { CacheContext } from "../contexts";
+import ClassIcon from '@mui/icons-material/Class';
 
 const ResponsiveDrawer = ({
   window,
@@ -226,7 +227,8 @@ const ResponsiveDrawer = ({
             variant={
               location.pathname.includes("/pharmacy_item") ||
               location.pathname.includes("/inventory_item") ||
-              location.pathname.includes("/inventory_transaction")
+              location.pathname.includes("/inventory_transaction") ||
+              location.pathname.includes("/transaction_type")
                 ? "contained"
                 : "text"
             }
@@ -318,7 +320,7 @@ const ResponsiveDrawer = ({
                     : "text"
                 }
                 fullWidth
-                startIcon={<ReceiptLongRoundedIcon />}
+                startIcon={<ClassIcon />}
                 onClick={handleClick(`${url}/transaction_type`)}
                 sx={{
                   padding: "2px",
@@ -362,7 +364,10 @@ const ResponsiveDrawer = ({
   return (
     <Box
       component="nav"
-      sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+      sx={{
+        width: { md: drawerWidth },
+        flexShrink: { md: 0 },
+      }}
     >
       <Drawer
         container={container}
