@@ -32,7 +32,7 @@ const ResponsiveDrawer = ({
   const location = useLocation();
   const history = useHistory();
   const { url } = useRouteMatch();
-  const [open, setOpen] = useState(true);
+  const [openBilling, setBillingOpen] = useState(true);
   const { table, viewTab } = useContext(CacheContext);
   const { resetTable } = table;
   const { resetTab } = viewTab;
@@ -47,8 +47,8 @@ const ResponsiveDrawer = ({
     };
   };
 
-  const openAccordionList = () => {
-    setOpen(!open);
+  const openBillingAccordionList = () => {
+    setBillingOpen(!openBilling);
   };
 
   const drawer = (
@@ -56,7 +56,7 @@ const ResponsiveDrawer = ({
       <Toolbar />
       <Divider />
       <List>
-        <ListItem onClick={openAccordionList}>
+        <ListItem onClick={openBillingAccordionList}>
           <Button
             size="small"
             variant={
@@ -77,10 +77,10 @@ const ResponsiveDrawer = ({
             }}
           >
             Billing
-            {open ? <ExpandLess /> : <ExpandMore />}
+            {openBilling ? <ExpandLess /> : <ExpandMore />}
           </Button>
         </ListItem>
-        <Collapse in={open} timeout="auto" unmountOnExit>
+        <Collapse in={openBilling} timeout="auto" unmountOnExit>
           <List component="div" disablePadding sx={{ paddingLeft: "8px" }}>
             <ListItem>
               <Button
@@ -92,6 +92,7 @@ const ResponsiveDrawer = ({
                 startIcon={<ReceiptIcon />}
                 onClick={handleClick(`${url}/bills`)}
                 sx={{
+                  padding: "2px",
                   display: "flex",
                   justifyContent: location.pathname.includes("/bills")
                     ? "flex-end"
@@ -111,6 +112,7 @@ const ResponsiveDrawer = ({
                 startIcon={<AccountBalanceIcon />}
                 onClick={handleClick(`${url}/deposit`)}
                 sx={{
+                  padding: "2px",
                   display: "flex",
                   justifyContent: location.pathname.includes("/deposit")
                     ? "flex-end"
@@ -132,6 +134,7 @@ const ResponsiveDrawer = ({
                 startIcon={<AnalyticsIcon />}
                 onClick={handleClick(`${url}/dailyClosing`)}
                 sx={{
+                  padding: "2px",
                   display: "flex",
                   justifyContent: location.pathname.includes("/dailyClosing")
                     ? "flex-end"
@@ -151,6 +154,7 @@ const ResponsiveDrawer = ({
                 startIcon={<SquareFootIcon />}
                 onClick={handleClick(`${url}/uom`)}
                 sx={{
+                  padding: "2px",
                   display: "flex",
                   justifyContent: location.pathname.includes("/uom")
                     ? "flex-end"
@@ -170,6 +174,7 @@ const ResponsiveDrawer = ({
                 startIcon={<CategoryIcon />}
                 onClick={handleClick(`${url}/category`)}
                 sx={{
+                  padding: "2px",
                   display: "flex",
                   justifyContent: location.pathname.includes("/category")
                     ? "flex-end"
@@ -191,6 +196,7 @@ const ResponsiveDrawer = ({
                 startIcon={<EventNoteIcon />}
                 onClick={handleClick(`${url}/salesServiceItem`)}
                 sx={{
+                  padding: "2px",
                   display: "flex",
                   justifyContent: location.pathname.includes(
                     "/salesServiceItem"
@@ -204,6 +210,7 @@ const ResponsiveDrawer = ({
             </ListItem>
           </List>
         </Collapse>
+
         <ListItem>
           <Button
             size="small"
@@ -214,6 +221,7 @@ const ResponsiveDrawer = ({
             startIcon={<PeopleIcon />}
             onClick={handleClick(`${url}/patient`)}
             sx={{
+              padding: "2px",
               display: "flex",
               justifyContent: location.pathname.includes("/patient")
                 ? "flex-end"
