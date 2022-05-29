@@ -8,7 +8,6 @@ COPY yarn.lock ./
 # install dependencies
 RUN yarn
 COPY . ./
-ARG PORT
 ARG BASE_URL
 ARG THEME
 ARG TITLE
@@ -21,6 +20,6 @@ RUN yarn build
 
 # production environment
 FROM nginx
-EXPOSE $PORT
+EXPOSE 3000
 COPY react_nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/build /usr/share/nginx/html
