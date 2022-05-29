@@ -30,6 +30,7 @@ jobs:
           context: .
           push: true
           build-args: |
+            PORT=3000
             BASE_URL=http://192.168.100.25:8000
             THEME=#03C0C1
             TITLE="Dagon Lin"
@@ -42,6 +43,7 @@ jobs:
           context: .
           push: true
           build-args: |
+            PORT=3001
             BASE_URL=http://localhost:8001
             THEME=
             TITLE="Kan Daw Mon"
