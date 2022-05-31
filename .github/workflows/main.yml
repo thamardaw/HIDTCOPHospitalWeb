@@ -45,6 +45,6 @@ jobs:
           build-args: |
             BASE_URL=http://localhost:8000
             THEME=
-            TITLE="Kan Daw Mon"
-            TITLE_SHORT=KDM
+            TITLE=Kan Taw Mon
+            TITLE_SHORT=KTM
           tags: jasoniv/kdm-bill:latest
