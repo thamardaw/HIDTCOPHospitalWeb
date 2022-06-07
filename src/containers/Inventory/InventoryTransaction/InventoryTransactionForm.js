@@ -3,7 +3,6 @@ import {
   Autocomplete,
   Box,
   Divider,
-  MenuItem,
   TextField,
   Toolbar,
   Typography,
@@ -12,13 +11,14 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { BackButton } from "../../../components";
-import { useAxios } from "../../../hooks";
+// import { useAxios } from "../../../hooks";
 
 const InventoryTransactionForm = () => {
   const history = useHistory();
   const { id } = useParams();
-  const api = useAxios({ autoSnackbar: true });
-  const [loading, setLoading] = useState(false);
+  // const api = useAxios({ autoSnackbar: true });
+  // const [loading, setLoading] = useState(false);
+  const loading = false;
   const [details, setDetails] = useState({});
 
   const handleChange = (e) => {

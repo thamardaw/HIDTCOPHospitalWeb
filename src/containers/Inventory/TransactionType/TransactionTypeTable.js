@@ -1,7 +1,7 @@
-import { useContext, useState } from "react";
+// import { useContext, useState } from "react";
 import { CustomTable } from "../../../components";
-import { LoadingContext } from "../../../contexts";
-import { useAxios } from "../../../hooks";
+// import { LoadingContext } from "../../../contexts";
+// import { useAxios } from "../../../hooks";
 
 const headCells = [
   {
@@ -25,15 +25,16 @@ const headCells = [
 ];
 
 const TransactionTypeTable = () => {
-  const api = useAxios({ autoSnackbar: true });
-  const [rows, setRows] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState([]);
-  const { setScreenLoading } = useContext(LoadingContext);
+  // const api = useAxios({ autoSnackbar: true });
+  // const [rows, setRows] = useState([]);
+  const rows = [];
+  // const [open, setOpen] = useState(false);
+  // const [selected, setSelected] = useState([]);
+  // const { setScreenLoading } = useContext(LoadingContext);
 
   const handleClickOpen = (arr) => {
-    setSelected(arr);
-    setOpen(true);
+    // setSelected(arr);
+    // setOpen(true);
   };
   return (
     <CustomTable

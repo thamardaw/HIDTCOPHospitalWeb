@@ -258,7 +258,12 @@ const CustomInventoryTransactionToolbar = (props) => {
           />
         </MenuItem>
         <MenuItem>
-          <TextField label="To" size="small" sx={{ width: "200px" }} />
+          <TextField
+            label="To"
+            placeholder="YYYY-MM-DD"
+            size="small"
+            sx={{ width: "200px" }}
+          />
         </MenuItem>
         <MenuItem>
           <Button size="small" fullWidth variant="contained">

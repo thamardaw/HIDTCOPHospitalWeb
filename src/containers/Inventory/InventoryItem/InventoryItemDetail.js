@@ -1,15 +1,16 @@
 import { Box, Divider, Toolbar, Typography } from "@mui/material";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+// import { useState } from "react";
+// import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { BackButton, DetailsRow } from "../../../components";
-import { useAxios } from "../../../hooks";
+// import { useAxios } from "../../../hooks";
 
 const InventoryItemDetail = () => {
   const history = useHistory();
-  const { id } = useParams();
-  const api = useAxios({ autoSnackbar: true });
-  const [details, setDetails] = useState({});
+  // const { id } = useParams();
+  // const api = useAxios({ autoSnackbar: true });
+  // const [details, setDetails] = useState({});
+  const details = {};
 
   return (
     <Box sx={{ flexGrow: 1, mb: 1 }}>
@@ -40,7 +41,7 @@ const InventoryItemDetail = () => {
         <Divider />
         <DetailsRow name="Purchasing Price" value={details?.purchasing_price} />
         <Divider />
-        <DetailsRow name="Selling Price" value={details?.selling_price} />
+        <DetailsRow name="Sales Item" value={details?.selling_price} />
       </Box>
       <Divider />
     </Box>

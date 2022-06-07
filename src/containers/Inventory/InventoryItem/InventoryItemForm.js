@@ -3,7 +3,6 @@ import {
   Autocomplete,
   Box,
   Divider,
-  MenuItem,
   TextField,
   Toolbar,
   Typography,
@@ -12,13 +11,14 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { BackButton } from "../../../components";
-import { useAxios } from "../../../hooks";
+// import { useAxios } from "../../../hooks";
 
 const InventoryItemForm = () => {
   const history = useHistory();
   const { id } = useParams();
-  const api = useAxios({ autoSnackbar: true });
-  const [loading, setLoading] = useState(false);
+  // const api = useAxios({ autoSnackbar: true });
+  // const [loading, setLoading] = useState(false);
+  const loading = false;
   const [details, setDetails] = useState({});
 
   const handleChange = (e) => {
@@ -56,7 +56,7 @@ const InventoryItemForm = () => {
             getOptionLabel={(option) => option.name}
             renderOption={(props, option) => {
               return (
-                <Box {...props} key={option.sales_service_item_id}>
+                <Box {...props} key={option.id}>
                   {option.name}
                 </Box>
               );
@@ -181,15 +181,28 @@ const InventoryItemForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Selling Price</Typography>
+            <Typography variant="p">Sales Item</Typography>
           </Box>
-          <TextField
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            value={details?.selling_price || ""}
-            name="selling_price"
-            onChange={handleChange}
+          <Autocomplete
+            options={[]}
+            style={{ width: "70%" }}
+            getOptionLabel={(option) => option.name}
+            renderOption={(props, option) => {
+              return (
+                <Box {...props} key={option.sales_service_item_id}>
+                  {option.name}
+                </Box>
+              );
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                fullWidth
+                size="small"
+                margin="normal"
+              />
+            )}
           />
         </Box>
       </Box>

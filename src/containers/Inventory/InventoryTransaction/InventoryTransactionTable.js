@@ -1,6 +1,6 @@
-import { useContext, useState } from "react";
-import { LoadingContext } from "../../../contexts";
-import { useAxios } from "../../../hooks";
+// import { useContext, useState } from "react";
+// import { LoadingContext } from "../../../contexts";
+// import { useAxios } from "../../../hooks";
 import { CustomInventoryTransactionTable } from "../../../components";
 
 const headCells = [
@@ -79,15 +79,16 @@ const headCells = [
 ];
 
 const InventoryTransactionTable = () => {
-  const api = useAxios({ autoSnackbar: true });
-  const [rows, setRows] = useState([{ id: "1" }]);
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState([]);
-  const { setScreenLoading } = useContext(LoadingContext);
+  // const api = useAxios({ autoSnackbar: true });
+  // const [rows, setRows] = useState([]);
+  // const [open, setOpen] = useState(false);
+  // const [selected, setSelected] = useState([]);
+  // const { setScreenLoading } = useContext(LoadingContext);
+  const rows = [];
 
   const handleClickOpen = (arr) => {
-    setSelected(arr);
-    setOpen(true);
+    // setSelected(arr);
+    // setOpen(true);
   };
 
   return (

@@ -1,16 +1,17 @@
 import { Divider, Toolbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+// import { useState } from "react";
+// import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { BackButton, DetailsRow } from "../../../components";
-import { useAxios } from "../../../hooks";
+// import { useAxios } from "../../../hooks";
 
 const PharmacyItemDetail = () => {
   const history = useHistory();
-  const { id } = useParams();
-  const api = useAxios({ autoSnackbar: true });
-  const [details, setDetails] = useState({});
+  // const { id } = useParams();
+  // const api = useAxios({ autoSnackbar: true });
+  // const [details, setDetails] = useState({});
+  const details = {};
 
   return (
     <Box sx={{ flexGrow: 1, mb: 1 }}>

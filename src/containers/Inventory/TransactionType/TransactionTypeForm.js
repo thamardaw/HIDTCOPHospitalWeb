@@ -9,14 +9,15 @@ import { Box } from "@mui/system";
 import { useHistory, useParams } from "react-router";
 import React, { useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { useAxios } from "../../../hooks";
+// import { useAxios } from "../../../hooks";
 import { BackButton } from "../../../components";
 
 const TransactionTypeForm = () => {
   const history = useHistory();
   const { id } = useParams();
-  const api = useAxios({ autoSnackbar: true });
-  const [loading, setLoading] = useState(false);
+  // const api = useAxios({ autoSnackbar: true });
+  // const [loading, setLoading] = useState(false);
+  const loading = false;
   const [details, setDetails] = useState({
     name: "",
     age: "",
