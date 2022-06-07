@@ -23,7 +23,7 @@ const InventoryItemDetail = () => {
         disableGutters={true}
       >
         <BackButton backFunction={() => history.goBack()} />
-        <Typography variant="h5">Details</Typography>
+        <Typography variant="h5">Detail</Typography>
       </Toolbar>
       <Divider />
       <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
