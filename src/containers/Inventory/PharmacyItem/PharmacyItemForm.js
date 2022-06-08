@@ -1,5 +1,6 @@
 import { LoadingButton } from "@mui/lab";
 import {
+  Autocomplete,
   Box,
   Checkbox,
   Divider,
@@ -327,15 +328,28 @@ const PharmacyItemForm = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="p">Selling Price</Typography>
+                <Typography variant="p">Sales Item</Typography>
               </Box>
-              <TextField
-                size="small"
-                sx={{ width: "70%" }}
-                margin="dense"
-                value={details?.selling_price || ""}
-                name="selling_price"
-                onChange={handleChange}
+              <Autocomplete
+                options={[]}
+                style={{ width: "70%" }}
+                getOptionLabel={(option) => option.name}
+                renderOption={(props, option) => {
+                  return (
+                    <Box {...props} key={option.sales_service_item_id}>
+                      {option.name}
+                    </Box>
+                  );
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    margin="normal"
+                  />
+                )}
               />
             </Box>
           </>
