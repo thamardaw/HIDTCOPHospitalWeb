@@ -230,7 +230,7 @@ const EnhancedTableToolbar = (props) => {
                   {detailBtnName}
                 </Button>
               )}
-              {addDelete && (
+              { addDelete && (
                 <Button
                   variant="contained"
                   color="error"
