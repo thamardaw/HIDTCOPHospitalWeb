@@ -35,8 +35,8 @@ const DailyClosingForm = () => {
   const api = useAxios({ autoSnackbar: true });
   const [bills, setBills] = useState([]);
   const [billLimit, setBillLimit] = useState({
-    from: 0,
-    to: 0,
+    from: "",
+    to: "",
   });
   const [deposits, setDeposits] = useState([]);
   const [depositLimit, setDepositLimit] = useState({
@@ -76,6 +76,9 @@ const DailyClosingForm = () => {
         total += row.total_amount;
         const ID = generateID(row.patient.id, row.patient.created_time);
         return {
+          date:
+            row.payment[0]?.updated_time &&
+            row.payment[0].updated_time.split("T")[0],
           bill_id: row.id,
           amount: row.total_amount,
           patient_id: ID,
@@ -129,9 +132,7 @@ const DailyClosingForm = () => {
         closing_bill_detail: bills,
       });
       if (res.status === 200) {
-        history.replace(
-          `/dashboard/dailyClosing/details/${res.data.id}/drafted`
-        );
+        history.replace(`/dashboard/dailyClosing/details/${res.data.id}`);
       }
       setLoading(false);
     }
@@ -220,11 +221,8 @@ const DailyClosingForm = () => {
               size="small"
               sx={{ width: "40%" }}
               margin="dense"
-              type="number"
-              InputProps={{
-                inputProps: { min: "0", step: "1" },
-              }}
               value={billLimit.from}
+              placeholder="YYYY-MM-DD"
               onChange={(e) =>
                 setBillLimit({ ...billLimit, from: e.target.value })
               }
@@ -234,11 +232,8 @@ const DailyClosingForm = () => {
               size="small"
               sx={{ width: "40%" }}
               margin="dense"
-              type="number"
-              InputProps={{
-                inputProps: { min: "0", step: "1" },
-              }}
               value={billLimit.to}
+              placeholder="YYYY-MM-DD"
               onChange={(e) =>
                 setBillLimit({ ...billLimit, to: e.target.value })
               }
@@ -257,6 +252,7 @@ const DailyClosingForm = () => {
           <Table sx={{ minWidth: 380 }} size="small" stickyHeader>
             <TableHead>
               <TableRow>
+                <StyledTableCell>Date</StyledTableCell>
                 <StyledTableCell>Bill ID</StyledTableCell>
                 <StyledTableCell>Patient ID</StyledTableCell>
                 <StyledTableCell>Patient Name</StyledTableCell>
@@ -273,6 +269,9 @@ const DailyClosingForm = () => {
                     "&:last-child td, &:last-child th": { border: 0 },
                   }}
                 >
+                  <TableCell component="th" scope="row">
+                    {row.date}
+                  </TableCell>
                   <TableCell component="th" scope="row">
                     {row.bill_id}
                   </TableCell>
