@@ -143,6 +143,7 @@ const BillsEditForm = () => {
     );
     if (res.status === 200) {
       getData();
+      setCurrentSSI(null);
       setCurrentQuantity(0);
     }
     setLoading(false);
