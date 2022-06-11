@@ -7,29 +7,63 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useHistory, useParams } from "react-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
-// import { useAxios } from "../../../hooks";
+import { useAxios } from "../../../hooks";
 import { BackButton } from "../../../components";
 
 const TransactionTypeForm = () => {
   const history = useHistory();
   const { id } = useParams();
-  // const api = useAxios({ autoSnackbar: true });
-  // const [loading, setLoading] = useState(false);
-  const loading = false;
+  const api = useAxios({ autoSnackbar: true });
+  const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({
     name: "",
-    age: "",
-    contact_details: "",
-    gender: "",
-    date_of_birth: null,
-    address: "",
+    type: "",
   });
 
   const handleChange = (e) => {
     setDetails({ ...details, [e.target.name]: e.target.value });
   };
+
+  const getData = async () => {
+    const res = await api.get(`/api/transaction_types/${parseInt(id)}`);
+    if (res.status === 200) {
+      setDetails({ ...res.data });
+    } else {
+      history.goBack();
+    }
+  };
+
+  const createNew = async () => {
+    setLoading(true);
+    const res = await api.post(`/api/transaction_types/`, {
+      ...details,
+    });
+    if (res.status === 200) {
+      history.goBack();
+    }
+    setLoading(false);
+  };
+
+  const update = async () => {
+    setLoading(true);
+    const res = await api.put(`/api/transaction_types/${parseInt(id)}`, {
+      name: details.name,
+      type: details.type,
+    });
+    if (res.status === 200) {
+      history.goBack();
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (id) {
+      getData();
+    }
+    // eslint-disable-next-line
+  }, [id]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -106,7 +140,7 @@ const TransactionTypeForm = () => {
           loading={loading}
           size="small"
           sx={{ marginRight: "5px" }}
-          // onClick={id ? update : createNew}
+          onClick={id ? update : createNew}
         >
           Save
         </LoadingButton>
