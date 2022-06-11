@@ -61,12 +61,12 @@ const TransactionTypeTable = () => {
     if (selected.length === 0) {
       return;
     } else if (selected.length === 1) {
-      await api.delete(`/api/patients/${parseInt(selected[0].id)}`);
+      await api.delete(`/api/transaction_types/${parseInt(selected[0].id)}`);
     } else if (selected.length > 1) {
       const extractedID = selected.map((item) => {
         return item.id;
       });
-      await api.post(`/api/patients/bulk`, {
+      await api.post(`/api/transaction_types/bulk`, {
         listOfId: extractedID,
       });
     }
