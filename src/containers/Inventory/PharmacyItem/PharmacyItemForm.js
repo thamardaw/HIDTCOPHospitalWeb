@@ -3,29 +3,114 @@ import {
   Autocomplete,
   Box,
   Checkbox,
+  MenuItem,
   Divider,
   TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { BackButton } from "../../../components";
-// import { useAxios } from "../../../hooks";
+import { useAxios } from "../../../hooks";
 
 const PharmacyItemForm = () => {
   const history = useHistory();
   const { id } = useParams();
-  // const api = useAxios({ autoSnackbar: true });
-  // const [loading, setLoading] = useState(false);
-  const loading = false;
-  const [details, setDetails] = useState({});
+  const api = useAxios({ autoSnackbar: true });
+  const [loading, setLoading] = useState(false);
+  const [details, setDetails] = useState({
+    po_unit: "",
+    unit: "",
+  });
+  const [inventoryDetails, setInventoryDetails] = useState({});
   const [checked, setChecked] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [SSI, setSSI] = useState([]);
 
   const handleChange = (e) => {
+    if (e.target.name === "po_unit" || e.target.name === "unit") {
+      setInventoryDetails({
+        ...inventoryDetails,
+        unit: "",
+      });
+    }
     setDetails({ ...details, [e.target.name]: e.target.value });
   };
+
+  const handleInventoryChange = (e) => {
+    setInventoryDetails({
+      ...inventoryDetails,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const getCategories = async () => {
+    const res = await api.get("/api/category/");
+    if (res.status === 200) {
+      setCategories(res.data);
+    } else {
+      history.goBack();
+    }
+  };
+
+  const getSSI = async () => {
+    const res = await api.get("/api/salesServiceItem/");
+    if (res.status === 200) {
+      setSSI(res.data);
+    }
+  };
+
+  const getData = async () => {
+    const res = await api.get(`/api/pharmacy_items/${parseInt(id)}`);
+    if (res.status === 200) {
+      setDetails({ ...res.data });
+    } else {
+      history.goBack();
+    }
+  };
+
+  const createNew = async () => {
+    setLoading(true);
+    const res = await api.post(`/api/pharmacy_items/`, {
+      ...details,
+      with_inventory: checked
+        ? {
+            ...inventoryDetails,
+          }
+        : null,
+    });
+    if (res.status === 200) {
+      history.goBack();
+    }
+    setLoading(false);
+  };
+
+  const update = async () => {
+    setLoading(true);
+    const res = await api.put(`/api/pharmacy_items/`, {
+      ...details,
+    });
+    if (res.status === 200) {
+      history.goBack();
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (!id) {
+      setInventoryDetails({ ...inventoryDetails, name: details.brand_name });
+    }
+    // eslint-disable-next-line
+  }, [id, details.brand_name]);
+
+  useEffect(() => {
+    getCategories();
+    getSSI();
+    if (id) getData();
+    // eslint-disable-next-line
+  }, [id]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -63,7 +148,11 @@ const PharmacyItemForm = () => {
             name="category_id"
             onChange={handleChange}
           >
-            {/* <MenuItem value="male">Male</MenuItem> */}
+            {categories.map((category) => (
+              <MenuItem key={category.id} value={category.id}>
+                {category?.name}
+              </MenuItem>
+            ))}
           </TextField>
         </Box>
         <Box
@@ -194,14 +283,14 @@ const PharmacyItemForm = () => {
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.unit_converrion || ""}
-            name="unit_converrion"
+            value={details?.converstion_rate || ""}
+            name="converstion_rate"
             onChange={handleChange}
           />
         </Box>
         <Box
           sx={{
-            display: "flex",
+            display: id ? "none" : "flex",
             flexDirection: "row",
             alignItems: "center",
           }}
@@ -218,7 +307,25 @@ const PharmacyItemForm = () => {
         </Box>
         {checked && (
           <>
-            {" "}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="p">Name</Typography>
+              </Box>
+              <TextField
+                size="small"
+                sx={{ width: "70%" }}
+                margin="dense"
+                value={inventoryDetails?.name || ""}
+                name="name"
+                onChange={handleInventoryChange}
+              />
+            </Box>
             <Box
               sx={{
                 display: "flex",
@@ -233,9 +340,9 @@ const PharmacyItemForm = () => {
                 size="small"
                 sx={{ width: "70%" }}
                 margin="dense"
-                value={details?.balance || ""}
+                value={inventoryDetails?.balance || ""}
                 name="balance"
-                onChange={handleChange}
+                onChange={handleInventoryChange}
               />
             </Box>
             <Box
@@ -255,11 +362,18 @@ const PharmacyItemForm = () => {
                 size="small"
                 sx={{ width: "70%" }}
                 margin="dense"
-                value={details?.unit || ""}
+                value={inventoryDetails?.unit || ""}
                 name="unit"
-                onChange={handleChange}
+                onChange={handleInventoryChange}
               >
-                {/* <MenuItem value="male">Male</MenuItem> */}
+                {details?.po_unit && (
+                  <MenuItem value={details?.po_unit}>
+                    {details?.po_unit}
+                  </MenuItem>
+                )}
+                {details?.unit && (
+                  <MenuItem value={details?.unit}>{details?.unit}</MenuItem>
+                )}
               </TextField>
             </Box>
             <Box
@@ -277,9 +391,9 @@ const PharmacyItemForm = () => {
                 sx={{ width: "70%" }}
                 margin="dense"
                 placeholder="YYYY-MM-DD"
-                value={details?.expiry_date || ""}
+                value={inventoryDetails?.expiry_date || ""}
                 name="expiry_date"
-                onChange={handleChange}
+                onChange={handleInventoryChange}
               />
             </Box>
             <Box
@@ -296,9 +410,9 @@ const PharmacyItemForm = () => {
                 size="small"
                 sx={{ width: "70%" }}
                 margin="dense"
-                value={details?.batch || ""}
+                value={inventoryDetails?.batch || ""}
                 name="batch"
-                onChange={handleChange}
+                onChange={handleInventoryChange}
               />
             </Box>
             <Box
@@ -315,9 +429,9 @@ const PharmacyItemForm = () => {
                 size="small"
                 sx={{ width: "70%" }}
                 margin="dense"
-                value={details?.purchasing_price || ""}
+                value={inventoryDetails?.purchasing_price || ""}
                 name="purchasing_price"
-                onChange={handleChange}
+                onChange={handleInventoryChange}
               />
             </Box>
             <Box
@@ -331,15 +445,21 @@ const PharmacyItemForm = () => {
                 <Typography variant="p">Sales Item</Typography>
               </Box>
               <Autocomplete
-                options={[]}
+                options={SSI}
                 style={{ width: "70%" }}
                 getOptionLabel={(option) => option.name}
                 renderOption={(props, option) => {
                   return (
-                    <Box {...props} key={option.sales_service_item_id}>
+                    <Box {...props} key={option.id}>
                       {option.name}
                     </Box>
                   );
+                }}
+                onChange={(event, newValue) => {
+                  setInventoryDetails({
+                    ...inventoryDetails,
+                    sales_service_item_id: newValue?.id,
+                  });
                 }}
                 renderInput={(params) => (
                   <TextField
@@ -370,7 +490,7 @@ const PharmacyItemForm = () => {
           loading={loading}
           size="small"
           sx={{ marginRight: "5px" }}
-          // onClick={id ? update : createNew}
+          onClick={id ? update : createNew}
         >
           Save
         </LoadingButton>
