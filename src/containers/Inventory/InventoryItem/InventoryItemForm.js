@@ -3,27 +3,104 @@ import {
   Autocomplete,
   Box,
   Divider,
+  MenuItem,
   TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { BackButton } from "../../../components";
-// import { useAxios } from "../../../hooks";
+import { useAxios } from "../../../hooks";
 
 const InventoryItemForm = () => {
   const history = useHistory();
   const { id } = useParams();
-  // const api = useAxios({ autoSnackbar: true });
-  // const [loading, setLoading] = useState(false);
-  const loading = false;
-  const [details, setDetails] = useState({});
+  const api = useAxios({ autoSnackbar: true });
+  const [loading, setLoading] = useState(false);
+  const [details, setDetails] = useState({
+    pharmacy_item: null,
+    ssi: null,
+  });
+  const [pharmacyItems, setPharmacyItems] = useState([]);
+  const [SSI, setSSI] = useState([]);
 
   const handleChange = (e) => {
     setDetails({ ...details, [e.target.name]: e.target.value });
   };
+
+  const getPharmacyItemsAndSSI = async () => {
+    const [pi, ssi] = await Promise.all([
+      api.get("/api/pharmacy_items/"),
+      api.get("/api/salesServiceItem/"),
+    ]);
+    if (pi.status === 200 && ssi.status === 200) {
+      setPharmacyItems(pi.data);
+      setSSI(ssi.data);
+      if (id) getData();
+    } else {
+      history.goBack();
+    }
+  };
+
+  const getData = async () => {
+    const res = await api.get(`/api/inventory_items/${parseInt(id)}`);
+    if (res.status === 200) {
+      setDetails({ ...details, ...res.data });
+    } else {
+      history.goBack();
+    }
+  };
+
+  const createNew = async () => {
+    setLoading(true);
+    const res = await api.post("/api/inventory_items/", {
+      ...details,
+      pharmacy_item_id: details?.pharmacy_item?.id,
+      sales_service_item_id: details?.ssi?.id,
+    });
+    if (res.status === 200) {
+      history.goBack();
+    }
+    setLoading(false);
+  };
+
+  const update = async () => {
+    setLoading(true);
+    const res = await api.put(`/api/inventory_items/${parseInt(id)}`, {
+      ...details,
+      pharmacy_item_id: details?.pharmacy_item?.id,
+      sales_service_item_id: details?.ssi?.id,
+    });
+    if (res.status === 200) {
+      history.goBack();
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (details?.pharmacy_item_id && details?.id) {
+      setDetails({
+        ...details,
+        pharmacy_item: pharmacyItems.find(
+          (p) => p.id === details.pharmacy_item_id
+        ),
+      });
+    }
+    if (details?.sales_service_item_id && details?.id) {
+      setDetails({
+        ...details,
+        ssi: SSI.find((s) => s.id === details.sales_service_item_id),
+      });
+    }
+    // eslint-disable-next-line
+  }, [details?.pharmacy_item_id, details?.sales_service_item_id]);
+
+  useEffect(() => {
+    getPharmacyItemsAndSSI();
+    // eslint-disable-next-line
+  }, [id]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -51,13 +128,23 @@ const InventoryItemForm = () => {
             <Typography variant="p">Pharmacy Item</Typography>
           </Box>
           <Autocomplete
-            options={[]}
+            options={pharmacyItems}
             style={{ width: "70%" }}
-            getOptionLabel={(option) => option.name}
+            getOptionLabel={(option) => option.brand_name}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            value={details.pharmacy_item}
+            onChange={(e, value) => {
+              setDetails({
+                ...details,
+                pharmacy_item: value,
+                name: value.brand_name,
+                unit: "",
+              });
+            }}
             renderOption={(props, option) => {
               return (
                 <Box {...props} key={option.id}>
-                  {option.name}
+                  {option.brand_name}
                 </Box>
               );
             }}
@@ -70,6 +157,25 @@ const InventoryItemForm = () => {
                 margin="normal"
               />
             )}
+          />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Box sx={{ width: "30%" }}>
+            <Typography variant="p">Name</Typography>
+          </Box>
+          <TextField
+            size="small"
+            sx={{ width: "70%" }}
+            margin="dense"
+            value={details?.name || ""}
+            name="name"
+            onChange={handleChange}
           />
         </Box>
         <Box
@@ -112,7 +218,16 @@ const InventoryItemForm = () => {
             name="unit"
             onChange={handleChange}
           >
-            {/* <MenuItem value="male">Male</MenuItem> */}
+            {details?.pharmacy_item?.po_unit && (
+              <MenuItem value={details?.pharmacy_item?.po_unit}>
+                {details?.pharmacy_item?.po_unit}
+              </MenuItem>
+            )}
+            {details?.pharmacy_item?.unit && (
+              <MenuItem value={details?.pharmacy_item?.unit}>
+                {details?.pharmacy_item?.unit}
+              </MenuItem>
+            )}
           </TextField>
         </Box>
         <Box
@@ -184,12 +299,20 @@ const InventoryItemForm = () => {
             <Typography variant="p">Sales Item</Typography>
           </Box>
           <Autocomplete
-            options={[]}
+            options={SSI}
             style={{ width: "70%" }}
             getOptionLabel={(option) => option.name}
+            value={details.ssi}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            onChange={(e, value) => {
+              setDetails({
+                ...details,
+                ssi: value,
+              });
+            }}
             renderOption={(props, option) => {
               return (
-                <Box {...props} key={option.sales_service_item_id}>
+                <Box {...props} key={option.id}>
                   {option.name}
                 </Box>
               );
@@ -221,7 +344,7 @@ const InventoryItemForm = () => {
           loading={loading}
           size="small"
           sx={{ marginRight: "5px" }}
-          // onClick={id ? update : createNew}
+          onClick={id ? update : createNew}
         >
           Save
         </LoadingButton>
