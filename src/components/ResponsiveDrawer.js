@@ -9,17 +9,21 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import PeopleIcon from "@mui/icons-material/People";
-import SquareFootIcon from "@mui/icons-material/SquareFoot";
-import CategoryIcon from "@mui/icons-material/Category";
+// import SquareFootIcon from "@mui/icons-material/SquareFoot";
+// import CategoryIcon from "@mui/icons-material/Category";
 import EventNoteIcon from "@mui/icons-material/EventNote";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import AnalyticsIcon from "@mui/icons-material/Analytics";
-import ReceiptIcon from "@mui/icons-material/Receipt";
+// import CreditCardIcon from "@mui/icons-material/CreditCard";
+// import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+// import AnalyticsIcon from "@mui/icons-material/Analytics";
+// import ReceiptIcon from "@mui/icons-material/Receipt";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
+import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import React, { useContext, useState } from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { CacheContext } from "../contexts";
+import ClassIcon from "@mui/icons-material/Class";
 
 const ResponsiveDrawer = ({
   window,
@@ -32,7 +36,8 @@ const ResponsiveDrawer = ({
   const location = useLocation();
   const history = useHistory();
   const { url } = useRouteMatch();
-  const [openBilling, setBillingOpen] = useState(true);
+  // const [openBilling, setBillingOpen] = useState(true);
+  const [openInventory, setOpenInventory] = useState(true);
   const { table, viewTab } = useContext(CacheContext);
   const { resetTable } = table;
   const { resetTab } = viewTab;
@@ -47,8 +52,12 @@ const ResponsiveDrawer = ({
     };
   };
 
-  const openBillingAccordionList = () => {
-    setBillingOpen(!openBilling);
+  // const openBillingAccordionList = () => {
+  //   setBillingOpen(!openBilling);
+  // };
+
+  const openInventroyAccordionList = () => {
+    setOpenInventory(!openInventory);
   };
 
   const drawer = (
@@ -56,7 +65,7 @@ const ResponsiveDrawer = ({
       <Toolbar />
       <Divider />
       <List>
-        <ListItem onClick={openBillingAccordionList}>
+        {/* <ListItem onClick={openBillingAccordionList}>
           <Button
             size="small"
             variant={
@@ -79,8 +88,8 @@ const ResponsiveDrawer = ({
             Billing
             {openBilling ? <ExpandLess /> : <ExpandMore />}
           </Button>
-        </ListItem>
-        <Collapse in={openBilling} timeout="auto" unmountOnExit>
+        </ListItem> */}
+        {/* <Collapse in={openBilling} timeout="auto" unmountOnExit>
           <List component="div" disablePadding sx={{ paddingLeft: "8px" }}>
             <ListItem>
               <Button
@@ -209,6 +218,124 @@ const ResponsiveDrawer = ({
               </Button>
             </ListItem>
           </List>
+        </Collapse> */}
+        <ListItem onClick={openInventroyAccordionList}>
+          <Button
+            size="small"
+            fullWidth
+            startIcon={<InventoryIcon />}
+            variant={
+              location.pathname.includes("/pharmacy_item") ||
+              location.pathname.includes("/inventory_item") ||
+              location.pathname.includes("/inventory_transaction") ||
+              location.pathname.includes("/transaction_type")
+                ? "contained"
+                : "text"
+            }
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+            }}
+          >
+            Inventroy
+            {openInventory ? <ExpandLess /> : <ExpandMore />}
+          </Button>
+        </ListItem>
+        <Collapse in={openInventory} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding sx={{ paddingLeft: "8px" }}>
+            <ListItem>
+              <Button
+                size="small"
+                variant={
+                  location.pathname.includes("/pharmacy_item")
+                    ? "contained"
+                    : "text"
+                }
+                fullWidth
+                startIcon={<EventNoteIcon />}
+                onClick={handleClick(`${url}/pharmacy_item`)}
+                sx={{
+                  padding: "2px",
+                  display: "flex",
+                  justifyContent: location.pathname.includes("/pharmacy_item")
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              >
+                Pharmacy Item
+              </Button>
+            </ListItem>
+            <ListItem>
+              <Button
+                size="small"
+                variant={
+                  location.pathname.includes("/inventory_item")
+                    ? "contained"
+                    : "text"
+                }
+                fullWidth
+                startIcon={<Inventory2RoundedIcon />}
+                onClick={handleClick(`${url}/inventory_item`)}
+                sx={{
+                  padding: "2px",
+                  display: "flex",
+                  justifyContent: location.pathname.includes("/inventory_item")
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              >
+                Inventory Item
+              </Button>
+            </ListItem>
+            <ListItem>
+              <Button
+                size="small"
+                variant={
+                  location.pathname.includes("/inventory_transaction")
+                    ? "contained"
+                    : "text"
+                }
+                fullWidth
+                startIcon={<ReceiptLongRoundedIcon />}
+                onClick={handleClick(`${url}/inventory_transaction`)}
+                sx={{
+                  padding: "2px",
+                  display: "flex",
+                  justifyContent: location.pathname.includes(
+                    "/inventory_transaction"
+                  )
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              >
+                Inventory Transaction
+              </Button>
+            </ListItem>
+            <ListItem>
+              <Button
+                size="small"
+                variant={
+                  location.pathname.includes("/transaction_type")
+                    ? "contained"
+                    : "text"
+                }
+                fullWidth
+                startIcon={<ClassIcon />}
+                onClick={handleClick(`${url}/transaction_type`)}
+                sx={{
+                  padding: "2px",
+                  display: "flex",
+                  justifyContent: location.pathname.includes(
+                    "/transaction_type"
+                  )
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              >
+                Transaction Type
+              </Button>
+            </ListItem>
+          </List>
         </Collapse>
 
         <ListItem>
@@ -238,7 +365,10 @@ const ResponsiveDrawer = ({
   return (
     <Box
       component="nav"
-      sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+      sx={{
+        width: { md: drawerWidth },
+        flexShrink: { md: 0 },
+      }}
     >
       <Drawer
         container={container}
