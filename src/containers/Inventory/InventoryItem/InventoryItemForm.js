@@ -180,7 +180,7 @@ const InventoryItemForm = () => {
         </Box>
         <Box
           sx={{
-            display: "flex",
+            display: id ? "none" : "flex",
             flexDirection: "row",
             alignItems: "center",
           }}
