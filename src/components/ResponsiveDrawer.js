@@ -69,17 +69,6 @@ const ResponsiveDrawer = ({
       >
         <Button
           fullWidth
-          size="small"
-            variant={
-              location.pathname.includes("/salesServiceItem") ||
-              location.pathname.includes("/uom") ||
-              location.pathname.includes("/category") ||
-              location.pathname.includes("/bills") ||
-              location.pathname.includes("/dailyClosing") ||
-              location.pathname.includes("/deposit")
-                ? "contained"
-                : "text"
-            }
           onClick={openAccordionList}
         >
           <ListItemIcon>
@@ -96,9 +85,6 @@ const ResponsiveDrawer = ({
                 sx={{ pl: 4 }}
                 onClick={handleClick(`${url}/bills`)}
                 fullWidth
-                variant={
-                  location.pathname.includes("/bills") ? "contained" : "text"
-                }
               >
                 <ListItemIcon>
                   <ReceiptIcon/>
@@ -108,10 +94,7 @@ const ResponsiveDrawer = ({
             </ListItem>
             <ListItem>
               <Button
-                size="small"
-                variant={
-                  location.pathname.includes("/deposit") ? "contained" : "text"
-                }
+                
                 onClick={handleClick(`${url}/deposit`)}
                 fullWidth
                 sx={{ pl: 4 }}
@@ -124,12 +107,7 @@ const ResponsiveDrawer = ({
             </ListItem>
             <ListItem>
               <Button
-                size="small"
-                variant={
-                  location.pathname.includes("/dailyClosing")
-                    ? "contained"
-                    : "text"
-                }
+                
                 onClick={handleClick(`${url}/dailyClosing`)}
                 fullWidth
                 sx={{ pl: 4 }}
@@ -158,10 +136,6 @@ const ResponsiveDrawer = ({
             </ListItem>
             <ListItem>
               <Button
-                size="small"
-                variant={
-                  location.pathname.includes("/category") ? "contained" : "text"
-                }
                 onClick={handleClick(`${url}/category`)}
                 fullWidth
                 sx={{ pl: 4 }}
@@ -174,12 +148,6 @@ const ResponsiveDrawer = ({
             </ListItem>
             <ListItem>
               <Button
-                size="small"
-                variant={
-                  location.pathname.includes("/salesServiceItem")
-                    ? "contained"
-                    : "text"
-                }
                 onClick={handleClick(`${url}/salesServiceItem`)}
                 fullWidth
                 sx={{ pl: 4 }}
@@ -194,10 +162,6 @@ const ResponsiveDrawer = ({
         </Collapse>
         <ListItem>
           <Button
-            size="small"
-            variant={
-              location.pathname.includes("/patient") ? "contained" : "text"
-            }
             onClick={handleClick(`${url}/patient`)}
             fullWidth
           >
