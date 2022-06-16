@@ -120,10 +120,6 @@ const ResponsiveDrawer = ({
             </ListItem>
             <ListItem>
               <Button
-                size="small"
-                variant={
-                  location.pathname.includes("/uom") ? "contained" : "text"
-                }
                 onClick={handleClick(`${url}/uom`)}
                 fullWidth
                 sx={{ pl: 4 }}
