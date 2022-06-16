@@ -52,6 +52,8 @@ const InventoryItemDetail = () => {
           value={details?.pharmacy_item?.generic_name}
         />
         <Divider />
+        <DetailsRow name="Name" value={details?.name} />
+        <Divider />
         <DetailsRow name="Balance" value={details?.balance} />
         <Divider />
         <DetailsRow name="Unit" value={details?.unit} />
