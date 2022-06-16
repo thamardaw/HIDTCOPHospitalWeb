@@ -1,5 +1,5 @@
 import {
-  Button,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
   Collapse,
@@ -8,7 +8,7 @@ import {
   List,
   ListItem,
   Toolbar,
-  ListSubheader
+  Typography
 } from "@mui/material";
 import { Box } from "@mui/system";
 import PeopleIcon from "@mui/icons-material/People";
@@ -59,16 +59,23 @@ const ResponsiveDrawer = ({
       <Toolbar />
       <Divider />
       <List 
-        sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
-        aria-labelledby="nested-list-subheader"
-        subheader={
-          <ListSubheader component="div" id="nested-list-subheader">
-            M E N U
-          </ListSubheader>
-        }
+        component='nav' aria-label="Main Menu"
+        style={{fontSize: "small"}}
       >
-        <Button
-          fullWidth
+        <ListItem>
+          <Typography variant="overline" display="block">
+            M E N U
+          </Typography>
+        </ListItem>
+        <ListItemButton
+          selected={
+            location.pathname.includes('bills') || 
+            location.pathname.includes('deposit') ||
+            location.pathname.includes('dailyClosing') ||
+            location.pathname.includes('uom') ||
+            location.pathname.includes('category') ||
+            location.pathname.includes('salesServiceItem') 
+          }
           onClick={openAccordionList}
         >
           <ListItemIcon>
@@ -76,97 +83,102 @@ const ResponsiveDrawer = ({
           </ListItemIcon>
           <ListItemText primary="Billing" />
           {open ? <ExpandLess /> : <ExpandMore />}
-        </Button>
+        </ListItemButton>
         
         <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding >
-            <ListItem>
-              <Button
-                sx={{ pl: 4 }}
+          <List component="div" disablePadding>
+            
+              <ListItemButton
+                size="small"
+                sx={{ pl: '25px' }}
+                selected={location.pathname.includes("bills")}
                 onClick={handleClick(`${url}/bills`)}
-                fullWidth
               >
                 <ListItemIcon>
                   <ReceiptIcon/>
                 </ListItemIcon>
                 <ListItemText primary="Bills" />
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
-                
+              </ListItemButton>
+            
+            
+              <ListItemButton
+                size="small"
+                sx={{ pl: '25px' }}
+                selected={location.pathname.includes("deposit")}
                 onClick={handleClick(`${url}/deposit`)}
-                fullWidth
-                sx={{ pl: 4 }}
               >
                 <ListItemIcon>
                     <AccountBalanceIcon/>
                 </ListItemIcon>
                 <ListItemText primary="Deposit" />
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
-                
+              </ListItemButton>
+            
+            
+              <ListItemButton
+                size="small"
+                sx={{ pl: '25px' }}
+                selected={location.pathname.includes("dailyClosing")}
                 onClick={handleClick(`${url}/dailyClosing`)}
-                fullWidth
-                sx={{ pl: 4 }}
               >
                 <ListItemIcon>
                   <AnalyticsIcon/>
                 </ListItemIcon>
                 <ListItemText primary="Daily Closing" />
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
+              </ListItemButton>
+            
+            
+              <ListItemButton
+                size="small"
+                sx={{ pl: '25px' }}
+                selected={location.pathname.includes("uom")}
                 onClick={handleClick(`${url}/uom`)}
-                fullWidth
-                sx={{ pl: 4 }}
               >
                 <ListItemIcon>
                   <SquareFootIcon/>
                 </ListItemIcon>
                 <ListItemText primary="UOM" />
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
+              </ListItemButton>
+            
+            
+              <ListItemButton
+                size="small"
+                sx={{ pl: '25px' }}
+                selected={location.pathname.includes("category")}
                 onClick={handleClick(`${url}/category`)}
-                fullWidth
-                sx={{ pl: 4 }}
               >
                 <ListItemIcon>
                   <CategoryIcon/>
                 </ListItemIcon>
                 <ListItemText primary="Category" />
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
+              </ListItemButton>
+            
+            
+              <ListItemButton
+                size="small"
+                sx={{ pl: '25px' }}
+                selected={location.pathname.includes("salesServiceItem")}
                 onClick={handleClick(`${url}/salesServiceItem`)}
-                fullWidth
-                sx={{ pl: 4 }}
               >
                 <ListItemIcon>
                   <EventNoteIcon/>
                 </ListItemIcon>
                 <ListItemText primary="Sales & Service Item" />
-              </Button>
-            </ListItem>
+              </ListItemButton>
+            
           </List>
         </Collapse>
-        <ListItem>
-          <Button
+        
+          <ListItemButton
+            size="small"
+            selected= {location.pathname.includes("patient")}
             onClick={handleClick(`${url}/patient`)}
-            fullWidth
           >
             <ListItemIcon>
               <PeopleIcon/>
             </ListItemIcon>
             <ListItemText primary="Patient"/>
-          </Button>
-        </ListItem>
+          </ListItemButton>
+        
       </List>
     </>
   );
