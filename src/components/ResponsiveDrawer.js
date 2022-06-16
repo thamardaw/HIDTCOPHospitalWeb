@@ -1,11 +1,14 @@
 import {
   Button,
+  ListItemIcon,
+  ListItemText,
   Collapse,
   Divider,
   Drawer,
   List,
   ListItem,
   Toolbar,
+  ListSubheader
 } from "@mui/material";
 import { Box } from "@mui/system";
 import PeopleIcon from "@mui/icons-material/People";
@@ -32,7 +35,7 @@ const ResponsiveDrawer = ({
   const location = useLocation();
   const history = useHistory();
   const { url } = useRouteMatch();
-  const [openBilling, setBillingOpen] = useState(true);
+  const [open, setOpen] = useState(true);
   const { table, viewTab } = useContext(CacheContext);
   const { resetTable } = table;
   const { resetTab } = viewTab;
@@ -47,18 +50,26 @@ const ResponsiveDrawer = ({
     };
   };
 
-  const openBillingAccordionList = () => {
-    setBillingOpen(!openBilling);
+  const openAccordionList = () => {
+    setOpen(!open);
   };
 
   const drawer = (
     <>
       <Toolbar />
       <Divider />
-      <List>
-        <ListItem onClick={openBillingAccordionList}>
-          <Button
-            size="small"
+      <List 
+        sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+        aria-labelledby="nested-list-subheader"
+        subheader={
+          <ListSubheader component="div" id="nested-list-subheader">
+            M E N U
+          </ListSubheader>
+        }
+      >
+        <Button
+          fullWidth
+          size="small"
             variant={
               location.pathname.includes("/salesServiceItem") ||
               location.pathname.includes("/uom") ||
@@ -69,37 +80,30 @@ const ResponsiveDrawer = ({
                 ? "contained"
                 : "text"
             }
-            fullWidth
-            startIcon={<CreditCardIcon />}
-            sx={{
-              display: "flex",
-              justifyContent: "flex-start",
-            }}
-          >
-            Billing
-            {openBilling ? <ExpandLess /> : <ExpandMore />}
-          </Button>
-        </ListItem>
-        <Collapse in={openBilling} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding sx={{ paddingLeft: "8px" }}>
+          onClick={openAccordionList}
+        >
+          <ListItemIcon>
+            <CreditCardIcon/>
+          </ListItemIcon>
+          <ListItemText primary="Billing" />
+          {open ? <ExpandLess /> : <ExpandMore />}
+        </Button>
+        
+        <Collapse in={open} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding >
             <ListItem>
               <Button
-                size="small"
+                sx={{ pl: 4 }}
+                onClick={handleClick(`${url}/bills`)}
+                fullWidth
                 variant={
                   location.pathname.includes("/bills") ? "contained" : "text"
                 }
-                fullWidth
-                startIcon={<ReceiptIcon />}
-                onClick={handleClick(`${url}/bills`)}
-                sx={{
-                  padding: "2px",
-                  display: "flex",
-                  justifyContent: location.pathname.includes("/bills")
-                    ? "flex-end"
-                    : "flex-start",
-                }}
               >
-                Bill
+                <ListItemIcon>
+                  <ReceiptIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Bills" />
               </Button>
             </ListItem>
             <ListItem>
@@ -108,18 +112,14 @@ const ResponsiveDrawer = ({
                 variant={
                   location.pathname.includes("/deposit") ? "contained" : "text"
                 }
-                fullWidth
-                startIcon={<AccountBalanceIcon />}
                 onClick={handleClick(`${url}/deposit`)}
-                sx={{
-                  padding: "2px",
-                  display: "flex",
-                  justifyContent: location.pathname.includes("/deposit")
-                    ? "flex-end"
-                    : "flex-start",
-                }}
+                fullWidth
+                sx={{ pl: 4 }}
               >
-                Deposit
+                <ListItemIcon>
+                    <AccountBalanceIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Deposit" />
               </Button>
             </ListItem>
             <ListItem>
@@ -130,18 +130,14 @@ const ResponsiveDrawer = ({
                     ? "contained"
                     : "text"
                 }
-                fullWidth
-                startIcon={<AnalyticsIcon />}
                 onClick={handleClick(`${url}/dailyClosing`)}
-                sx={{
-                  padding: "2px",
-                  display: "flex",
-                  justifyContent: location.pathname.includes("/dailyClosing")
-                    ? "flex-end"
-                    : "flex-start",
-                }}
+                fullWidth
+                sx={{ pl: 4 }}
               >
-                Daily Closing
+                <ListItemIcon>
+                  <AnalyticsIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Daily Closing" />
               </Button>
             </ListItem>
             <ListItem>
@@ -150,18 +146,14 @@ const ResponsiveDrawer = ({
                 variant={
                   location.pathname.includes("/uom") ? "contained" : "text"
                 }
-                fullWidth
-                startIcon={<SquareFootIcon />}
                 onClick={handleClick(`${url}/uom`)}
-                sx={{
-                  padding: "2px",
-                  display: "flex",
-                  justifyContent: location.pathname.includes("/uom")
-                    ? "flex-end"
-                    : "flex-start",
-                }}
+                fullWidth
+                sx={{ pl: 4 }}
               >
-                UOM
+                <ListItemIcon>
+                  <SquareFootIcon/>
+                </ListItemIcon>
+                <ListItemText primary="UOM" />
               </Button>
             </ListItem>
             <ListItem>
@@ -170,18 +162,14 @@ const ResponsiveDrawer = ({
                 variant={
                   location.pathname.includes("/category") ? "contained" : "text"
                 }
-                fullWidth
-                startIcon={<CategoryIcon />}
                 onClick={handleClick(`${url}/category`)}
-                sx={{
-                  padding: "2px",
-                  display: "flex",
-                  justifyContent: location.pathname.includes("/category")
-                    ? "flex-end"
-                    : "flex-start",
-                }}
+                fullWidth
+                sx={{ pl: 4 }}
               >
-                Category
+                <ListItemIcon>
+                  <CategoryIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Category" />
               </Button>
             </ListItem>
             <ListItem>
@@ -192,43 +180,31 @@ const ResponsiveDrawer = ({
                     ? "contained"
                     : "text"
                 }
-                fullWidth
-                startIcon={<EventNoteIcon />}
                 onClick={handleClick(`${url}/salesServiceItem`)}
-                sx={{
-                  padding: "2px",
-                  display: "flex",
-                  justifyContent: location.pathname.includes(
-                    "/salesServiceItem"
-                  )
-                    ? "flex-end"
-                    : "flex-start",
-                }}
+                fullWidth
+                sx={{ pl: 4 }}
               >
-                Sales & Service Item
+                <ListItemIcon>
+                  <EventNoteIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Sales & Service Item" />
               </Button>
             </ListItem>
           </List>
         </Collapse>
-
         <ListItem>
           <Button
             size="small"
             variant={
               location.pathname.includes("/patient") ? "contained" : "text"
             }
-            fullWidth
-            startIcon={<PeopleIcon />}
             onClick={handleClick(`${url}/patient`)}
-            sx={{
-              padding: "2px",
-              display: "flex",
-              justifyContent: location.pathname.includes("/patient")
-                ? "flex-end"
-                : "flex-start",
-            }}
+            fullWidth
           >
-            Patient
+            <ListItemIcon>
+              <PeopleIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Patient"/>
           </Button>
         </ListItem>
       </List>
