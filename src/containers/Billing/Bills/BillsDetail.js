@@ -47,12 +47,15 @@ const StyledTableCell = styled(TableCell)(
 
 const BillsDetail = () => {
   const api = useAxios({ autoSnackbar: true });
+  const apiNoSnackbar = useAxios({ autoSnackbar: false });
   const history = useHistory();
   const location = useLocation();
   const receiptRef = useRef();
   const { id, stage } = useParams();
   const [showPay, setShowPay] = useState(false);
   const [bill, setBill] = useState({});
+  const [dispensedItems, setDispensedItems] = useState([]);
+  const [inventoryItems, setInventoryItems] = useState([]);
   const [payment, setPayment] = useState({});
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [open, setOpen] = useState(false);
@@ -60,12 +63,6 @@ const BillsDetail = () => {
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const cancelBill = async () => {
-    await api.put(`/api/bill/cancel/${id}`);
-    handleClose();
-    history.goBack();
   };
 
   const handlePrint = useReactToPrint({
@@ -78,6 +75,12 @@ const BillsDetail = () => {
       // }
     },
   });
+
+  const cancelBill = async () => {
+    await api.put(`/api/bill/cancel/${id}`);
+    handleClose();
+    history.goBack();
+  };
 
   const getDepositByPatientId = async (id) => {
     const res = await api.get(`/api/deposit/active/${id}`);
@@ -102,6 +105,22 @@ const BillsDetail = () => {
     return;
   };
 
+  const get_dispensed_items = async () => {
+    const res = await api.get(`/api/inventory/dispense/${id}`);
+    if (res.status === 200) {
+      setDispensedItems(res.data);
+    }
+  };
+
+  const get_inventory_items = async () => {
+    const res = await apiNoSnackbar.post("/api/inventory/", [
+      ...bill?.bill_items,
+    ]);
+    if (res.status === 200) {
+      setInventoryItems(res.data);
+    }
+  };
+
   const make_payment = async () => {
     if (bill) {
       const res = await api.put(`/api/payment/${parseInt(payment.id)}`);
@@ -117,7 +136,7 @@ const BillsDetail = () => {
     return;
   };
 
-  const to_print = async () => {
+  const finalize = async () => {
     const res = await api.put(`/api/bill/print/${parseInt(id)}`);
     if (res.status === 200) {
       history.replace(`/dashboard/bills/details/${id}/outstanding`);
@@ -125,19 +144,45 @@ const BillsDetail = () => {
     return;
   };
 
+  const dispense_meds = async () => {
+    if (bill) {
+      const res = await api.post(`/api/inventory/dispense`, [
+        ...bill?.bill_items,
+      ]);
+      if (res.status === 200) {
+        get_dispensed_items();
+      }
+    }
+    return;
+  };
+
+  const is_dispensed = (row) => {
+    const is_invItem = inventoryItems.find(function (invItem) {
+      if (row.sales_service_item_id === invItem.sales_service_item_id) {
+        return true;
+      }
+      return false;
+    });
+    const is_dispensedItem = dispensedItems.find(function (dt) {
+      if (parseInt(dt.note.split(",")[1]) === row.id) {
+        return true;
+      }
+      return false;
+    });
+    if (!is_invItem) return true;
+    else return is_invItem && is_dispensedItem;
+  };
+
   const to_edit = () => {
     history.push(`/dashboard/bills/form/-${id}`);
   };
-  // const formatAMPM = (date) => {
-  //   let hours = date.getHours();
-  //   let minutes = date.getMinutes();
-  //   let ampm = hours >= 12 ? "pm" : "am";
-  //   hours = hours % 12;
-  //   hours = hours ? hours : 12;
-  //   minutes = minutes.toString().padStart(2, "0");
-  //   let strTime = hours + ":" + minutes + " " + ampm;
-  //   return strTime;
-  // };
+
+  useEffect(() => {
+    if (bill?.bill_items) {
+      get_inventory_items();
+    }
+    // eslint-disable-next-line
+  }, [bill?.bill_items]);
 
   useEffect(() => {
     const intervalId = setInterval(() => setDateState(new Date()), 30000);
@@ -148,6 +193,7 @@ const BillsDetail = () => {
       stage === "cancelled"
     ) {
       getBill();
+      get_dispensed_items();
     } else {
       history.goBack();
     }
@@ -168,79 +214,94 @@ const BillsDetail = () => {
               }
             }}
           />
-          <Button
-            variant="contained"
-            size="small"
-            sx={{ marginRight: "5px", display: showPay ? "block" : "none" }}
-            onClick={make_payment}
-          >
-            Record Payment
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
+          <Box
             sx={{
-              marginRight: "5px",
-              display: stage === "draft" ? "block" : "none",
+              display: "flex",
+              alignItems: "center",
+              overflowX: "auto",
             }}
-            onClick={to_edit}
           >
-            Edit
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            sx={{ marginRight: "5px" }}
-            onClick={handlePrint}
-          >
-            Print
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            sx={{
-              marginRight: "5px",
-              display: stage === "draft" ? "block" : "none",
-            }}
-            onClick={to_print}
-          >
-            Finalize
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            color="error"
-            sx={{
-              marginRight: "5px",
-              display:
-                stage === "draft" || stage === "outstanding" ? "block" : "none",
-            }}
-            onClick={() => setOpen(true)}
-          >
-            Cancel
-          </Button>
+            <Button
+              variant="contained"
+              size="small"
+              sx={{ marginRight: "5px", display: showPay ? "block" : "none" }}
+              onClick={make_payment}
+            >
+              Record Payment
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              sx={{
+                marginRight: "5px",
+                display: stage === "draft" ? "block" : "none",
+              }}
+              onClick={to_edit}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              sx={{ marginRight: "5px" }}
+              onClick={handlePrint}
+            >
+              Print
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              sx={{
+                minWidth: "80px",
+                marginRight: "5px",
+                display:
+                  stage === "draft" &&
+                  inventoryItems.length === dispensedItems.length
+                    ? "block"
+                    : "none",
+              }}
+              onClick={finalize}
+            >
+              Finalize
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              sx={{
+                minWidth: "140px",
+                marginRight: "5px",
+                display: stage === "draft" ? "block" : "none",
+              }}
+              disabled={inventoryItems.length === dispensedItems.length}
+              onClick={dispense_meds}
+            >
+              {inventoryItems.length === dispensedItems.length
+                ? "Meds Dispensed"
+                : "Dispense Meds"}
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              color="error"
+              sx={{
+                minWidth: "70px",
+                marginRight: "5px",
+                display:
+                  stage === "draft" || stage === "outstanding"
+                    ? "block"
+                    : "none",
+              }}
+              onClick={() => setOpen(true)}
+            >
+              Cancel
+            </Button>
+          </Box>
         </Toolbar>
         <Container ref={receiptRef}>
           <Box sx={{ my: "15px" }}>
             <Typography variant="h6" textAlign="center">
               {constants.hospital_name}
             </Typography>
-            {/* <Box sx={{ height: "15px" }} /> */}
-            {/* <Typography variant="body" component="div">
-            ID : {bill?.id && generateID(bill?.id, bill?.created_time)}
-          </Typography>
-          <Typography variant="body" component="div">
-            Date : {bill?.created_time && bill?.created_time.split("T")[0]}
-          </Typography>
-          <Typography variant="body" component="div">
-            Name : {bill?.patient_name}
-          </Typography>
-          <Typography variant="body" component="div">
-            Phone : {bill?.patient_phone}
-          </Typography>
-          <Typography variant="body" component="div">
-            Address : {bill?.patient_address}
-          </Typography> */}
             <Box sx={{ flexDirection: "column", paddingTop: "15px" }}>
               <Box
                 sx={{
@@ -269,7 +330,6 @@ const BillsDetail = () => {
                   <StyledTypography variant="body">Date</StyledTypography>
                 </Box>
                 <StyledTypography variant="body">
-                  {/* {bill?.created_time && bill?.created_time.split("T")[0]} */}
                   {dateState.toLocaleDateString("en-GB", {
                     day: "numeric",
                     month: "short",
@@ -289,12 +349,6 @@ const BillsDetail = () => {
                   <StyledTypography variant="body">Time</StyledTypography>
                 </Box>
                 <StyledTypography variant="body">
-                  {/* {bill?.created_time &&
-                    new Date(bill.created_time).toLocaleTimeString("en-US", {
-                      hour: "numeric",
-                      minute: "numeric",
-                      hour12: true,
-                    })} */}
                   {dateState.toLocaleString("en-US", {
                     hour: "numeric",
                     minute: "numeric",
@@ -369,7 +423,7 @@ const BillsDetail = () => {
           </Box>
           <Box sx={{ my: "15px" }}>
             <TableContainer>
-              <Table sx={{ minWidth: 380 }} aria-label="simple table">
+              <Table sx={{ minWidth: 380 }}>
                 <TableHead
                   sx={{
                     backgroundColor: "#EBEBEB",
@@ -377,7 +431,6 @@ const BillsDetail = () => {
                   }}
                 >
                   <TableRow>
-                    {/* <StyledTableCell>No</StyledTableCell> */}
                     <StyledTableCell maxWidth="130px">Name</StyledTableCell>
                     <StyledTableCell maxWidth="75px" align="right">
                       Price
@@ -385,7 +438,6 @@ const BillsDetail = () => {
                     <StyledTableCell maxWidth="55px" align="right">
                       Qty
                     </StyledTableCell>
-                    {/* <StyledTableCell>UOM</StyledTableCell> */}
                     <StyledTableCell maxWidth="120px" align="right">
                       SubTotal
                     </StyledTableCell>
@@ -401,10 +453,12 @@ const BillsDetail = () => {
                             "&:last-child td, &:last-child th": { border: 0 },
                           }}
                         >
-                          {/* <StyledTableCell component="th" scope="row">
-                          {index + 1}
-                        </StyledTableCell> */}
-                          <StyledTableCell maxWidth="130px">
+                          <StyledTableCell
+                            maxWidth="130px"
+                            sx={{
+                              color: is_dispensed(row) ? "black" : "gray",
+                            }}
+                          >
                             {row?.name}
                           </StyledTableCell>
                           <StyledTableCell maxWidth="75px" align="right">
@@ -413,7 +467,7 @@ const BillsDetail = () => {
                           <StyledTableCell maxWidth="55px" align="right">
                             {row?.quantity}
                           </StyledTableCell>
-                          {/* <StyledTableCell>{row?.uom}</StyledTableCell> */}
+
                           <StyledTableCell maxWidth="120px" align="right">
                             {row?.subtotal}
                           </StyledTableCell>

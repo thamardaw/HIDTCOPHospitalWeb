@@ -41,7 +41,8 @@ const BillsEditForm = () => {
   const history = useHistory();
   const api = useAxios({ autoSnackbar: true });
   const { id } = useParams();
-  const [details, setDetails] = useState([]);
+  const [details, setDetails] = useState({});
+  const [dispensedItems, setDispensedItems] = useState([]);
   const [salesServiceItem, setSalesServiceItem] = useState([]);
   const [currentSSI, setCurrentSSI] = useState(null);
   const [currentQuantity, setCurrentQuantity] = useState(0);
@@ -101,16 +102,20 @@ const BillsEditForm = () => {
   };
 
   const getData = async () => {
-    const res = await api.get(`/api/bill/${parseInt(id.split("-")[1])}`);
-    if (res.status === 200) {
-      getDepositByPatientId(res.data.patient.id);
+    const [bill, invtxs] = await Promise.all([
+      api.get(`/api/bill/${parseInt(id.split("-")[1])}`),
+      api.get(`/api/inventory/dispense/${parseInt(id.split("-")[1])}`),
+    ]);
+    if (bill.status === 200 && invtxs.status === 200) {
+      getDepositByPatientId(bill.data.patient.id);
       setDetails({
-        ...res.data,
+        ...bill.data,
         bill_items: stableSort(
-          res.data.bill_items,
+          bill.data.bill_items,
           getComparator("desc", "id")
         ),
       });
+      setDispensedItems(invtxs.data);
     } else {
       history.goBack();
     }
@@ -150,11 +155,12 @@ const BillsEditForm = () => {
     SSIRef.current.focus();
   };
 
-  const removeItem = async (itemId) => {
-    const res = await api.delete(
-      `/api/bill/${parseInt(id.split("-")[1])}/billItem/${itemId}`
-    );
-    if (res.status === 200) {
+  const removeItem = async (row) => {
+    const [item, invtx] = await Promise.all([
+      api.delete(`/api/bill/${parseInt(id.split("-")[1])}/billItem/${row.id}`),
+      api.post(`/api/inventory/return`, { ...row }),
+    ]);
+    if (item.status === 200 && invtx.status === 200) {
       getData();
     }
   };
@@ -170,11 +176,7 @@ const BillsEditForm = () => {
       <Paper sx={{ width: "100%", mb: 1 }}>
         <Toolbar>
           <BackButton backFunction={() => history.goBack()} />
-          <Typography
-            variant="h6"
-            component="div"
-            //   sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-          >
+          <Typography variant="h6" component="div">
             Edit Bill
           </Typography>
         </Toolbar>
@@ -453,6 +455,20 @@ const BillsEditForm = () => {
                   }}
                 >
                   <Box sx={{ width: "30%" }}>
+                    <Typography variant="body">Bill ID</Typography>
+                  </Box>
+                  <Typography variant="body">
+                    : {generateID(parseInt(id.split("-")[1]))}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box sx={{ width: "30%" }}>
                     <Typography variant="body">Patient ID</Typography>
                   </Box>
                   <Typography variant="body">
@@ -568,6 +584,20 @@ const BillsEditForm = () => {
                                     padding: "0px",
                                     margin: "0px",
                                     marginRight: "5px",
+                                    display: dispensedItems.find(function (
+                                      dt,
+                                      index
+                                    ) {
+                                      if (
+                                        parseInt(dt.note.split(",")[1]) ===
+                                        row.id
+                                      ) {
+                                        return true;
+                                      }
+                                      return false;
+                                    })
+                                      ? "none"
+                                      : "span",
                                   }}
                                 >
                                   <ModeEditIcon />
@@ -575,7 +605,7 @@ const BillsEditForm = () => {
                                 <IconButton
                                   aria-label="delete"
                                   color="error"
-                                  onClick={() => removeItem(row.id)}
+                                  onClick={() => removeItem(row)}
                                   sx={{ padding: "0px", margin: "0px" }}
                                 >
                                   <DeleteIcon />
