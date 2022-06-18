@@ -59,12 +59,19 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-const CSVUploadDialog = ({ open, handleClose, columns }) => {
+const CSVUploadDialog = ({
+  open,
+  handleClose,
+  columns,
+  endpoint,
+  template_file_name = `genesis.csv`,
+  example_rows = [],
+}) => {
   const api = useAxios({ autoSnackbar: false });
   const [CSV, setCSV] = useState({
-    data: [],
+    data: example_rows,
     headers: [],
-    filename: `Sales_Service_Items_Template.csv`,
+    filename: template_file_name,
   });
   const [columnNames, setColumnNames] = useState([]);
   const [data, setData] = useState([]);
@@ -79,24 +86,28 @@ const CSVUploadDialog = ({ open, handleClose, columns }) => {
   };
 
   const processResponse = (res) => {
-    const key = /\([^)]*\)/i;
-    const value = /\([0-9]+\)/i;
+    // const key = /\([^)]*\)/i;
+    // const value = /\([0-9]+\)/i;
     if (res.status === 200) {
       showAlert(res.status, res.data.detail);
       handleClose();
-    } else if (res.status === 422) {
-      const errors = res.data.detail.map((error) => {
-        return `Row ${error.loc[1] + 2} - Column ${error.loc[2]} : ${
-          error.msg
-        }`;
-      });
-      setErrors(errors);
-    } else if (res.status === 400) {
-      setErrors([
-        `${res.data.detail.match(key)[0]} - ${
-          res.data.detail.match(value)[0]
-        } does not exist.`,
-      ]);
+    }
+    // else if (res.status === 422) {
+    //   const errors = res.data.detail.map((error) => {
+    //     return `Row ${error.loc[1] + 2} - Column ${error.loc[2]} : ${
+    //       error.msg
+    //     }`;
+    //   });
+    //   setErrors(errors);
+    // } else if (res.status === 400) {
+    //   setErrors([
+    //     `${res.data.detail.match(key)[0]} - ${
+    //       res.data.detail.match(value)[0]
+    //     } does not exist.`,
+    //   ]);
+    // }
+    else {
+      showAlert(res.status, res.data.message || res.data.detail);
     }
     fileInputRef.current.value = null;
   };
@@ -140,6 +151,7 @@ const CSVUploadDialog = ({ open, handleClose, columns }) => {
 
   const handleFileUpload = (e) => {
     setErrors([]);
+    setLoading(false);
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
@@ -160,7 +172,7 @@ const CSVUploadDialog = ({ open, handleClose, columns }) => {
   const upload = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const res = await api.post(`/api/salesServiceItem/bulk_create`, data);
+    const res = await api.post(endpoint, data);
     processResponse(res);
     setLoading(false);
   };
@@ -231,6 +243,9 @@ CSVUploadDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,
+  endpoint: PropTypes.string.isRequired,
+  template_file_name: PropTypes.string.isRequired,
+  example_rows: PropTypes.array,
 };
 
 export default CSVUploadDialog;
