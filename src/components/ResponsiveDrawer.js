@@ -18,10 +18,14 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
+import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import React, { useContext, useState } from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { CacheContext } from "../contexts";
+import ClassIcon from "@mui/icons-material/Class";
 
 const ResponsiveDrawer = ({
   window,
@@ -34,7 +38,8 @@ const ResponsiveDrawer = ({
   const location = useLocation();
   const history = useHistory();
   const { url } = useRouteMatch();
-  const [open, setOpen] = useState(true);
+  const [openBilling, setBillingOpen] = useState(true);
+  const [openInventory, setOpenInventory] = useState(true);
   const { table, viewTab } = useContext(CacheContext);
   const { resetTable } = table;
   const { resetTab } = viewTab;
@@ -49,8 +54,12 @@ const ResponsiveDrawer = ({
     };
   };
 
-  const openAccordionList = () => {
-    setOpen(!open);
+  const openBillingAccordionList = () => {
+    setBillingOpen(!openBilling);
+  };
+
+  const openInventroyAccordionList = () => {
+    setOpenInventory(!openInventory);
   };
 
   const drawer = (
@@ -177,7 +186,10 @@ const ResponsiveDrawer = ({
   return (
     <Box
       component="nav"
-      sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+      sx={{
+        width: { md: drawerWidth },
+        flexShrink: { md: 0 },
+      }}
     >
       <Drawer
         container={container}

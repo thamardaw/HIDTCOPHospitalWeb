@@ -241,6 +241,8 @@ const SalesServiceItemForm = () => {
         open={openDialog}
         handleClose={handleCloseDialog}
         columns={["name", "price", "uom_id", "category_id"]}
+        endpoint="/api/salesServiceItem/bulk_create"
+        template_file_name="sales_service_item_template.csv"
       />
     </>
   );
