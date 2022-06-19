@@ -1,7 +1,15 @@
 import { useContext, useEffect, useState } from "react";
-import { CustomTable, DeleteDialog } from "../../../components";
+import { CustomTable } from "../../../components";
 import { LoadingContext } from "../../../contexts";
 import { useAxios } from "../../../hooks";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 
 const headCells = [
   {
@@ -117,13 +125,32 @@ const InventoryItemTable = () => {
         onDelete={handleClickOpenDeleteDialog}
         enableMultipleDelete={false}
       />
-      <DeleteDialog
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
+          <Button onClick={deleteItem} autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* <DeleteDialog
         isOpen={openDeleteDialog}
         handleClose={() => setOpenDeleteDialog(false)}
         callback={() => {
           deleteItem();
         }}
-      />
+      /> */}
     </>
   );
 };
