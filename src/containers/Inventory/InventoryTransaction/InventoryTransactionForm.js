@@ -259,8 +259,8 @@ const InventoryTransactionForm = () => {
             note: "Note",
           },
         ]}
-        endpoint="/api/pharmacy_items/bulk_create"
-        template_file_name="pharmacy_item_template.csv"
+        endpoint="/api/inventory_transactions/bulk_create"
+        template_file_name="inventory_transactions_template.csv"
       />
     </>
   );
