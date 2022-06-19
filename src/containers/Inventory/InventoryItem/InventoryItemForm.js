@@ -2,6 +2,7 @@ import { LoadingButton } from "@mui/lab";
 import {
   Autocomplete,
   Box,
+  Button,
   Divider,
   MenuItem,
   TextField,
@@ -11,7 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import { BackButton } from "../../../components";
+import { BackButton, CSVUploadDialog } from "../../../components";
 import { useAxios } from "../../../hooks";
 
 const InventoryItemForm = () => {
@@ -25,9 +26,17 @@ const InventoryItemForm = () => {
   });
   const [pharmacyItems, setPharmacyItems] = useState([]);
   const [SSI, setSSI] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleChange = (e) => {
     setDetails({ ...details, [e.target.name]: e.target.value });
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   const getPharmacyItemsAndSSI = async () => {
@@ -103,253 +112,295 @@ const InventoryItemForm = () => {
   }, [id]);
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Toolbar
-        sx={{
-          display: "flex",
-          paddingLeft: "12px",
-        }}
-        variant="dense"
-        disableGutters={true}
-      >
-        <BackButton backFunction={() => history.goBack()} />
-        <Typography variant="h5">{id ? "Edit" : "New"}</Typography>
-      </Toolbar>
-      <Divider />
-      <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
-        <Box
+    <>
+      <Box sx={{ flexGrow: 1 }}>
+        <Toolbar
           sx={{
             display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
+            paddingLeft: "12px",
           }}
+          variant="dense"
+          disableGutters={true}
         >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Pharmacy Item</Typography>
-          </Box>
-          <Autocomplete
-            options={pharmacyItems}
-            style={{ width: "70%" }}
-            getOptionLabel={(option) => option.brand_name}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            value={details.pharmacy_item}
-            onChange={(e, value) => {
-              setDetails({
-                ...details,
-                pharmacy_item: value,
-                name: value.brand_name,
-                unit: "",
-              });
+          <BackButton backFunction={() => history.goBack()} />
+          <Typography variant="h5">{id ? "Edit" : "New"}</Typography>
+        </Toolbar>
+        <Divider />
+        <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
             }}
-            renderOption={(props, option) => {
-              return (
-                <Box {...props} key={option.id}>
-                  {option.brand_name}
-                </Box>
-              );
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                fullWidth
-                size="small"
-                margin="normal"
-              />
-            )}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Name</Typography>
-          </Box>
-          <TextField
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            value={details?.name || ""}
-            name="name"
-            onChange={handleChange}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: id ? "none" : "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Balance</Typography>
-          </Box>
-          <TextField
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            value={details?.balance || ""}
-            name="balance"
-            onChange={handleChange}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Unit</Typography>
-          </Box>
-          <TextField
-            select
-            fullWidth
-            label="Unit"
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            value={details?.unit || ""}
-            name="unit"
-            onChange={handleChange}
           >
-            {details?.pharmacy_item?.po_unit && (
-              <MenuItem value={details?.pharmacy_item?.po_unit}>
-                {details?.pharmacy_item?.po_unit}
-              </MenuItem>
-            )}
-            {details?.pharmacy_item?.unit && (
-              <MenuItem value={details?.pharmacy_item?.unit}>
-                {details?.pharmacy_item?.unit}
-              </MenuItem>
-            )}
-          </TextField>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Expiry Date</Typography>
+            <Box sx={{ width: "30%" }}>
+              <Typography variant="p">Pharmacy Item</Typography>
+            </Box>
+            <Autocomplete
+              options={pharmacyItems}
+              style={{ width: "70%" }}
+              getOptionLabel={(option) => option.brand_name}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              value={details.pharmacy_item}
+              onChange={(e, value) => {
+                setDetails({
+                  ...details,
+                  pharmacy_item: value,
+                  name: value.brand_name,
+                  unit: "",
+                });
+              }}
+              renderOption={(props, option) => {
+                return (
+                  <Box {...props} key={option.id}>
+                    {option.brand_name}
+                  </Box>
+                );
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  margin="normal"
+                />
+              )}
+            />
           </Box>
-          <TextField
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            placeholder="YYYY-MM-DD"
-            value={details?.expiry_date || ""}
-            name="expiry_date"
-            onChange={handleChange}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Batch</Typography>
-          </Box>
-          <TextField
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            value={details?.batch || ""}
-            name="batch"
-            onChange={handleChange}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Purchasing Price</Typography>
-          </Box>
-          <TextField
-            size="small"
-            sx={{ width: "70%" }}
-            margin="dense"
-            value={details?.purchasing_price || ""}
-            name="purchasing_price"
-            onChange={handleChange}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Sales Item</Typography>
-          </Box>
-          <Autocomplete
-            options={SSI}
-            style={{ width: "70%" }}
-            getOptionLabel={(option) => option.name}
-            value={details.ssi}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            onChange={(e, value) => {
-              setDetails({
-                ...details,
-                ssi: value,
-              });
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
             }}
-            renderOption={(props, option) => {
-              return (
-                <Box {...props} key={option.id}>
-                  {option.name}
-                </Box>
-              );
+          >
+            <Box sx={{ width: "30%" }}>
+              <Typography variant="p">Name</Typography>
+            </Box>
+            <TextField
+              size="small"
+              sx={{ width: "70%" }}
+              margin="dense"
+              value={details?.name || ""}
+              name="name"
+              onChange={handleChange}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: id ? "none" : "flex",
+              flexDirection: "row",
+              alignItems: "center",
             }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                fullWidth
-                size="small"
-                margin="normal"
-              />
-            )}
-          />
+          >
+            <Box sx={{ width: "30%" }}>
+              <Typography variant="p">Balance</Typography>
+            </Box>
+            <TextField
+              size="small"
+              sx={{ width: "70%" }}
+              margin="dense"
+              value={details?.balance || ""}
+              name="balance"
+              onChange={handleChange}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Box sx={{ width: "30%" }}>
+              <Typography variant="p">Unit</Typography>
+            </Box>
+            <TextField
+              select
+              fullWidth
+              label="Unit"
+              size="small"
+              sx={{ width: "70%" }}
+              margin="dense"
+              value={details?.unit || ""}
+              name="unit"
+              onChange={handleChange}
+            >
+              {details?.pharmacy_item?.po_unit && (
+                <MenuItem value={details?.pharmacy_item?.po_unit}>
+                  {details?.pharmacy_item?.po_unit}
+                </MenuItem>
+              )}
+              {details?.pharmacy_item?.unit && (
+                <MenuItem value={details?.pharmacy_item?.unit}>
+                  {details?.pharmacy_item?.unit}
+                </MenuItem>
+              )}
+            </TextField>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Box sx={{ width: "30%" }}>
+              <Typography variant="p">Expiry Date</Typography>
+            </Box>
+            <TextField
+              size="small"
+              sx={{ width: "70%" }}
+              margin="dense"
+              placeholder="YYYY-MM-DD"
+              value={details?.expiry_date || ""}
+              name="expiry_date"
+              onChange={handleChange}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Box sx={{ width: "30%" }}>
+              <Typography variant="p">Batch</Typography>
+            </Box>
+            <TextField
+              size="small"
+              sx={{ width: "70%" }}
+              margin="dense"
+              value={details?.batch || ""}
+              name="batch"
+              onChange={handleChange}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Box sx={{ width: "30%" }}>
+              <Typography variant="p">Purchasing Price</Typography>
+            </Box>
+            <TextField
+              size="small"
+              sx={{ width: "70%" }}
+              margin="dense"
+              value={details?.purchasing_price || ""}
+              name="purchasing_price"
+              onChange={handleChange}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Box sx={{ width: "30%" }}>
+              <Typography variant="p">Sales Item</Typography>
+            </Box>
+            <Autocomplete
+              options={SSI}
+              style={{ width: "70%" }}
+              getOptionLabel={(option) => option.name}
+              value={details.ssi}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              onChange={(e, value) => {
+                setDetails({
+                  ...details,
+                  ssi: value,
+                });
+              }}
+              renderOption={(props, option) => {
+                return (
+                  <Box {...props} key={option.id}>
+                    {option.name}
+                  </Box>
+                );
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  margin="normal"
+                />
+              )}
+            />
+          </Box>
+        </Box>
+        <Divider />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            padding: "20px 10px",
+          }}
+        >
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{ marginRight: "5px", display: id ? "none" : "block" }}
+            onClick={handleOpenDialog}
+          >
+            Upload
+          </Button>
+          <LoadingButton
+            variant="contained"
+            loading={loading}
+            size="small"
+            sx={{ marginRight: "5px" }}
+            onClick={id ? update : createNew}
+          >
+            Save
+          </LoadingButton>
         </Box>
       </Box>
-      <Divider />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          padding: "20px 10px",
-        }}
-      >
-        <LoadingButton
-          variant="contained"
-          loading={loading}
-          size="small"
-          sx={{ marginRight: "5px" }}
-          onClick={id ? update : createNew}
-        >
-          Save
-        </LoadingButton>
-      </Box>
-    </Box>
+      <CSVUploadDialog
+        open={openDialog}
+        handleClose={handleCloseDialog}
+        columns={[
+          "pharmacy_item_id",
+          "name",
+          "balance",
+          "unit",
+          "purchasing_price",
+          "sales_service_item_id",
+          "expiry_date",
+          "batch",
+        ]}
+        example_rows={[
+          {
+            pharmacy_item_id:
+              "Please don't touch row 1 and look at row 3 for field description and example values. Columns with comma seperated values are the only valid value for those field. REMOVE ROW 2 AND 3 BEFORE UPLOADING.",
+          },
+          {
+            pharmacy_item_id: "Pharmacy Item ID",
+            name: "Inventory Item Name",
+            balance: "Inventory Item Initial Balance",
+            unit: "Pharmacy Item's PO-unit or unit",
+            purchasing_price: "Purchasing Price",
+            sales_service_item_id: "Sales Service Item ID For Selling Price",
+            expiry_date: "YYYY-MM-DD",
+            batch: "Batch",
+          },
+        ]}
+        endpoint="/api/inventory_items/bulk_create"
+        template_file_name="inventory_item_template.csv"
+      />
+    </>
   );
 };
 
