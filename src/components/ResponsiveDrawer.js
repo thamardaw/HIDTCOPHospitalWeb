@@ -84,16 +84,15 @@ const ResponsiveDrawer = ({
             location.pathname.includes("category") ||
             location.pathname.includes("salesServiceItem")
           }
-          onClick={openAccordionList}
+          onClick={openBillingAccordionList}
         >
           <ListItemIcon>
             <CreditCardIcon />
           </ListItemIcon>
           <ListItemText primary="Billing" />
-          {open ? <ExpandLess /> : <ExpandMore />}
+          {openBilling ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
-
-        <Collapse in={open} timeout="auto" unmountOnExit>
+        <Collapse in={openBilling} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItemButton
               size="small"
@@ -104,9 +103,8 @@ const ResponsiveDrawer = ({
               <ListItemIcon>
                 <ReceiptIcon />
               </ListItemIcon>
-              <ListItemText primary="Bills" />
+              <ListItemText primary="Bill" />
             </ListItemButton>
-
             <ListItemButton
               size="small"
               sx={{ pl: "25px" }}
@@ -118,7 +116,6 @@ const ResponsiveDrawer = ({
               </ListItemIcon>
               <ListItemText primary="Deposit" />
             </ListItemButton>
-
             <ListItemButton
               size="small"
               sx={{ pl: "25px" }}
@@ -130,7 +127,6 @@ const ResponsiveDrawer = ({
               </ListItemIcon>
               <ListItemText primary="Daily Closing" />
             </ListItemButton>
-
             <ListItemButton
               size="small"
               sx={{ pl: "25px" }}
@@ -142,7 +138,6 @@ const ResponsiveDrawer = ({
               </ListItemIcon>
               <ListItemText primary="UOM" />
             </ListItemButton>
-
             <ListItemButton
               size="small"
               sx={{ pl: "25px" }}
@@ -154,7 +149,6 @@ const ResponsiveDrawer = ({
               </ListItemIcon>
               <ListItemText primary="Category" />
             </ListItemButton>
-
             <ListItemButton
               size="small"
               sx={{ pl: "25px" }}
@@ -168,7 +162,69 @@ const ResponsiveDrawer = ({
             </ListItemButton>
           </List>
         </Collapse>
-
+        <ListItemButton
+          selected={
+            location.pathname.includes("/pharmacy_item") ||
+            location.pathname.includes("/inventory_item") ||
+            location.pathname.includes("/inventory_transaction") ||
+            location.pathname.includes("/transaction_type")
+          }
+          onClick={openInventroyAccordionList}
+        >
+          <ListItemIcon>
+            <InventoryIcon />
+          </ListItemIcon>
+          <ListItemText primary="Inventory" />
+          {openInventory ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={openInventory} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItemButton
+              size="small"
+              sx={{ pl: "25px" }}
+              selected={location.pathname.includes("/pharmacy_item")}
+              onClick={handleClick(`${url}/pharmacy_item`)}
+            >
+              <ListItemIcon>
+                <EventNoteIcon />
+              </ListItemIcon>
+              <ListItemText primary="Pharmacy Item" />
+            </ListItemButton>
+            <ListItemButton
+              size="small"
+              sx={{ pl: "25px" }}
+              selected={location.pathname.includes("/inventory_item")}
+              onClick={handleClick(`${url}/inventory_item`)}
+            >
+              <ListItemIcon>
+                <Inventory2RoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Inventory Item" />
+            </ListItemButton>
+            <ListItemButton
+              size="small"
+              sx={{ pl: "25px" }}
+              selected={location.pathname.includes("/inventory_transaction")}
+              onClick={handleClick(`${url}/inventory_transaction`)}
+            >
+              <ListItemIcon>
+                <ReceiptLongRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Inventory Transaction" />
+            </ListItemButton>
+            <ListItemButton
+              size="small"
+              sx={{ pl: "25px" }}
+              selected={location.pathname.includes("/transaction_type")}
+              onClick={handleClick(`${url}/transaction_type`)}
+            >
+              <ListItemIcon>
+                <ClassIcon />
+              </ListItemIcon>
+              <ListItemText primary="Transaction Type" />
+            </ListItemButton>
+          </List>
+        </Collapse>
         <ListItemButton
           size="small"
           selected={location.pathname.includes("patient")}
