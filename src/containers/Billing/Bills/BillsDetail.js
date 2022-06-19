@@ -54,12 +54,14 @@ const BillsDetail = () => {
   const { id, stage } = useParams();
   const [showPay, setShowPay] = useState(false);
   const [bill, setBill] = useState({});
+  const [groupedBillItems, setGroupedBillItem] = useState([]);
   const [dispensedItems, setDispensedItems] = useState([]);
   const [inventoryItems, setInventoryItems] = useState([]);
   const [payment, setPayment] = useState({});
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [open, setOpen] = useState(false);
   const [dateState, setDateState] = useState(new Date());
+  const [isPrintMode, setIsPrintMode] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -70,6 +72,7 @@ const BillsDetail = () => {
       "@media print { body { -webkit-print-color-adjust: exact; } @page { size: A4; margin: 200mm !important }}",
     content: () => receiptRef.current,
     onAfterPrint: () => {
+      setIsPrintMode(false);
       // if (stage === "draft") {
       //   to_print();
       // }
@@ -90,6 +93,29 @@ const BillsDetail = () => {
     }
   };
 
+  const removeDuplicateObjectFromArray = (array, key) => {
+    let check = new Set();
+    return array.filter((obj) => !check.has(obj[key]) && check.add(obj[key]));
+  };
+
+  const group_bill_items = (billItems) => {
+    const grouped_list = [];
+    billItems.forEach((billItem) => {
+      const same = billItems.filter((bi) => {
+        return bi.name === billItem.name && bi.price === billItem.price;
+      });
+      let quantity = 0;
+      let subtotal = 0;
+      same.forEach((s) => {
+        subtotal += s.subtotal;
+        quantity += s.quantity;
+      });
+      grouped_list.push({ ...same[0], subtotal: subtotal, quantity: quantity });
+    });
+    const result = removeDuplicateObjectFromArray(grouped_list, "id");
+    setGroupedBillItem(result);
+  };
+
   const getBill = async () => {
     const res = await api.get(`/api/bill/${parseInt(id)}`);
     if (res.status === 200) {
@@ -99,6 +125,7 @@ const BillsDetail = () => {
         setPayment({ ...res.data.payment[0] });
         setShowPay(res.data.payment[0].is_outstanding);
       }
+      group_bill_items(res.data.bill_items);
     } else {
       history.goBack();
     }
@@ -178,6 +205,13 @@ const BillsDetail = () => {
   };
 
   useEffect(() => {
+    if (isPrintMode) {
+      handlePrint();
+    }
+    // eslint-disable-next-line
+  }, [isPrintMode]);
+
+  useEffect(() => {
     if (bill?.bill_items) {
       get_inventory_items();
     }
@@ -244,7 +278,7 @@ const BillsDetail = () => {
               variant="contained"
               size="small"
               sx={{ marginRight: "5px" }}
-              onClick={handlePrint}
+              onClick={() => setIsPrintMode(true)}
             >
               Print
             </Button>
@@ -421,7 +455,7 @@ const BillsDetail = () => {
               </Box>
             </Box>
           </Box>
-          <Box sx={{ my: "15px" }}>
+          <Box sx={{ my: "15px", display: isPrintMode ? "none" : "block" }}>
             <TableContainer>
               <Table sx={{ minWidth: 380 }}>
                 <TableHead
@@ -431,6 +465,7 @@ const BillsDetail = () => {
                   }}
                 >
                   <TableRow>
+                    <StyledTableCell maxWidth="75px">Date</StyledTableCell>
                     <StyledTableCell maxWidth="130px">Name</StyledTableCell>
                     <StyledTableCell maxWidth="75px" align="right">
                       Price
@@ -453,6 +488,9 @@ const BillsDetail = () => {
                             "&:last-child td, &:last-child th": { border: 0 },
                           }}
                         >
+                          <StyledTableCell maxWidth="75px">
+                            {row?.created_time?.split("T")[0]}
+                          </StyledTableCell>
                           <StyledTableCell
                             maxWidth="130px"
                             sx={{
@@ -474,6 +512,59 @@ const BillsDetail = () => {
                         </TableRow>
                       )
                     )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+          <Box sx={{ my: "15px", display: isPrintMode ? "block" : "none" }}>
+            <TableContainer>
+              <Table sx={{ minWidth: 380 }}>
+                <TableHead
+                  sx={{
+                    backgroundColor: "#EBEBEB",
+                    display: "table-row-group",
+                  }}
+                >
+                  <TableRow>
+                    <StyledTableCell maxWidth="130px">Name</StyledTableCell>
+                    <StyledTableCell maxWidth="75px" align="right">
+                      Price
+                    </StyledTableCell>
+                    <StyledTableCell maxWidth="55px" align="right">
+                      Qty
+                    </StyledTableCell>
+                    <StyledTableCell maxWidth="120px" align="right">
+                      SubTotal
+                    </StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {groupedBillItems &&
+                    stableSort(
+                      groupedBillItems,
+                      getComparator("asc", "id")
+                    ).map((row, index) => (
+                      <TableRow
+                        key={index}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <StyledTableCell maxWidth="130px">
+                          {row?.name}
+                        </StyledTableCell>
+                        <StyledTableCell maxWidth="75px" align="right">
+                          {row?.price}
+                        </StyledTableCell>
+                        <StyledTableCell maxWidth="55px" align="right">
+                          {row?.quantity}
+                        </StyledTableCell>
+
+                        <StyledTableCell maxWidth="120px" align="right">
+                          {row?.subtotal}
+                        </StyledTableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>
