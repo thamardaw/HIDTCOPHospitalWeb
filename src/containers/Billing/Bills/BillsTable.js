@@ -122,6 +122,7 @@ const BillsTable = () => {
           address: row.patient_address,
           totalAmount: row.total_amount,
           date: row.created_time.split("T")[0],
+          bill_items: row.bill_items,
         };
       });
       setDraftedRows(data);
@@ -195,13 +196,18 @@ const BillsTable = () => {
     if (selected.length === 0) {
       return;
     }
-    await api.put(`/api/bill/cancel/${parseInt(selected[0].id.split("-")[1])}`);
-    handleClose();
-    setSelected([]);
-    getDraftedData();
-    getOutstandingData();
-    getCompletedData();
-    getCancelledData();
+    const [b, inv] = await Promise.all([
+      api.put(`/api/bill/cancel/${parseInt(selected[0].id.split("-")[1])}`),
+      api.post("/api/inventory/returns", [...selected[0]?.bill_items]),
+    ]);
+    if (b.status === 200 && inv.status === 200) {
+      handleClose();
+      setSelected([]);
+      getDraftedData();
+      getOutstandingData();
+      getCompletedData();
+      getCancelledData();
+    }
   };
 
   useEffect(() => {
