@@ -506,7 +506,17 @@ const BillsEditForm = () => {
                           Quantity
                         </StyledTableCell>
                         <StyledTableCell align="right">UOM</StyledTableCell>
-                        <Tooltip title="Add" arrow placement="top">
+                        <Tooltip
+                          title={
+                            details?.bill_items &&
+                            details.bill_items.reduce(
+                              (total, num) => total + num.subtotal,
+                              0
+                            )
+                          }
+                          arrow
+                          placement="top"
+                        >
                           <StyledTableCell align="right">
                             SubTotal
                           </StyledTableCell>
