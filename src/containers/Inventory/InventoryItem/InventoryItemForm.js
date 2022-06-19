@@ -390,7 +390,7 @@ const InventoryItemForm = () => {
             pharmacy_item_id: "Pharmacy Item ID",
             name: "Inventory Item Name",
             balance: "Inventory Item Initial Balance",
-            unit: "Pharmacy Item's PO-unit or unit",
+            unit: "Pharmacy Item's PO-unit or unit (This is case sensitive)",
             purchasing_price: "Purchasing Price",
             sales_service_item_id: "Sales Service Item ID For Selling Price",
             expiry_date: "YYYY-MM-DD",
