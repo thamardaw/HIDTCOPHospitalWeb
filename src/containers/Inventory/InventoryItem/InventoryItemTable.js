@@ -1,7 +1,15 @@
-// import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CustomTable } from "../../../components";
-// import { LoadingContext } from "../../../contexts";
-// import { useAxios } from "../../../hooks";
+import { LoadingContext } from "../../../contexts";
+import { useAxios } from "../../../hooks";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 
 const headCells = [
   {
@@ -15,24 +23,6 @@ const headCells = [
     numeric: false,
     disablePadding: false,
     label: "Brand Name",
-  },
-  {
-    id: "generic_name",
-    numeric: false,
-    disablePadding: false,
-    label: "Generic Name",
-  },
-  {
-    id: "form",
-    numeric: false,
-    disablePadding: false,
-    label: "Form",
-  },
-  {
-    id: "strength",
-    numeric: false,
-    disablePadding: false,
-    label: "Strength",
   },
   {
     id: "balance",
@@ -59,34 +49,109 @@ const headCells = [
     label: "Selling Price",
   },
   {
-    id: "total",
+    id: "expiry_date",
     numeric: false,
     disablePadding: false,
-    label: "Total",
+    label: "Expiry Date",
   },
 ];
 
 const InventoryItemTable = () => {
-  // const api = useAxios({ autoSnackbar: true });
-  // const [rows, setRows] = useState([]);
-  const rows = [];
-  // const [open, setOpen] = useState(false);
-  // const [selected, setSelected] = useState([]);
-  // const { setScreenLoading } = useContext(LoadingContext);
+  const api = useAxios({ autoSnackbar: true });
+  const [rows, setRows] = useState([]);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [selected, setSelected] = useState([]);
+  const { setScreenLoading } = useContext(LoadingContext);
 
-  const handleClickOpen = (arr) => {
-    // setSelected(arr);
-    // setOpen(true);
+  const handleClickOpenDeleteDialog = (arr) => {
+    setSelected(arr);
+    setOpenDeleteDialog(true);
   };
 
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+  };
+
+  const getData = async () => {
+    setScreenLoading(true);
+    const res = await api.get("/api/inventory_items/");
+    if (res.status === 200) {
+      const data = res.data.map((row) => {
+        return {
+          id: row.id,
+          brand_name: row?.pharmacy_item?.brand_name,
+          balance: row?.balance,
+          unit: row?.unit,
+          purchasing_price: row?.purchasing_price,
+          selling_price: row?.sales_service_item?.price,
+          expiry_date: row?.expiry_date,
+        };
+      });
+      setRows(data);
+      setScreenLoading(false);
+    }
+    return;
+  };
+
+  const deleteItem = async () => {
+    if (selected.length === 0) {
+      return;
+    } else if (selected.length === 1) {
+      await api.delete(`/api/inventory_items/${parseInt(selected[0].id)}`);
+    } else if (selected.length > 1) {
+      const extractedID = selected.map((item) => {
+        return item.id;
+      });
+      await api.post(`/api/inventory_items/bulk`, {
+        listOfId: extractedID,
+      });
+    }
+    handleCloseDeleteDialog();
+    setSelected([]);
+    getData();
+  };
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line
+  }, []);
+
   return (
-    <CustomTable
-      tableName="Inventory Item"
-      headCells={headCells}
-      rows={rows}
-      onDelete={handleClickOpen}
-      enableMultipleDelete={false}
-    />
+    <>
+      <CustomTable
+        tableName="Inventory Item"
+        headCells={headCells}
+        rows={rows}
+        onDelete={handleClickOpenDeleteDialog}
+        enableMultipleDelete={false}
+      />
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
+          <Button onClick={deleteItem} autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* <DeleteDialog
+        isOpen={openDeleteDialog}
+        handleClose={() => setOpenDeleteDialog(false)}
+        callback={() => {
+          deleteItem();
+        }}
+      /> */}
+    </>
   );
 };
 

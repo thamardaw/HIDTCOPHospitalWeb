@@ -1,7 +1,8 @@
-// import { useContext, useState } from "react";
-// import { LoadingContext } from "../../../contexts";
-// import { useAxios } from "../../../hooks";
-import { CustomInventoryTransactionTable } from "../../../components";
+import { useContext, useEffect, useState } from "react";
+import { CustomTable } from "../../../components";
+import { LoadingContext } from "../../../contexts";
+import { useAxios } from "../../../hooks";
+// import { CustomInventoryTransactionTable, CustomTable } from "../../../components";
 
 const headCells = [
   {
@@ -29,10 +30,10 @@ const headCells = [
     label: "Batch",
   },
   {
-    id: "transaction_type",
+    id: "transaction_type_name",
     numeric: false,
     disablePadding: false,
-    label: "Transaction Type",
+    label: "Transaction Type Name",
   },
   {
     id: "quantity",
@@ -47,13 +48,13 @@ const headCells = [
     label: "Unit",
   },
   {
-    id: "op_balance",
+    id: "opening_balance",
     numeric: false,
     disablePadding: false,
     label: "Op Balance",
   },
   {
-    id: "cl_balance",
+    id: "closing_balance",
     numeric: false,
     disablePadding: false,
     label: "CL Balance",
@@ -65,12 +66,6 @@ const headCells = [
     label: "Selling Price",
   },
   {
-    id: "opening_balance",
-    numeric: false,
-    disablePadding: false,
-    label: "Opening Balance",
-  },
-  {
     id: "note",
     numeric: false,
     disablePadding: false,
@@ -79,24 +74,47 @@ const headCells = [
 ];
 
 const InventoryTransactionTable = () => {
-  // const api = useAxios({ autoSnackbar: true });
-  // const [rows, setRows] = useState([]);
-  // const [open, setOpen] = useState(false);
-  // const [selected, setSelected] = useState([]);
-  // const { setScreenLoading } = useContext(LoadingContext);
-  const rows = [];
+  const api = useAxios({ autoSnackbar: true });
+  const [rows, setRows] = useState([]);
+  const { setScreenLoading } = useContext(LoadingContext);
 
-  const handleClickOpen = (arr) => {
-    // setSelected(arr);
-    // setOpen(true);
+  const getData = async () => {
+    setScreenLoading(true);
+    const res = await api.get("/api/inventory_transactions/");
+    if (res.status === 200) {
+      const data = res.data.map((row) => {
+        return {
+          id: row.id,
+          brand_name: row?.inventory_item?.pharmacy_item?.brand_name,
+          generic_name: row?.inventory_item?.pharmacy_item?.generic_name,
+          batch: row?.inventory_item?.batch,
+          transaction_type_name: row?.transaction_type_name,
+          quantity: row?.quantity,
+          unit: row?.unit,
+          opening_balance: row?.opening_balance,
+          closing_balance: row?.closing_balance,
+          selling_price: row?.selling_price,
+          note: row?.note,
+        };
+      });
+      setRows(data);
+      setScreenLoading(false);
+    }
+    return;
   };
 
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line
+  }, []);
+
   return (
-    <CustomInventoryTransactionTable
+    <CustomTable
       tableName="Inventory Transaction"
       headCells={headCells}
       rows={rows}
-      onDelete={handleClickOpen}
+      addDelete={false}
+      addEdit={false}
       enableMultipleDelete={false}
     />
   );
