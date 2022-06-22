@@ -1,6 +1,9 @@
 [context.production.environment]
   REACT_APP_BASE_URL = "https://hidtcop-api.herokuapp.com"
 
+[context.minor-add_inventory.environment]
+  REACT_APP_BASE_URL = "https://hidtcop-inventory-api.herokuapp.com"
+
 [context.branch-deploy.environment]
   REACT_APP_BASE_URL = "https://hidtcop-staging-api.herokuapp.com"
 
