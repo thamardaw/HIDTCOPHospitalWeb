@@ -86,27 +86,25 @@ const CSVUploadDialog = ({
   };
 
   const processResponse = (res) => {
-    // const key = /\([^)]*\)/i;
-    // const value = /\([0-9]+\)/i;
+    const key = /\([^)]*\)/i;
+    const value = /\([0-9]+\)/i;
     if (res.status === 200) {
       showAlert(res.status, res.data.detail);
       handleClose();
-    }
-    // else if (res.status === 422) {
-    //   const errors = res.data.detail.map((error) => {
-    //     return `Row ${error.loc[1] + 2} - Column ${error.loc[2]} : ${
-    //       error.msg
-    //     }`;
-    //   });
-    //   setErrors(errors);
-    // } else if (res.status === 400) {
-    //   setErrors([
-    //     `${res.data.detail.match(key)[0]} - ${
-    //       res.data.detail.match(value)[0]
-    //     } does not exist.`,
-    //   ]);
-    // }
-    else {
+    } else if (res.status === 422) {
+      const errors = res.data.detail.map((error) => {
+        return `Row ${error.loc[1] + 2} - Column ${error.loc[2]} : ${
+          error.msg
+        }`;
+      });
+      setErrors(errors);
+    } else if (res.status === 400) {
+      setErrors([
+        `${res.data.detail.match(key)[0]} - ${
+          res.data.detail.match(value)[0]
+        } does not exist.`,
+      ]);
+    } else {
       showAlert(res.status, res.data.message || res.data.detail);
     }
     fileInputRef.current.value = null;
