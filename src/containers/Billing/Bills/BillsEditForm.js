@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  Badge,
   Button,
   Container,
   Divider,
@@ -16,6 +17,7 @@ import {
   TableRow,
   TextField,
   Toolbar,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -31,6 +33,8 @@ import LoadingContext from "../../../contexts/LoadingContext";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { getComparator, stableSort } from "../../../utils/sorting";
 import { BackButton } from "../../../components";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#EBEBEB",
@@ -41,7 +45,9 @@ const BillsEditForm = () => {
   const history = useHistory();
   const api = useAxios({ autoSnackbar: true });
   const { id } = useParams();
-  const [details, setDetails] = useState([]);
+  const [details, setDetails] = useState({});
+  const [billItems, setBillItems] = useState([]);
+  const [dispensedItems, setDispensedItems] = useState([]);
   const [salesServiceItem, setSalesServiceItem] = useState([]);
   const [currentSSI, setCurrentSSI] = useState(null);
   const [currentQuantity, setCurrentQuantity] = useState(0);
@@ -50,7 +56,6 @@ const BillsEditForm = () => {
   const { setScreenLoading } = useContext(LoadingContext);
   const [editingItem, setEditingItem] = useState({
     id: 0,
-    index: 0,
     quantity: 0,
     price: 0,
   });
@@ -58,17 +63,29 @@ const BillsEditForm = () => {
   const SSIRef = useRef();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [filter, setFilter] = useState({
+    date: "",
+    name: "",
+  });
+  const [dateFilterAnchorEl, setDateFilterAnchorEl] = useState(null);
+  const [nameFilterAnchorEl, setNameFilterAnchorEl] = useState(null);
+  const dateFilterOpen = Boolean(dateFilterAnchorEl);
+  const nameFilterOpen = Boolean(nameFilterAnchorEl);
 
-  const handleEdit = (event, index) => {
+  const handleEdit = (event, row) => {
     setEditingItem({
       ...editingItem,
-      index: index,
-      id: details.bill_items[index].id,
-      quantity: details.bill_items[index].quantity,
+      id: row.id,
+      quantity: row.quantity,
     });
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+
+  const resetFilter = () => {
+    setFilter({ date: "", name: "" });
+  };
+
+  const handleEditClose = () => {
     setAnchorEl(null);
   };
 
@@ -101,16 +118,23 @@ const BillsEditForm = () => {
   };
 
   const getData = async () => {
-    const res = await api.get(`/api/bill/${parseInt(id.split("-")[1])}`);
-    if (res.status === 200) {
-      getDepositByPatientId(res.data.patient.id);
+    const [bill, invtxs] = await Promise.all([
+      api.get(`/api/bill/${parseInt(id.split("-")[1])}`),
+      api.get(`/api/inventory/dispense/${parseInt(id.split("-")[1])}`),
+    ]);
+    if (bill.status === 200 && invtxs.status === 200) {
+      getDepositByPatientId(bill.data.patient.id);
       setDetails({
-        ...res.data,
+        ...bill.data,
         bill_items: stableSort(
-          res.data.bill_items,
+          bill.data.bill_items,
           getComparator("desc", "id")
         ),
       });
+      setBillItems(
+        stableSort(bill.data.bill_items, getComparator("desc", "id"))
+      );
+      setDispensedItems(invtxs.data);
     } else {
       history.goBack();
     }
@@ -123,7 +147,7 @@ const BillsEditForm = () => {
       `/api/bill/billItem/${editingItem.id}/?quantity=${editingItem.quantity}`
     );
     if (res.status === 200) {
-      handleClose();
+      handleEditClose();
       getData();
     }
     setLoading(false);
@@ -143,6 +167,7 @@ const BillsEditForm = () => {
     );
     if (res.status === 200) {
       getData();
+      resetFilter();
       setCurrentSSI(null);
       setCurrentQuantity(0);
     }
@@ -150,14 +175,40 @@ const BillsEditForm = () => {
     SSIRef.current.focus();
   };
 
-  const removeItem = async (itemId) => {
-    const res = await api.delete(
-      `/api/bill/${parseInt(id.split("-")[1])}/billItem/${itemId}`
-    );
-    if (res.status === 200) {
+  const removeItem = async (row) => {
+    const [item, invtx] = await Promise.all([
+      api.delete(`/api/bill/${parseInt(id.split("-")[1])}/billItem/${row.id}`),
+      api.post(`/api/inventory/return`, { ...row }),
+    ]);
+    if (item.status === 200 && invtx.status === 200) {
       getData();
+      resetFilter();
     }
   };
+
+  useEffect(() => {
+    const date = filter.date.toLowerCase();
+    const name = filter.name.toLowerCase();
+    if (date === "" && name === "") {
+      setDetails({
+        ...details,
+        bill_items: billItems,
+      });
+      return;
+    }
+    const v = billItems.filter((value) => {
+      return (
+        (date === "" ||
+          value["created_time"].toString().toLowerCase().includes(date)) &&
+        (name === "" || value["name"].toString().toLowerCase().includes(name))
+      );
+    });
+    setDetails({
+      ...details,
+      bill_items: v,
+    });
+    // eslint-disable-next-line
+  }, [filter]);
 
   useEffect(() => {
     getSalesServiceItem();
@@ -170,131 +221,10 @@ const BillsEditForm = () => {
       <Paper sx={{ width: "100%", mb: 1 }}>
         <Toolbar>
           <BackButton backFunction={() => history.goBack()} />
-          <Typography
-            variant="h6"
-            component="div"
-            //   sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-          >
+          <Typography variant="h6" component="div">
             Edit Bill
           </Typography>
         </Toolbar>
-
-        <Container>
-          {/* <Box
-            sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
-          >
-            <Box
-              sx={{
-                flex: 0.5,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Box sx={{ width: "100%" }}>
-                <Typography variant="p" fontWeight={500}>
-                  Patient Name
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  margin: "20px 0px",
-                }}
-              >
-                <Typography variant="body2">{details?.patient_name}</Typography>
-              </Box>
-            </Box>
-            <Box
-              sx={{
-                flex: 0.5,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Box sx={{ width: "100%" }}>
-                <Typography variant="p" fontWeight={500}>
-                  Pateint ID
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  margin: "20px 0px",
-                }}
-              >
-                <Typography variant="body2">
-                  {details?.patient_id &&
-                    generateID(
-                      details?.patient_id,
-                      details?.patient.created_time
-                    )}
-                </Typography>
-              </Box>
-            </Box>
-          </Box> */}
-          {/* <Box
-            sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
-          >
-            <Box
-              sx={{
-                flex: 0.5,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Box sx={{ width: "100%" }}>
-                <Typography variant="p" fontWeight={500}>
-                  Phone
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  margin: "20px 0px",
-                }}
-              >
-                <Typography variant="body2">
-                  {details?.patient_phone}
-                </Typography>
-              </Box>
-            </Box>
-            <Box
-              sx={{
-                flex: 0.5,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Box sx={{ width: "100%" }}>
-                <Typography variant="p" fontWeight={500}>
-                  Address
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  margin: "20px 0px",
-                }}
-              >
-                <Typography variant="body2">
-                  {details?.patient_address}
-                </Typography>
-              </Box>
-            </Box>
-          </Box> */}
-        </Container>
         <Container sx={{ paddingBottom: "20px" }}>
           <Box
             sx={{
@@ -329,8 +259,6 @@ const BillsEditForm = () => {
                         Select Sales & Service Item
                       </Typography>
                     </Box>
-                    {/* <TextField size="small" fullWidth margin="dense" />
-                     */}
                     <Box
                       sx={{
                         width: "100%",
@@ -453,6 +381,20 @@ const BillsEditForm = () => {
                   }}
                 >
                   <Box sx={{ width: "30%" }}>
+                    <Typography variant="body">Bill ID</Typography>
+                  </Box>
+                  <Typography variant="body">
+                    : {generateID(parseInt(id.split("-")[1]))}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box sx={{ width: "30%" }}>
                     <Typography variant="body">Patient ID</Typography>
                   </Box>
                   <Typography variant="body">
@@ -521,15 +463,64 @@ const BillsEditForm = () => {
                     <TableHead>
                       <TableRow>
                         <StyledTableCell>No</StyledTableCell>
-                        <StyledTableCell>Name</StyledTableCell>
+                        <StyledTableCell>
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            Date
+                            <IconButton
+                              size="small"
+                              onClick={(event) => {
+                                setDateFilterAnchorEl(event.currentTarget);
+                              }}
+                            >
+                              <Badge
+                                variant="dot"
+                                invisible={filter.date === ""}
+                                color="primary"
+                              >
+                                <FilterAltIcon fontSize="small" />
+                              </Badge>
+                            </IconButton>
+                          </Box>
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            Name
+                            <IconButton
+                              size="small"
+                              onClick={(event) => {
+                                setNameFilterAnchorEl(event.currentTarget);
+                              }}
+                            >
+                              <Badge
+                                variant="dot"
+                                invisible={filter.name === ""}
+                                color="primary"
+                              >
+                                <FilterAltIcon fontSize="small" />
+                              </Badge>
+                            </IconButton>
+                          </Box>
+                        </StyledTableCell>
                         <StyledTableCell align="right">Price</StyledTableCell>
                         <StyledTableCell align="right">
                           Quantity
                         </StyledTableCell>
                         <StyledTableCell align="right">UOM</StyledTableCell>
-                        <StyledTableCell align="right">
-                          SubTotal
-                        </StyledTableCell>
+                        <Tooltip
+                          title={
+                            details?.bill_items &&
+                            details.bill_items.reduce(
+                              (total, num) => total + num.subtotal,
+                              0
+                            )
+                          }
+                          arrow
+                          placement="top"
+                        >
+                          <StyledTableCell align="right">
+                            SubTotal
+                          </StyledTableCell>
+                        </Tooltip>
                         <StyledTableCell align="center">
                           Actions
                         </StyledTableCell>
@@ -547,6 +538,9 @@ const BillsEditForm = () => {
                             <TableCell component="th" scope="row">
                               {index + 1}
                             </TableCell>
+                            <TableCell>
+                              {row?.created_time.split("T")[0]}
+                            </TableCell>
                             <TableCell>{row?.name}</TableCell>
                             <TableCell align="right">{row?.price}</TableCell>
                             <TableCell align="right">{row?.quantity}</TableCell>
@@ -563,11 +557,25 @@ const BillsEditForm = () => {
                                 <IconButton
                                   aria-label="edit"
                                   color="primary"
-                                  onClick={(e) => handleEdit(e, index)}
+                                  onClick={(e) => handleEdit(e, row)}
                                   sx={{
                                     padding: "0px",
                                     margin: "0px",
                                     marginRight: "5px",
+                                    display: dispensedItems.find(function (
+                                      dt,
+                                      index
+                                    ) {
+                                      if (
+                                        parseInt(dt.note.split(",")[1]) ===
+                                        row.id
+                                      ) {
+                                        return true;
+                                      }
+                                      return false;
+                                    })
+                                      ? "none"
+                                      : "span",
                                   }}
                                 >
                                   <ModeEditIcon />
@@ -575,7 +583,7 @@ const BillsEditForm = () => {
                                 <IconButton
                                   aria-label="delete"
                                   color="error"
-                                  onClick={() => removeItem(row.id)}
+                                  onClick={() => removeItem(row)}
                                   sx={{ padding: "0px", margin: "0px" }}
                                 >
                                   <DeleteIcon />
@@ -589,28 +597,6 @@ const BillsEditForm = () => {
                 </TableContainer>
               </Container>
               <Container sx={{ paddingTop: { xs: "20px", sm: "5px" } }}>
-                {/* <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                  >
-                    Deposit : {totalDeposit}MMK
-                  </Typography>
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                  >
-                    Total : {details?.total_amount}MMK
-                  </Typography>
-                </Box> */}
-
                 <Box
                   sx={{
                     display: "flex",
@@ -686,7 +672,7 @@ const BillsEditForm = () => {
       <Menu
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={handleEditClose}
         PaperProps={{
           elevation: 0,
           sx: {
@@ -741,6 +727,93 @@ const BillsEditForm = () => {
           >
             Save
           </LoadingButton>
+        </MenuItem>
+      </Menu>
+      <Menu
+        anchorEl={dateFilterAnchorEl}
+        open={dateFilterOpen}
+        onClose={() => setDateFilterAnchorEl(null)}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: "visible",
+            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+            mt: 1.5,
+            "& .MuiAvatar-root": {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            "&:before": {
+              content: '""',
+              display: "block",
+              position: "absolute",
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: "background.paper",
+              transform: "translateY(-50%) rotate(45deg)",
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+      >
+        <MenuItem>
+          <TextField
+            label="Date"
+            placeholder="YYYY-MM-DD"
+            size="small"
+            sx={{ width: "120px" }}
+            value={filter.date}
+            onChange={(e) => setFilter({ ...filter, date: e.target.value })}
+          />
+        </MenuItem>
+      </Menu>
+      <Menu
+        anchorEl={nameFilterAnchorEl}
+        open={nameFilterOpen}
+        onClose={() => setNameFilterAnchorEl(null)}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: "visible",
+            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+            mt: 1.5,
+            "& .MuiAvatar-root": {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            "&:before": {
+              content: '""',
+              display: "block",
+              position: "absolute",
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: "background.paper",
+              transform: "translateY(-50%) rotate(45deg)",
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+      >
+        <MenuItem>
+          <TextField
+            label="Name"
+            size="small"
+            sx={{ width: "120px" }}
+            value={filter.name}
+            onChange={(e) => setFilter({ ...filter, name: e.target.value })}
+          />
         </MenuItem>
       </Menu>
     </>
