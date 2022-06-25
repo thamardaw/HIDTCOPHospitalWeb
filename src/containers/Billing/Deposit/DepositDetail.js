@@ -105,7 +105,7 @@ const CategoryDetail = () => {
             textAlign="center"
             sx={{ marginTop: "20px" }}
           >
-            {constants.hospital_name}
+            {constants.name_long}
           </Typography>
           <Typography
             variant="h6"
