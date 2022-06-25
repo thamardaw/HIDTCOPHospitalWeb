@@ -80,9 +80,16 @@ const BillsDetail = () => {
   });
 
   const cancelBill = async () => {
-    await api.put(`/api/bill/cancel/${id}`);
-    handleClose();
-    history.goBack();
+    if (bill) {
+      const [b, inv] = await Promise.all([
+        api.put(`/api/bill/cancel/${id}`),
+        api.post("/api/inventory/returns", [...bill?.bill_items]),
+      ]);
+      if (b.status === 200 && inv.status === 200) {
+        handleClose();
+        history.goBack();
+      }
+    }
   };
 
   const getDepositByPatientId = async (id) => {
