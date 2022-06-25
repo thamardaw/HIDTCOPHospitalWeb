@@ -341,7 +341,7 @@ const BillsDetail = () => {
         <Container ref={receiptRef}>
           <Box sx={{ my: "15px" }}>
             <Typography variant="h6" textAlign="center">
-              {constants.hospital_name}
+              {constants.name_long}
             </Typography>
             <Box sx={{ flexDirection: "column", paddingTop: "15px" }}>
               <Box
