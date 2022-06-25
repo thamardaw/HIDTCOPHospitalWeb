@@ -86,8 +86,8 @@ const CSVUploadDialog = ({
   };
 
   const processResponse = (res) => {
-    const key = /\([^)]*\)/i;
-    const value = /\([0-9]+\)/i;
+    // const key = /\([^)]*\)/i;
+    // const value = /\([0-9]+\)/i;
     if (res.status === 200) {
       showAlert(res.status, res.data.detail);
       handleClose();
