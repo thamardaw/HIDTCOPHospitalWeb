@@ -154,7 +154,7 @@ const DepositTable = () => {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Box display="flex" justifyContent="flex-end">
+      <Box display="flex" justifyContent="flex-end" pt={1} pr={1}>
         <Button
           variant="outlined"
           size="small"

@@ -24,7 +24,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker image
+      - name: Build and push docker image dagon lin
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: .
@@ -34,4 +34,17 @@ jobs:
             THEME=#03C0C1
             TITLE="Dagon Lin"
             TITLE_SHORT=DGL
-          tags: jasoniv/hidtcophospitalweb:latest
+          tags: |
+            jasoniv/hidtcophospitalweb:latest
+
+      - name: Build and push docker image kandaw mon
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          build-args: |
+            BASE_URL=http://localhost:8000
+            THEME=
+            TITLE=Kan Taw Mon
+            TITLE_SHORT=KTM
+          tags: jasoniv/kdm-bill:latest

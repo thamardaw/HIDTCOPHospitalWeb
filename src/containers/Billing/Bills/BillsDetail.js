@@ -32,14 +32,14 @@ import { constants } from "../../../utils/constants";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.3rem",
-  fontWeight: 500,
+  fontWeight: 1000,
 }));
 
 const StyledTableCell = styled(TableCell)(
   ({ theme, backgroundColor, maxWidth }) => ({
     backgroundColor: backgroundColor,
     fontSize: "1.2rem",
-    fontWeight: 500,
+    fontWeight: 1000,
     wordWrap: "break-word",
     maxWidth: maxWidth,
   })

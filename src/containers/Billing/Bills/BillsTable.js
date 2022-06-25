@@ -162,7 +162,7 @@ const BillsTable = () => {
           phone: row.patient_phone,
           address: row.patient_address,
           totalAmount: row.total_amount,
-          date: row.created_time.split("T")[0],
+          date: row.payment[0].updated_time.split("T")[0],
         };
       });
       setCompletedRows(data);
@@ -214,7 +214,7 @@ const BillsTable = () => {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Box display="flex" justifyContent="flex-end">
+      <Box display="flex" justifyContent="flex-end" pt={1} pr={1}>
         <Button
           variant="outlined"
           size="small"

@@ -1,11 +1,13 @@
 import {
-  Button,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
   Collapse,
-  Divider,
   Drawer,
   List,
   ListItem,
   Toolbar,
+  Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import PeopleIcon from "@mui/icons-material/People";
@@ -54,175 +56,120 @@ const ResponsiveDrawer = ({
   const drawer = (
     <>
       <Toolbar />
-      <Divider />
-      <List>
-        <ListItem onClick={openAccordionList}>
-          <Button
-            size="small"
-            variant={
-              location.pathname.includes("/salesServiceItem") ||
-              location.pathname.includes("/uom") ||
-              location.pathname.includes("/category") ||
-              location.pathname.includes("/bills") ||
-              location.pathname.includes("/dailyClosing") ||
-              location.pathname.includes("/deposit")
-                ? "contained"
-                : "text"
-            }
-            fullWidth
-            startIcon={<CreditCardIcon />}
-            sx={{
-              display: "flex",
-              justifyContent: "flex-start",
-            }}
-          >
-            Billing
-            {open ? <ExpandLess /> : <ExpandMore />}
-          </Button>
+      <List
+        component="nav"
+        aria-label="Main Menu"
+        style={{ fontSize: "small" }}
+      >
+        <ListItem>
+          <Typography variant="overline" display="block">
+            Menu
+          </Typography>
         </ListItem>
+        <ListItemButton
+          selected={
+            location.pathname.includes("bills") ||
+            location.pathname.includes("deposit") ||
+            location.pathname.includes("dailyClosing") ||
+            location.pathname.includes("uom") ||
+            location.pathname.includes("category") ||
+            location.pathname.includes("salesServiceItem")
+          }
+          onClick={openAccordionList}
+        >
+          <ListItemIcon>
+            <CreditCardIcon />
+          </ListItemIcon>
+          <ListItemText primary="Billing" />
+          {open ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+
         <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding sx={{ paddingLeft: "8px" }}>
-            <ListItem>
-              <Button
-                size="small"
-                variant={
-                  location.pathname.includes("/bills") ? "contained" : "text"
-                }
-                fullWidth
-                startIcon={<ReceiptIcon />}
-                onClick={handleClick(`${url}/bills`)}
-                sx={{
-                  display: "flex",
-                  justifyContent: location.pathname.includes("/bills")
-                    ? "flex-end"
-                    : "flex-start",
-                }}
-              >
-                Bill
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
-                size="small"
-                variant={
-                  location.pathname.includes("/deposit") ? "contained" : "text"
-                }
-                fullWidth
-                startIcon={<AccountBalanceIcon />}
-                onClick={handleClick(`${url}/deposit`)}
-                sx={{
-                  display: "flex",
-                  justifyContent: location.pathname.includes("/deposit")
-                    ? "flex-end"
-                    : "flex-start",
-                }}
-              >
-                Deposit
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
-                size="small"
-                variant={
-                  location.pathname.includes("/dailyClosing")
-                    ? "contained"
-                    : "text"
-                }
-                fullWidth
-                startIcon={<AnalyticsIcon />}
-                onClick={handleClick(`${url}/dailyClosing`)}
-                sx={{
-                  display: "flex",
-                  justifyContent: location.pathname.includes("/dailyClosing")
-                    ? "flex-end"
-                    : "flex-start",
-                }}
-              >
-                Daily Closing
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
-                size="small"
-                variant={
-                  location.pathname.includes("/uom") ? "contained" : "text"
-                }
-                fullWidth
-                startIcon={<SquareFootIcon />}
-                onClick={handleClick(`${url}/uom`)}
-                sx={{
-                  display: "flex",
-                  justifyContent: location.pathname.includes("/uom")
-                    ? "flex-end"
-                    : "flex-start",
-                }}
-              >
-                UOM
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
-                size="small"
-                variant={
-                  location.pathname.includes("/category") ? "contained" : "text"
-                }
-                fullWidth
-                startIcon={<CategoryIcon />}
-                onClick={handleClick(`${url}/category`)}
-                sx={{
-                  display: "flex",
-                  justifyContent: location.pathname.includes("/category")
-                    ? "flex-end"
-                    : "flex-start",
-                }}
-              >
-                Category
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
-                size="small"
-                variant={
-                  location.pathname.includes("/salesServiceItem")
-                    ? "contained"
-                    : "text"
-                }
-                fullWidth
-                startIcon={<EventNoteIcon />}
-                onClick={handleClick(`${url}/salesServiceItem`)}
-                sx={{
-                  display: "flex",
-                  justifyContent: location.pathname.includes(
-                    "/salesServiceItem"
-                  )
-                    ? "flex-end"
-                    : "flex-start",
-                }}
-              >
-                Sales & Service Item
-              </Button>
-            </ListItem>
+          <List component="div" disablePadding>
+            <ListItemButton
+              size="small"
+              sx={{ pl: "25px" }}
+              selected={location.pathname.includes("bills")}
+              onClick={handleClick(`${url}/bills`)}
+            >
+              <ListItemIcon>
+                <ReceiptIcon />
+              </ListItemIcon>
+              <ListItemText primary="Bills" />
+            </ListItemButton>
+
+            <ListItemButton
+              size="small"
+              sx={{ pl: "25px" }}
+              selected={location.pathname.includes("deposit")}
+              onClick={handleClick(`${url}/deposit`)}
+            >
+              <ListItemIcon>
+                <AccountBalanceIcon />
+              </ListItemIcon>
+              <ListItemText primary="Deposit" />
+            </ListItemButton>
+
+            <ListItemButton
+              size="small"
+              sx={{ pl: "25px" }}
+              selected={location.pathname.includes("dailyClosing")}
+              onClick={handleClick(`${url}/dailyClosing`)}
+            >
+              <ListItemIcon>
+                <AnalyticsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Daily Closing" />
+            </ListItemButton>
+
+            <ListItemButton
+              size="small"
+              sx={{ pl: "25px" }}
+              selected={location.pathname.includes("uom")}
+              onClick={handleClick(`${url}/uom`)}
+            >
+              <ListItemIcon>
+                <SquareFootIcon />
+              </ListItemIcon>
+              <ListItemText primary="UOM" />
+            </ListItemButton>
+
+            <ListItemButton
+              size="small"
+              sx={{ pl: "25px" }}
+              selected={location.pathname.includes("category")}
+              onClick={handleClick(`${url}/category`)}
+            >
+              <ListItemIcon>
+                <CategoryIcon />
+              </ListItemIcon>
+              <ListItemText primary="Category" />
+            </ListItemButton>
+
+            <ListItemButton
+              size="small"
+              sx={{ pl: "25px" }}
+              selected={location.pathname.includes("salesServiceItem")}
+              onClick={handleClick(`${url}/salesServiceItem`)}
+            >
+              <ListItemIcon>
+                <EventNoteIcon />
+              </ListItemIcon>
+              <ListItemText primary="Sales & Service Item" />
+            </ListItemButton>
           </List>
         </Collapse>
-        <ListItem>
-          <Button
-            size="small"
-            variant={
-              location.pathname.includes("/patient") ? "contained" : "text"
-            }
-            fullWidth
-            startIcon={<PeopleIcon />}
-            onClick={handleClick(`${url}/patient`)}
-            sx={{
-              display: "flex",
-              justifyContent: location.pathname.includes("/patient")
-                ? "flex-end"
-                : "flex-start",
-            }}
-          >
-            Patient
-          </Button>
-        </ListItem>
+
+        <ListItemButton
+          size="small"
+          selected={location.pathname.includes("patient")}
+          onClick={handleClick(`${url}/patient`)}
+        >
+          <ListItemIcon>
+            <PeopleIcon />
+          </ListItemIcon>
+          <ListItemText primary="Patient" />
+        </ListItemButton>
       </List>
     </>
   );

@@ -258,7 +258,7 @@ const EnhancedTableToolbar = (props) => {
                   </Button>
                 </CSVLink>
               )}
-              { addDelete && enableMultipleDelete && (
+              {addDelete && enableMultipleDelete && (
                 <Button
                   variant="contained"
                   color="error"
