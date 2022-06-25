@@ -15,7 +15,7 @@ import { CSVLink } from "react-csv";
 import { useContext, useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import { useAxios } from "../hooks";
-import { arrayEquals } from "../utils/arrayEquals";
+// import { arrayEquals } from "../utils/arrayEquals";
 import { SnackbarContext } from "../contexts";
 import { LoadingButton } from "@mui/lab";
 
@@ -115,11 +115,17 @@ const CSVUploadDialog = ({
     const headers = dataStringLines[0].split(
       /,(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)/
     );
-    if (!arrayEquals(headers, columnNames)) {
+    if (!headers.every((h) => columnNames.includes(h))) {
       showAlert(400, "Incorrect format.");
       fileInputRef.current.value = null;
       return;
     }
+
+    // if (!arrayEquals(headers, columnNames)) {
+    //   showAlert(400, "Incorrect format.");
+    //   fileInputRef.current.value = null;
+    //   return;
+    // }
 
     const list = [];
     for (let i = 1; i < dataStringLines.length; i++) {
