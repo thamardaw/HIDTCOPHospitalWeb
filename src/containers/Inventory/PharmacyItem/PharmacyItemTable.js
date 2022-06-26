@@ -71,12 +71,12 @@ const PharmacyItemTable = () => {
       const data = res.data.map((row) => {
         return {
           id: row.id,
-          brand_name: row.brand_name,
-          generic_name: row.generic_name,
-          form: row.form,
-          strength: row.strength,
-          po_unit: row.po_unit,
-          unit: row.unit,
+          brand_name: row.brand_name || "",
+          generic_name: row.generic_name || "",
+          form: row.form || "",
+          strength: row.strength || "",
+          po_unit: row.po_unit || "",
+          unit: row.unit || "",
         };
       });
       setRows(data);

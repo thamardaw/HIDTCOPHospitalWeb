@@ -79,12 +79,12 @@ const InventoryItemTable = () => {
       const data = res.data.map((row) => {
         return {
           id: row.id,
-          brand_name: row?.pharmacy_item?.brand_name,
-          balance: row?.balance,
-          unit: row?.unit,
-          purchasing_price: row?.purchasing_price,
-          selling_price: row?.sales_service_item?.price,
-          expiry_date: row?.expiry_date,
+          brand_name: row?.pharmacy_item?.brand_name || "",
+          balance: row?.balance || "",
+          unit: row?.unit || "",
+          purchasing_price: row?.purchasing_price || "",
+          selling_price: row?.sales_service_item?.price || "",
+          expiry_date: row?.expiry_date || "",
         };
       });
       setRows(data);

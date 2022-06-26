@@ -55,8 +55,8 @@ const TransactionTypeTable = () => {
       const data = res.data.map((row) => {
         return {
           id: row.id,
-          name: row.name,
-          type: row.type,
+          name: row.name || "",
+          type: row.type || "",
         };
       });
       setRows(data);

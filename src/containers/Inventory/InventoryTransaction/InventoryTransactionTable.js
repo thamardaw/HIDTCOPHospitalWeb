@@ -85,16 +85,16 @@ const InventoryTransactionTable = () => {
       const data = res.data.map((row) => {
         return {
           id: row.id,
-          brand_name: row?.inventory_item?.pharmacy_item?.brand_name,
-          generic_name: row?.inventory_item?.pharmacy_item?.generic_name,
-          batch: row?.inventory_item?.batch,
-          transaction_type_name: row?.transaction_type_name,
-          quantity: row?.quantity,
-          unit: row?.unit,
-          opening_balance: row?.opening_balance,
-          closing_balance: row?.closing_balance,
-          selling_price: row?.selling_price,
-          note: row?.note,
+          brand_name: row?.inventory_item?.pharmacy_item?.brand_name || "",
+          generic_name: row?.inventory_item?.pharmacy_item?.generic_name || "",
+          batch: row?.inventory_item?.batch || "",
+          transaction_type_name: row?.transaction_type_name || "",
+          quantity: row?.quantity || "",
+          unit: row?.unit || "",
+          opening_balance: row?.opening_balance || "",
+          closing_balance: row?.closing_balance || "",
+          selling_price: row?.selling_price || "",
+          note: row?.note || "",
         };
       });
       setRows(data);
