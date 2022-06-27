@@ -10,8 +10,12 @@ import { SalesServiceItem } from "./Billing/SalesServiceItem";
 import { Bills } from "./Billing/Bills";
 import { Deposit } from "./Billing/Deposit";
 import { DailyClosing } from "./Billing/DailyClosing";
+import { InventoryItem } from "./Inventory/InventoryItem";
 import { LoadingProvider } from "../contexts/LoadingContext";
 import { CacheProvider } from "../contexts/CacheContext";
+import { InventoryTransaction } from "./Inventory/InventoryTransaction";
+import { PharmacyItem } from "./Inventory/PharmacyItem";
+import { TransactionType } from "./Inventory/TransactionType";
 
 const drawerWidth = 240;
 
@@ -55,6 +59,19 @@ function Dashboard(props) {
               <Route path={`${path}/bills`} component={Bills} />
               <Route path={`${path}/deposit`} component={Deposit} />
               <Route path={`${path}/dailyClosing`} component={DailyClosing} />
+              <Route
+                path={`${path}/inventory_item`}
+                component={InventoryItem}
+              />
+              <Route
+                path={`${path}/inventory_transaction`}
+                component={InventoryTransaction}
+              />
+              <Route path={`${path}/pharmacy_item`} component={PharmacyItem} />
+              <Route
+                path={`${path}/transaction_type`}
+                component={TransactionType}
+              />
               <Redirect to={`${path}/patient`} />
             </Switch>
           </LoadingProvider>

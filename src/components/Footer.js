@@ -11,7 +11,7 @@ const Footer = () => {
         sx={{ flexGrow: 1 }}
         textAlign="center"
       >
-        HIDTCOP - Software for Hospitals © 2021
+        Genesis Project - Software for Hospitals © 2021
       </Typography>
     </Toolbar>
   );

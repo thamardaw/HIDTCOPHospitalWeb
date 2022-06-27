@@ -8,27 +8,21 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useHistory, useParams } from "react-router";
-import { useAxios } from "../../../hooks";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { useAxios } from "../../../hooks";
 import { BackButton, CSVUploadDialog } from "../../../components";
-import { AuthContext } from "../../../contexts";
 
-const SalesServiceItemForm = () => {
+const TransactionTypeForm = () => {
   const history = useHistory();
   const { id } = useParams();
   const api = useAxios({ autoSnackbar: true });
+  const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({
     name: "",
-    price: "",
-    uom_id: null,
-    category_id: null,
+    type: "",
   });
-  const [uom, setUom] = useState([]);
-  const [category, setCategory] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const { user } = useContext(AuthContext);
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -41,21 +35,8 @@ const SalesServiceItemForm = () => {
     setDetails({ ...details, [e.target.name]: e.target.value });
   };
 
-  const getUOMAndCategory = async () => {
-    const [uom, category] = await Promise.all([
-      api.get("/api/uom/"),
-      api.get("/api/category/"),
-    ]);
-    if (uom.status === 200 && category.status === 200) {
-      setUom(uom.data);
-      setCategory(category.data);
-    } else {
-      history.goBack();
-    }
-  };
-
   const getData = async () => {
-    const res = await api.get(`/api/salesServiceItem/${parseInt(id)}`);
+    const res = await api.get(`/api/transaction_types/${parseInt(id)}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
     } else {
@@ -65,7 +46,7 @@ const SalesServiceItemForm = () => {
 
   const createNew = async () => {
     setLoading(true);
-    const res = await api.post(`/api/salesServiceItem/`, {
+    const res = await api.post(`/api/transaction_types/`, {
       ...details,
     });
     if (res.status === 200) {
@@ -76,11 +57,9 @@ const SalesServiceItemForm = () => {
 
   const update = async () => {
     setLoading(true);
-    const res = await api.put(`/api/salesServiceItem/${parseInt(id)}`, {
+    const res = await api.put(`/api/transaction_types/${parseInt(id)}`, {
       name: details.name,
-      price: details.price,
-      uom_id: details.uom_id,
-      category_id: details.category_id,
+      type: details.type,
     });
     if (res.status === 200) {
       history.goBack();
@@ -89,12 +68,12 @@ const SalesServiceItemForm = () => {
   };
 
   useEffect(() => {
-    getUOMAndCategory();
     if (id) {
       getData();
     }
     // eslint-disable-next-line
   }, [id]);
+
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -138,71 +117,21 @@ const SalesServiceItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Price</Typography>
-            </Box>
-            <TextField
-              size="small"
-              sx={{ width: "70%" }}
-              margin="dense"
-              value={details?.price || ""}
-              name="price"
-              onChange={handleChange}
-            />
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Box sx={{ width: "30%" }}>
-              <Typography variant="p">UOM</Typography>
+              <Typography variant="p">Type</Typography>
             </Box>
             <TextField
               select
               fullWidth
-              label="UOM"
+              label="Type"
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.uom_id || ""}
-              name="uom_id"
+              value={details?.type || ""}
+              name="type"
               onChange={handleChange}
             >
-              {uom.map((u) => (
-                <MenuItem key={u.id} value={u.id}>
-                  {u.name}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Category</Typography>
-            </Box>
-            <TextField
-              select
-              fullWidth
-              label="Category"
-              size="small"
-              sx={{ width: "70%" }}
-              margin="dense"
-              value={details?.category_id || ""}
-              name="category_id"
-              onChange={handleChange}
-            >
-              {category.map((c) => (
-                <MenuItem key={c.id} value={c.id}>
-                  {c.name}
-                </MenuItem>
-              ))}
+              <MenuItem value="receive">Receive</MenuItem>
+              <MenuItem value="issue">Issue</MenuItem>
             </TextField>
           </Box>
         </Box>
@@ -216,19 +145,17 @@ const SalesServiceItemForm = () => {
             padding: "20px 10px",
           }}
         >
-          {user.role === "Admin" && (
-            <Button
-              variant="outlined"
-              size="small"
-              sx={{ marginRight: "5px", display: id ? "none" : "block" }}
-              onClick={handleOpenDialog}
-            >
-              Upload
-            </Button>
-          )}
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{ marginRight: "5px", display: id ? "none" : "block" }}
+            onClick={handleOpenDialog}
+          >
+            Upload
+          </Button>
           <LoadingButton
-            loading={loading}
             variant="contained"
+            loading={loading}
             size="small"
             sx={{ marginRight: "5px" }}
             onClick={id ? update : createNew}
@@ -240,12 +167,21 @@ const SalesServiceItemForm = () => {
       <CSVUploadDialog
         open={openDialog}
         handleClose={handleCloseDialog}
-        columns={["name", "price", "uom_id", "category_id"]}
-        endpoint="/api/salesServiceItem/bulk_create"
-        template_file_name="sales_service_item_template.csv"
+        columns={["name", "type"]}
+        example_rows={[
+          {
+            name: "Please don't touch row 1 and look at row 3 for field description and example values. Columns with comma seperated values are the only valid value for those field. REMOVE ROW 2 AND 3 BEFORE UPLOADING.",
+          },
+          {
+            name: "Name of Transaction Type",
+            type: "issue,receive",
+          },
+        ]}
+        endpoint="/api/transaction_types/bulk_create"
+        template_file_name="transaction_type_template.csv"
       />
     </>
   );
 };
 
-export default SalesServiceItemForm;
+export default TransactionTypeForm;
