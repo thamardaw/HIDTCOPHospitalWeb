@@ -34,6 +34,7 @@ jobs:
             THEME=#03C0C1
             TITLE=Dagon Lin
             TITLE_SHORT=DGL
+            TITLE_LONG=Dagon Lin Hospital
           tags: |
             jasoniv/hidtcophospitalweb:latest
 
@@ -47,4 +48,5 @@ jobs:
             THEME=
             TITLE=Kan Taw Mon
             TITLE_SHORT=KTM
+            TITLE_LONG=Kan Taw Mon Specialist Clinic
           tags: jasoniv/kdm-bill:latest
