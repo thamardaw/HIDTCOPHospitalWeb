@@ -12,11 +12,11 @@ import { useMediaQuery } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { getComparator, stableSort } from "../utils/sorting";
 import { CacheContext } from "../contexts";
-import CustomTableToolbar from "./CustomTableToolbar";
 import CustomTableHead from "./CustomTableHead";
+import CustomInventoryTransactionToolbar from "./CustomInventoryTransactionToolbar";
 
 // HeadCells ID have to be match with row's object key beause they two are dependent for sorting function
-const CustomTable = ({
+const CustomInventoryTransactionTable = ({
   headCells,
   rows,
   tableName,
@@ -134,7 +134,7 @@ const CustomTable = ({
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <CustomTableToolbar
+        <CustomInventoryTransactionToolbar
           tableName={tableName}
           numSelected={selected.length}
           selected={selected}
@@ -233,4 +233,4 @@ const CustomTable = ({
   );
 };
 
-export default CustomTable;
+export default CustomInventoryTransactionTable;
