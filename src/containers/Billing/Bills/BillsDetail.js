@@ -69,7 +69,7 @@ const BillsDetail = () => {
 
   const handlePrint = useReactToPrint({
     pageStyle:
-      "@media print { body { -webkit-print-color-adjust: exact; } @page { size: A4; margin: 200mm !important }}",
+      "@media print { body { -webkit-print-color-adjust: exact; } @page { size: auto; margin: 0mm !important }}",
     content: () => receiptRef.current,
     onAfterPrint: () => {
       setIsPrintMode(false);
