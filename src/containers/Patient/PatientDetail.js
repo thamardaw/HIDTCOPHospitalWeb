@@ -46,20 +46,14 @@ const PatientDetail = () => {
           name="ID"
           value={details?.id && generateID(details.id, details.created_time)}
         />
-        <Divider />
+
         <DetailsRow name="Name" value={details?.name} />
-        <Divider />
         <DetailsRow name="Age" value={details?.age} />
-        <Divider />
         <DetailsRow name="Contact Details" value={details?.contact_details} />
-        <Divider />
         <DetailsRow name="Gender" value={details?.gender} />
-        <Divider />
         <DetailsRow name="Date Of Birth" value={details.date_of_birth} />
-        <Divider />
         <DetailsRow name="Address" value={details?.address} />
       </Box>
-      <Divider />
     </Box>
   );
 };

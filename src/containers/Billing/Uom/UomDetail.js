@@ -42,7 +42,6 @@ const UomDetail = () => {
       <Divider />
       <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
         <DetailsRow name="Name" value={details?.name} />
-        <Divider />
         <DetailsRow name="Description" value={details?.description} />
       </Box>
       <Divider />
