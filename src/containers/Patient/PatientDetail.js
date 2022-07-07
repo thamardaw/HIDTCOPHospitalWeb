@@ -46,7 +46,6 @@ const PatientDetail = () => {
           name="ID"
           value={details?.id && generateID(details.id, details.created_time)}
         />
-
         <DetailsRow name="Name" value={details?.name} />
         <DetailsRow name="Age" value={details?.age} />
         <DetailsRow name="Contact Details" value={details?.contact_details} />

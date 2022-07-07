@@ -44,7 +44,6 @@ const UomDetail = () => {
         <DetailsRow name="Name" value={details?.name} />
         <DetailsRow name="Description" value={details?.description} />
       </Box>
-      <Divider />
     </Box>
   );
 };

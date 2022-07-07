@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import {alpha,Box, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import {Box, Typography } from "@mui/material";
+import { styled,alpha } from "@mui/material/styles";
 
 const StyledBox = styled("div")(
   ({ theme, padding = "10px", marginV = "10px" }) => ({

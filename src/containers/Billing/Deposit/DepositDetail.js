@@ -233,7 +233,6 @@ const CategoryDetail = () => {
                 </StyledTypography>
               </Box>
             </Box> 
-            
           </Box>
         </Box>
         {/* <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>

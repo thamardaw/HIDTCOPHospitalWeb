@@ -46,7 +46,6 @@ const SalesServiceItemDetail = () => {
         <DetailsRow name="UOM" value={details?.uom?.name} />
         <DetailsRow name="Category" value={details?.category?.name} />
       </Box>
-      <Divider />
     </Box>
   );
 };
