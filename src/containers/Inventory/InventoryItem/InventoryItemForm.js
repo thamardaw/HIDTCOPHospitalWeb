@@ -87,23 +87,6 @@ const InventoryItemForm = () => {
     setLoading(false);
   };
 
-  // useEffect(() => {
-  //   if (details?.pharmacy_item_id && details?.id) {
-  //     setDetails({
-  //       ...details,
-  //       pharmacy_item: pharmacyItems.find(
-  //         (p) => p.id === details.pharmacy_item_id
-  //       ),
-  //     });
-  //   }
-  //   if (details?.sales_service_item_id && details?.id) {
-  //     setDetails({
-  //       ...details,
-  //       ssi: SSI.find((s) => s.id === details.sales_service_item_id),
-  //     });
-  //   }
-  //   // eslint-disable-next-line
-  // }, [details?.pharmacy_item_id, details?.sales_service_item_id]);
 
   useEffect(() => {
     if (details?.sales_service_item_id && details?.id) {
