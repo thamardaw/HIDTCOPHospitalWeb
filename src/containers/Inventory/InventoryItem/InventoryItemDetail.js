@@ -42,16 +42,6 @@ const InventoryItemDetail = () => {
       </Toolbar>
       <Divider />
       <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
-        <DetailsRow
-          name="Brand Name"
-          value={details?.pharmacy_item?.brand_name}
-        />
-        <Divider />
-        <DetailsRow
-          name="Generic Name"
-          value={details?.pharmacy_item?.generic_name}
-        />
-        <Divider />
         <DetailsRow name="Name" value={details?.name} />
         <Divider />
         <DetailsRow name="Balance" value={details?.balance} />

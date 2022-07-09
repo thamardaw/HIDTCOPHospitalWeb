@@ -12,16 +12,10 @@ const headCells = [
     label: "ID",
   },
   {
-    id: "brand_name",
+    id: "name",
     numeric: false,
     disablePadding: false,
-    label: "Brand Name",
-  },
-  {
-    id: "generic_name",
-    numeric: false,
-    disablePadding: false,
-    label: "Generic Name",
+    label: "Name",
   },
   {
     id: "batch",
@@ -85,8 +79,7 @@ const InventoryTransactionTable = () => {
       const data = res.data.map((row) => {
         return {
           id: row.id,
-          brand_name: row?.inventory_item?.pharmacy_item?.brand_name || "",
-          generic_name: row?.inventory_item?.pharmacy_item?.generic_name || "",
+          name: row?.inventory_item?.name || "",
           batch: row?.inventory_item?.batch || "",
           transaction_type_name: row?.transaction_type_name || "",
           quantity: row?.quantity || "",
