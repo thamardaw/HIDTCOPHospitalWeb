@@ -44,22 +44,14 @@ const PharmacyItemDetail = () => {
       <Divider />
       <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
         <DetailsRow name="Category" value={details?.category?.name} />
-        <Divider />
         <DetailsRow name="Brand Name" value={details?.brand_name} />
-        <Divider />
         <DetailsRow name="Generic Name" value={details?.generic_name} />
-        <Divider />
         <DetailsRow name="Form" value={details?.form} />
-        <Divider />
         <DetailsRow name="Strength" value={details?.strength} />
-        <Divider />
         <DetailsRow name="PO-unit" value={details?.po_unit} />
-        <Divider />
         <DetailsRow name="Unit" value={details?.unit} />
-        <Divider />
         <DetailsRow name="Unit Conversion" value={details?.converstion_rate} />
       </Box>
-      <Divider />
     </Box>
   );
 };
