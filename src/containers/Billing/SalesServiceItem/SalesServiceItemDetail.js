@@ -42,14 +42,10 @@ const SalesServiceItemDetail = () => {
       <Divider />
       <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
         <DetailsRow name="Name" value={details?.name} />
-        <Divider />
         <DetailsRow name="Price" value={details?.price} />
-        <Divider />
         <DetailsRow name="UOM" value={details?.uom?.name} />
-        <Divider />
         <DetailsRow name="Category" value={details?.category?.name} />
       </Box>
-      <Divider />
     </Box>
   );
 };
