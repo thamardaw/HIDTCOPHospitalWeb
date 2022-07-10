@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   Divider,
-  MenuItem,
   TextField,
   Toolbar,
   Typography,
@@ -24,7 +23,7 @@ const InventoryItemForm = () => {
     pharmacy_item: null,
     ssi: null,
   });
-  const [pharmacyItems, setPharmacyItems] = useState([]);
+  // const [pharmacyItems, setPharmacyItems] = useState([]);
   const [SSI, setSSI] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -40,12 +39,12 @@ const InventoryItemForm = () => {
   };
 
   const getPharmacyItemsAndSSI = async () => {
-    const [pi, ssi] = await Promise.all([
-      api.get("/api/pharmacy_items/"),
+    const [ssi] = await Promise.all([
+      // api.get("/api/pharmacy_items/"),
       api.get("/api/salesServiceItem/"),
     ]);
-    if (pi.status === 200 && ssi.status === 200) {
-      setPharmacyItems(pi.data);
+    if (ssi.status === 200) {
+      // setPharmacyItems(pi.data);
       setSSI(ssi.data);
       if (id) getData();
     } else {
@@ -88,15 +87,8 @@ const InventoryItemForm = () => {
     setLoading(false);
   };
 
+
   useEffect(() => {
-    if (details?.pharmacy_item_id && details?.id) {
-      setDetails({
-        ...details,
-        pharmacy_item: pharmacyItems.find(
-          (p) => p.id === details.pharmacy_item_id
-        ),
-      });
-    }
     if (details?.sales_service_item_id && details?.id) {
       setDetails({
         ...details,
@@ -104,7 +96,7 @@ const InventoryItemForm = () => {
       });
     }
     // eslint-disable-next-line
-  }, [details?.pharmacy_item_id, details?.sales_service_item_id]);
+  }, [details?.sales_service_item_id]);
 
   useEffect(() => {
     getPharmacyItemsAndSSI();
@@ -127,7 +119,7 @@ const InventoryItemForm = () => {
         </Toolbar>
         <Divider />
         <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
-          <Box
+          {/* <Box
             sx={{
               display: "flex",
               flexDirection: "row",
@@ -168,7 +160,7 @@ const InventoryItemForm = () => {
                 />
               )}
             />
-          </Box>
+          </Box> */}
           <Box
             sx={{
               display: "flex",
@@ -218,6 +210,14 @@ const InventoryItemForm = () => {
               <Typography variant="p">Unit</Typography>
             </Box>
             <TextField
+              size="small"
+              sx={{ width: "70%" }}
+              margin="dense"
+              value={details?.unit || ""}
+              name="unit"
+              onChange={handleChange}
+            />
+            {/* <TextField
               select
               fullWidth
               label="Unit"
@@ -238,7 +238,7 @@ const InventoryItemForm = () => {
                   {details?.pharmacy_item?.unit}
                 </MenuItem>
               )}
-            </TextField>
+            </TextField> */}
           </Box>
           <Box
             sx={{

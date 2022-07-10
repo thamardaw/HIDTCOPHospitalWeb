@@ -19,16 +19,10 @@ const headCells = [
     label: "ID",
   },
   {
-    id: "brand_name",
+    id: "name",
     numeric: false,
     disablePadding: false,
-    label: "Brand Name",
-  },
-  {
-    id: "generic_name",
-    numeric: false,
-    disablePadding: false,
-    label: "Generic Name",
+    label: "Name",
   },
   {
     id: "balance",
@@ -85,8 +79,7 @@ const InventoryItemTable = () => {
       const data = res.data.map((row) => {
         return {
           id: row.id,
-          brand_name: row?.pharmacy_item?.brand_name || "",
-          generic_name: row?.pharmacy_item?.generic_name || "",
+          name: row?.name || "",
           balance: row?.balance || "",
           unit: row?.unit || "",
           purchasing_price: row?.purchasing_price || "",
