@@ -21,18 +21,14 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { CacheContext } from "../contexts";
 import ClassIcon from "@mui/icons-material/Class";
+import drawerAtom from "../recoil/drawer";
+import { useRecoilState } from "recoil";
 
-const ResponsiveDrawer = ({
-  window,
-  drawerWidth,
-  mobileOpen,
-  handleDrawerToggle,
-}) => {
+const ResponsiveDrawer = ({ window, drawerWidth }) => {
   const container =
     window !== undefined ? () => window().document.body : undefined;
   const location = useLocation();
@@ -40,16 +36,10 @@ const ResponsiveDrawer = ({
   const { url } = useRouteMatch();
   const [openBilling, setBillingOpen] = useState(true);
   const [openInventory, setOpenInventory] = useState(true);
-  const { table, viewTab } = useContext(CacheContext);
-  const { resetTable } = table;
-  const { resetTab } = viewTab;
+  const [drawerOpen, setDrawerOpen] = useRecoilState(drawerAtom);
 
   const handleClick = (path) => {
     return (e) => {
-      if (location.pathname !== path) {
-        resetTable();
-        resetTab();
-      }
       history.push(path);
     };
   };
@@ -250,8 +240,8 @@ const ResponsiveDrawer = ({
       <Drawer
         container={container}
         variant="temporary"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
+        open={drawerOpen}
+        onClose={() => setDrawerOpen((prev) => !prev)}
         ModalProps={{
           keepMounted: true,
         }}

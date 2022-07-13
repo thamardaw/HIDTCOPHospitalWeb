@@ -11,6 +11,7 @@ import { useAxios } from "../../hooks";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { BackButton } from "../../components";
+import { MobileDatePicker } from "@mui/x-date-pickers";
 
 const PatientForm = () => {
   const history = useHistory();
@@ -30,8 +31,16 @@ const PatientForm = () => {
     setDetails({ ...details, [e.target.name]: e.target.value });
   };
 
+  const onDatePicked = (e) => {
+    const date_obj = new Date(e);
+    const v = `${date_obj.getFullYear()}-${
+      date_obj.getMonth() + 1
+    }-${date_obj.getDate()}`;
+    setDetails({ ...details, date_of_birth: v });
+  };
+
   const getData = async () => {
-    const res = await api.get(`/api/patients/${parseInt(id.split("-")[1])}`);
+    const res = await api.get(`/api/patients/${id}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
     } else {
@@ -53,7 +62,7 @@ const PatientForm = () => {
 
   const update = async () => {
     setLoading(true);
-    const res = await api.put(`/api/patients/${parseInt(id.split("-")[1])}`, {
+    const res = await api.put(`/api/patients/${id}`, {
       name: details.name,
       age: details.age,
       contact_details: details.contact_details,
@@ -182,7 +191,20 @@ const PatientForm = () => {
           <Box sx={{ width: "30%" }}>
             <Typography variant="p">Date Of Birth</Typography>
           </Box>
-          <TextField
+          <MobileDatePicker
+            inputFormat="yyyy-MM-dd"
+            value={details?.date_of_birth}
+            onChange={onDatePicked}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                sx={{ width: "70%" }}
+                size="small"
+                margin="dense"
+              />
+            )}
+          />
+          {/* <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
@@ -190,7 +212,7 @@ const PatientForm = () => {
             value={details?.date_of_birth || ""}
             name="date_of_birth"
             onChange={handleChange}
-          />
+          /> */}
         </Box>
         <Box
           sx={{
@@ -231,20 +253,6 @@ const PatientForm = () => {
         >
           Save
         </LoadingButton>
-        {/* <Button
-          variant="contained"
-          size="small"
-          sx={{
-            marginRight: "5px",
-            backgroundColor: "gray",
-            "&:hover": {
-              backgroundColor: "lightgray",
-            },
-          }}
-          onClick={() => history.goBack()}
-        >
-          Cancel
-        </Button> */}
       </Box>
     </Box>
   );

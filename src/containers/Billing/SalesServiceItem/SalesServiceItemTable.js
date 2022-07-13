@@ -6,10 +6,9 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import { Box } from "@mui/system";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { CustomTable } from "../../../components";
-import LoadingContext from "../../../contexts/LoadingContext";
 import { useAxios } from "../../../hooks";
 
 const headCells = [
@@ -46,22 +45,14 @@ const headCells = [
 ];
 const SalesServiceItemTable = () => {
   const api = useAxios({ autoSnackbar: true });
+  const history = useHistory();
   const [rows, setRows] = useState([]);
-  const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState([]);
-  const { setScreenLoading } = useContext(LoadingContext);
-
-  const handleClickOpen = (arr) => {
-    setSelected(arr);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [isTableLoading, setIsTableLoading] = useState(false);
 
   const getData = useCallback(async () => {
-    setScreenLoading(true);
+    setIsTableLoading(true);
     const res = await api.get("/api/salesServiceItem/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -74,7 +65,7 @@ const SalesServiceItemTable = () => {
         };
       });
       setRows(data);
-      setScreenLoading(false);
+      setIsTableLoading(false);
     }
     return;
     // eslint-disable-next-line
@@ -91,7 +82,7 @@ const SalesServiceItemTable = () => {
         listOfId: listOfId,
       });
     }
-    handleClose();
+    setOpenDeleteDialog(false);
     setSelected([]);
     getData();
   };
@@ -102,17 +93,83 @@ const SalesServiceItemTable = () => {
   }, []);
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <>
       <CustomTable
-        tableName="Item"
-        headCells={headCells}
-        rows={rows}
-        onDelete={handleClickOpen}
-        enableMultipleDelete={false}
+        tableConfig={{
+          headCells: headCells,
+          tableName: "Item",
+          maxHeight: "62vh",
+          atom: "salesSeriveItemTableAtom",
+        }}
+        data={rows}
+        isLoading={isTableLoading}
+        toolbarButtons={{
+          whenNoneSelected: [
+            {
+              id: "ssi table new button",
+              component: memo(({ ...rest }) => (
+                <Button variant="outlined" size="small" {...rest}>
+                  New
+                </Button>
+              )),
+              callback: (selected) => {
+                history.push("salesServiceItem/form");
+              },
+            },
+          ],
+          whenOneSelected: [
+            {
+              id: "ssi table edit button",
+              component: memo(({ ...rest }) => (
+                <Button variant="contained" size="small" {...rest}>
+                  Edit
+                </Button>
+              )),
+              callback: (selected) => {
+                history.push(`salesServiceItem/form/${selected[0].id}`);
+              },
+            },
+            {
+              id: "ssi table detail button",
+              component: memo(({ ...rest }) => (
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{ marginLeft: "5px" }}
+                  {...rest}
+                >
+                  Details
+                </Button>
+              )),
+              callback: (selected) => {
+                history.push(`salesServiceItem/details/${selected[0].id}`);
+              },
+            },
+            {
+              id: "ssi table delete button",
+              component: memo(({ ...rest }) => (
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="error"
+                  sx={{ marginLeft: "5px" }}
+                  {...rest}
+                >
+                  Delete
+                </Button>
+              )),
+              callback: (selected) => {
+                setSelected(selected);
+                setOpenDeleteDialog(true);
+              },
+            },
+          ],
+          whenMoreThanOneSelected: [],
+        }}
       />
       <Dialog
-        open={open}
-        onClose={handleClose}
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -123,13 +180,13 @@ const SalesServiceItemTable = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
           <Button onClick={deleteItem} autoFocus>
             Ok
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </>
   );
 };
 

@@ -6,10 +6,9 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import { Box } from "@mui/system";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { CustomTable } from "../../components";
-import LoadingContext from "../../contexts/LoadingContext";
 import { useAxios } from "../../hooks";
 import { extractID } from "../../utils/extractID";
 import { generateID } from "../../utils/generateID";
@@ -66,22 +65,14 @@ const headCells = [
 ];
 const PatientTable = () => {
   const api = useAxios({ autoSnackbar: true });
+  const history = useHistory();
   const [rows, setRows] = useState([]);
-  const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState([]);
-  const { setScreenLoading } = useContext(LoadingContext);
-
-  const handleClickOpen = (arr) => {
-    setSelected(arr);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [isTableLoading, setIsTableLoading] = useState(false);
 
   const getData = useCallback(async () => {
-    setScreenLoading(true);
+    setIsTableLoading(true);
     const res = await api.get("/api/patients/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -105,7 +96,7 @@ const PatientTable = () => {
         };
       });
       setRows(data);
-      setScreenLoading(false);
+      setIsTableLoading(false);
     }
     return;
     // eslint-disable-next-line
@@ -126,7 +117,7 @@ const PatientTable = () => {
         listOfId: extractedID,
       });
     }
-    handleClose();
+    setOpenDeleteDialog(false);
     setSelected([]);
     getData();
   };
@@ -137,53 +128,83 @@ const PatientTable = () => {
   }, []);
 
   return (
-    <Box sx={{ width: "100%" }}>
-      {/* <Toolbar
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <Typography variant="h6">Patient</Typography>
-        <SearchContainer>
-          <Search />
-          <StyledInputBase placeholder="Search..." />
-        </SearchContainer>
-        <ButtonContainer>
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{ marginRight: "5px" }}
-            onClick={() => history.push(`${url}/create`)}
-          >
-            new
-          </Button>
-          <Button variant="outlined" size="small" sx={{ marginRight: "5px" }}>
-            Edit
-          </Button>
-          <Button
-            variant="outlined"
-            color="error"
-            size="small"
-            sx={{ marginRight: "5px" }}
-          >
-            Delete
-          </Button>
-          <Button variant="outlined" size="small" sx={{ marginRight: "5px" }}>
-            Detail
-          </Button>
-        </ButtonContainer>
-      </Toolbar> */}
+    <>
       <CustomTable
-        tableName="Patient"
-        headCells={headCells}
-        rows={rows}
-        onDelete={handleClickOpen}
-        enableMultipleDelete={false}
+        tableConfig={{
+          headCells: headCells,
+          tableName: "Patient",
+          maxHeight: "62vh",
+          atom: "patientTableAtom",
+        }}
+        data={rows}
+        isLoading={isTableLoading}
+        toolbarButtons={{
+          whenNoneSelected: [
+            {
+              id: "patient table new button",
+              component: memo(({ ...rest }) => (
+                <Button variant="outlined" size="small" {...rest}>
+                  New
+                </Button>
+              )),
+              callback: (selected) => {
+                history.push("patient/form");
+              },
+            },
+          ],
+          whenOneSelected: [
+            {
+              id: "patient table edit button",
+              component: memo(({ ...rest }) => (
+                <Button variant="contained" size="small" {...rest}>
+                  Edit
+                </Button>
+              )),
+              callback: (selected) => {
+                history.push(`patient/form/${extractID(selected[0].id)}`);
+              },
+            },
+            {
+              id: "patient table detail button",
+              component: memo(({ ...rest }) => (
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{ marginLeft: "5px" }}
+                  {...rest}
+                >
+                  Details
+                </Button>
+              )),
+              callback: (selected) => {
+                history.push(`patient/details/${extractID(selected[0].id)}`);
+              },
+            },
+            {
+              id: "patient table delete button",
+              component: memo(({ ...rest }) => (
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="error"
+                  sx={{ marginLeft: "5px" }}
+                  {...rest}
+                >
+                  Delete
+                </Button>
+              )),
+              callback: (selected) => {
+                setSelected(selected);
+                setOpenDeleteDialog(true);
+              },
+            },
+          ],
+          whenMoreThanOneSelected: [],
+        }}
       />
       <Dialog
-        open={open}
-        onClose={handleClose}
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -194,13 +215,13 @@ const PatientTable = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
           <Button onClick={deleteItem} autoFocus>
             Ok
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </>
   );
 };
 

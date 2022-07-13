@@ -10,13 +10,13 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
-import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
-import { SnackbarContext } from "../contexts";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { useSetRecoilState } from "recoil";
+import { withAlert } from "../recoil/snackbar";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   position: "absolute",
@@ -53,9 +53,11 @@ const StyledLink = styled(Link)(({ theme }) => ({
   textDecoration: "none",
 }));
 
+const Form = styled("form")(({ theme }) => ({}));
+
 const ResetPassword = () => {
   const history = useHistory();
-  let { openAlert, message } = useContext(SnackbarContext);
+  const openAlert = useSetRecoilState(withAlert);
   const [details, setDetails] = useState({
     username: "",
     oldPassword: "",
@@ -74,10 +76,8 @@ const ResetPassword = () => {
   const submitHandler = async (e) => {
     setLoading(true);
     e.preventDefault();
-    console.log(details);
     if (details.newPassword !== details.confirmNewPassword) {
-      message({ status: "error", detail: "Passwords do not match." });
-      openAlert(true);
+      openAlert({ status: "error", detail: "Passwords do not match." });
       setLoading(false);
       return;
     }
@@ -95,19 +95,17 @@ const ResetPassword = () => {
       }
     );
     if (res.status === 200) {
-      message({ status: res.status, detail: res.data.detail });
-      openAlert(true);
+      openAlert({ status: res.status, detail: res.data.detail });
       history.goBack();
     } else {
-      message({ status: res.status, detail: res.data.detail });
-      openAlert(true);
+      openAlert({ status: res.status, detail: res.data.detail });
     }
     setLoading(false);
   };
   return (
     <StyledBox>
       <StyledPaper elevation={6}>
-        <form onSubmit={submitHandler}>
+        <Form onSubmit={submitHandler}>
           <FormControl
             fullWidth
             required
@@ -201,7 +199,7 @@ const ResetPassword = () => {
           >
             Reset
           </LoadingButton>
-        </form>
+        </Form>
         <Button size="small" style={{ marginTop: "10px" }}>
           <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>
             <StyledLink to="/login">Back</StyledLink>

@@ -8,30 +8,12 @@ import {
 } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { CustomTable } from "../../../components";
-import { useAxios } from "../../../hooks";
+import { useAxios } from "../hooks";
+import { extractID } from "../utils/extractID";
+import { generateID } from "../utils/generateID";
+import CustomTable from "./CustomTable";
 
-const headCells = [
-  {
-    id: "id",
-    numeric: false,
-    disablePadding: true,
-    label: "ID",
-  },
-  {
-    id: "name",
-    numeric: false,
-    disablePadding: false,
-    label: "Name",
-  },
-  {
-    id: "description",
-    numeric: false,
-    disablePadding: false,
-    label: "Description",
-  },
-];
-const CategoryTable = () => {
+const DraftedBillTable = ({ headCells }) => {
   const api = useAxios({ autoSnackbar: true });
   const history = useHistory();
   const [rows, setRows] = useState([]);
@@ -39,15 +21,20 @@ const CategoryTable = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [isTableLoading, setIsTableLoading] = useState(false);
 
-  const getData = useCallback(async () => {
+  const getDraftedData = useCallback(async () => {
     setIsTableLoading(true);
-    const res = await api.get("/api/category/");
+    const res = await api.get("/api/bill/drafted");
     if (res.status === 200) {
       const data = res.data.map((row) => {
+        const ID = generateID(row.id);
         return {
-          id: row.id,
-          name: row.name,
-          description: row.description,
+          id: ID,
+          name: row.patient_name,
+          phone: row.patient_phone,
+          address: row.patient_address,
+          totalAmount: row.total_amount,
+          date: row.created_time.split("T")[0],
+          bill_items: row.bill_items,
         };
       });
       setRows(data);
@@ -57,24 +44,22 @@ const CategoryTable = () => {
     // eslint-disable-next-line
   }, []);
 
-  const deleteItem = async () => {
-    if (selected.length === 0) {
-      return;
-    } else if (selected.length === 1) {
-      await api.delete(`/api/category/${parseInt(selected[0].id)}`);
-    } else if (selected.length > 1) {
-      const listOfId = selected.map((item) => item.id);
-      await api.post(`/api/category/bulk`, {
-        listOfId: listOfId,
-      });
+  const cancelBill = async () => {
+    console.log(extractID(selected[0].id));
+    if (selected.length === 0) return;
+    const [b, inv] = await Promise.all([
+      api.put(`/api/bill/cancel/${extractID(selected[0].id)}`),
+      api.post("/api/inventory/returns", [...selected[0]?.bill_items]),
+    ]);
+    if (b.status === 200 && inv.status === 200) {
+      setOpenDeleteDialog(false);
+      setSelected([]);
+      getDraftedData();
     }
-    setOpenDeleteDialog(false);
-    setSelected([]);
-    getData();
   };
 
   useEffect(() => {
-    getData();
+    getDraftedData();
     // eslint-disable-next-line
   }, []);
 
@@ -83,40 +68,28 @@ const CategoryTable = () => {
       <CustomTable
         tableConfig={{
           headCells: headCells,
-          tableName: "Category",
-          maxHeight: "62vh",
-          atom: "categoryTableAtom",
+          tableName: "Bill",
+          maxHeight: "60vh",
+          atom: "draftedBillTableAtom",
         }}
         data={rows}
         isLoading={isTableLoading}
         toolbarButtons={{
-          whenNoneSelected: [
-            {
-              id: "category table new button",
-              component: memo(({ ...rest }) => (
-                <Button variant="outlined" size="small" {...rest}>
-                  New
-                </Button>
-              )),
-              callback: (selected) => {
-                history.push("category/form");
-              },
-            },
-          ],
+          whenNoneSelected: [],
           whenOneSelected: [
             {
-              id: "category table edit button",
+              id: "drafted bill table edit button",
               component: memo(({ ...rest }) => (
                 <Button variant="contained" size="small" {...rest}>
                   Edit
                 </Button>
               )),
               callback: (selected) => {
-                history.push(`category/form/${selected[0].id}`);
+                history.push(`patient/form/${extractID(selected[0].id)}`);
               },
             },
             {
-              id: "category table detail button",
+              id: "drafted bill table detail button",
               component: memo(({ ...rest }) => (
                 <Button
                   variant="contained"
@@ -128,11 +101,13 @@ const CategoryTable = () => {
                 </Button>
               )),
               callback: (selected) => {
-                history.push(`category/details/${selected[0].id}`);
+                history.push(
+                  `/dashboard/bills/details/${extractID(selected[0].id)}/draft`
+                );
               },
             },
             {
-              id: "category table delete button",
+              id: "drafted bill table delete button",
               component: memo(({ ...rest }) => (
                 <Button
                   variant="contained"
@@ -141,7 +116,7 @@ const CategoryTable = () => {
                   sx={{ marginLeft: "5px" }}
                   {...rest}
                 >
-                  Delete
+                  Cancel
                 </Button>
               )),
               callback: (selected) => {
@@ -162,12 +137,12 @@ const CategoryTable = () => {
         <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete?
+            Are you sure you want to cancel the bill?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
-          <Button onClick={deleteItem} autoFocus>
+          <Button onClick={cancelBill} autoFocus>
             Ok
           </Button>
         </DialogActions>
@@ -176,4 +151,4 @@ const CategoryTable = () => {
   );
 };
 
-export default CategoryTable;
+export default DraftedBillTable;
