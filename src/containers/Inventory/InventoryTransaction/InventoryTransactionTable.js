@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from "react";
+import { Button } from "@mui/material";
+import { memo, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { CustomTable } from "../../../components";
-import { LoadingContext } from "../../../contexts";
 import { useAxios } from "../../../hooks";
-// import { CustomInventoryTransactionTable, CustomTable } from "../../../components";
 
 const headCells = [
   {
@@ -70,10 +70,11 @@ const headCells = [
 const InventoryTransactionTable = () => {
   const api = useAxios({ autoSnackbar: true });
   const [rows, setRows] = useState([]);
-  const { setScreenLoading } = useContext(LoadingContext);
+  const history = useHistory();
+  const [isTableLoading, setIsTableLoading] = useState(false);
 
   const getData = async () => {
-    setScreenLoading(true);
+    setIsTableLoading(true);
     const res = await api.get("/api/inventory_transactions/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -91,7 +92,7 @@ const InventoryTransactionTable = () => {
         };
       });
       setRows(data);
-      setScreenLoading(false);
+      setIsTableLoading(false);
     }
     return;
   };
@@ -103,12 +104,48 @@ const InventoryTransactionTable = () => {
 
   return (
     <CustomTable
-      tableName="Inventory Transaction"
-      headCells={headCells}
-      rows={rows}
-      addDelete={false}
-      addEdit={false}
-      enableMultipleDelete={false}
+      tableConfig={{
+        headCells: headCells,
+        tableName: "Inventory Transaction",
+        maxHeight: "62vh",
+        atom: "inventoryTransactionTableAtom",
+      }}
+      data={rows}
+      isLoading={isTableLoading}
+      toolbarButtons={{
+        whenNoneSelected: [
+          {
+            id: "inventory transaction table new button",
+            component: memo(({ ...rest }) => (
+              <Button variant="outlined" size="small" {...rest}>
+                New
+              </Button>
+            )),
+            callback: (selected) => {
+              history.push("inventory_transaction/form");
+            },
+          },
+        ],
+        whenOneSelected: [
+          {
+            id: "inventory transaction table detail button",
+            component: memo(({ ...rest }) => (
+              <Button
+                variant="contained"
+                size="small"
+                sx={{ marginLeft: "5px" }}
+                {...rest}
+              >
+                Details
+              </Button>
+            )),
+            callback: (selected) => {
+              history.push(`inventory_transaction/details/${selected[0].id}`);
+            },
+          },
+        ],
+        whenMoreThanOneSelected: [],
+      }}
     />
   );
 };

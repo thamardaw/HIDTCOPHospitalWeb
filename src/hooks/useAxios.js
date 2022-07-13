@@ -1,26 +1,28 @@
 import axios from "axios";
-import { useContext } from "react";
-import { AuthContext, SnackbarContext } from "../contexts";
 import jwt_decode from "jwt-decode";
 import dayjs from "dayjs";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import authAtom from "../recoil/auth";
+import { withAlert } from "../recoil/snackbar";
+import { useHistory } from "react-router-dom";
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
 const useAxios = (props) => {
-  const { authTokens, setUser, setAuthTokens, logoutUser } =
-    useContext(AuthContext);
-  let { openAlert, message } = useContext(SnackbarContext);
+  const [auth, setAuth] = useRecoilState(authAtom);
+  const openAlert = useSetRecoilState(withAlert);
+  const history = useHistory();
 
   const axiosInstance = axios.create({
     baseURL,
-    headers: { Authorization: `Bearer ${authTokens?.access_token}` },
+    headers: { Authorization: `Bearer ${auth?.access_token}` },
     validateStatus: function (status) {
       return status < 500;
     },
   });
 
   axiosInstance.interceptors.request.use(async (req) => {
-    const user = jwt_decode(authTokens.access_token);
+    const user = jwt_decode(auth.access_token);
     const isExpired = dayjs.unix(user.exp).diff(dayjs()) < 1;
 
     if (!isExpired) return req;
@@ -28,7 +30,7 @@ const useAxios = (props) => {
     const res = await axios.post(
       `${baseURL}/api/refreshToken`,
       {
-        refresh_token: authTokens.refresh_token,
+        refresh_token: auth.refresh_token,
       },
       {
         validateStatus: function (status) {
@@ -37,12 +39,13 @@ const useAxios = (props) => {
       }
     );
     if (res.status === 200) {
-      localStorage.setItem("authTokens", JSON.stringify(res.data));
-      setAuthTokens(res.data);
-      setUser(jwt_decode(res.data.access_token));
+      localStorage.setItem("genesis-auth-tokens", JSON.stringify(res.data));
+      setAuth(res.data);
       req.headers.Authorization = `Bearer ${res.data.access_token}`;
     } else {
-      logoutUser();
+      setAuth(null);
+      localStorage.removeItem("genesis-auth-tokens");
+      history("/login");
     }
     return req;
   });
@@ -51,15 +54,12 @@ const useAxios = (props) => {
     if (res.config.method !== "get") {
       if (props?.autoSnackbar) {
         if (res.status === 200) {
-          message({ status: res.status, detail: res.data.detail });
-          openAlert(true);
+          openAlert({ status: res.status, detail: res.data.detail });
         } else {
           if (res.status === 422) {
-            message({ status: res.status, detail: res.data.detail[0].msg });
-            openAlert(true);
+            openAlert({ status: res.status, detail: res.data.detail[0].msg });
           } else {
-            message({ status: res.status, detail: res.data.detail });
-            openAlert(true);
+            openAlert({ status: res.status, detail: res.data.detail });
           }
         }
       }

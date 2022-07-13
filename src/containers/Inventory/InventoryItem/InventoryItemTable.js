@@ -176,7 +176,6 @@ const InventoryItemTable = () => {
                 </Button>
               )),
               callback: (selected) => {
-                setSelected(selected);
                 setOpenDeleteDialog(true);
               },
             },

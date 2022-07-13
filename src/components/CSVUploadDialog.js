@@ -12,12 +12,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
 import { styled } from "@mui/material/styles";
 import { CSVLink } from "react-csv";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import { useAxios } from "../hooks";
 // import { arrayEquals } from "../utils/arrayEquals";
-import { SnackbarContext } from "../contexts";
+import { withAlert } from "../recoil/snackbar";
 import { LoadingButton } from "@mui/lab";
+import { useSetRecoilState } from "recoil";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -76,20 +77,15 @@ const CSVUploadDialog = ({
   const [columnNames, setColumnNames] = useState([]);
   const [data, setData] = useState([]);
   const [errors, setErrors] = useState([]);
-  const { openAlert, message } = useContext(SnackbarContext);
+  const openAlert = useSetRecoilState(withAlert);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef();
-
-  const showAlert = (status, detail) => {
-    message({ status, detail });
-    openAlert(true);
-  };
 
   const processResponse = (res) => {
     const key = /\([^)]*\)/i;
     const value = /\([0-9]+\)/i;
     if (res.status === 200) {
-      showAlert(res.status, res.data.detail);
+      openAlert({ status: res.status, detail: res.data.detail });
       handleClose();
     } else if (res.status === 422) {
       const errors = res.data.detail.map((error) => {
@@ -105,7 +101,10 @@ const CSVUploadDialog = ({
         } does not exist.`,
       ]);
     } else {
-      showAlert(res.status, res.data.message || res.data.detail);
+      openAlert({
+        status: res.status,
+        detail: res.data.message || res.data.detail,
+      });
     }
     fileInputRef.current.value = null;
   };
@@ -116,13 +115,16 @@ const CSVUploadDialog = ({
       /,(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)/
     );
     if (!headers.every((h) => columnNames.includes(h))) {
-      showAlert(400, "Incorrect format.");
+      openAlert({
+        status: 400,
+        detail: "Incorrect format.",
+      });
       fileInputRef.current.value = null;
       return;
     }
 
     // if (!arrayEquals(headers, columnNames)) {
-    //   showAlert(400, "Incorrect format.");
+    //   openAlert({ status: 400, detail: "Incorrect format."});
     //   fileInputRef.current.value = null;
     //   return;
     // }

@@ -177,7 +177,6 @@ const PatientTable = () => {
                 </Button>
               )),
               callback: (selected) => {
-                console.log(selected);
                 history.push(`patient/details/${extractID(selected[0].id)}`);
               },
             },
