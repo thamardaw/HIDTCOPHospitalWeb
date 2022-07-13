@@ -34,7 +34,6 @@ function Dashboard(props) {
           }}
         >
           <Toolbar />
-
           <Switch>
             <Route path={`${path}/patient`} component={Patient} />
             <Route path={`${path}/uom`} component={Uom} />
@@ -58,7 +57,6 @@ function Dashboard(props) {
             />
             <Redirect to={`${path}/patient`} />
           </Switch>
-
           <Footer />
         </Box>
       </CacheProvider>
