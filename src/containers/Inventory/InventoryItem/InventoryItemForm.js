@@ -87,7 +87,6 @@ const InventoryItemForm = () => {
     setLoading(false);
   };
 
-
   useEffect(() => {
     if (details?.sales_service_item_id && details?.id) {
       setDetails({
@@ -372,7 +371,6 @@ const InventoryItemForm = () => {
         open={openDialog}
         handleClose={handleCloseDialog}
         columns={[
-          "pharmacy_item_id",
           "name",
           "balance",
           "unit",
@@ -383,11 +381,9 @@ const InventoryItemForm = () => {
         ]}
         example_rows={[
           {
-            pharmacy_item_id:
-              "Please don't touch row 1 and look at row 3 for field description and example values. Columns with comma seperated values are the only valid value for those field. REMOVE ROW 2 AND 3 BEFORE UPLOADING.",
+            name: "Please don't touch row 1 and look at row 3 for field description and example values. Columns with comma seperated values are the only valid value for those field. REMOVE ROW 2 AND 3 BEFORE UPLOADING.",
           },
           {
-            pharmacy_item_id: "Pharmacy Item ID",
             name: "Inventory Item Name",
             balance: "Inventory Item Initial Balance",
             unit: "Pharmacy Item's PO-unit or unit (This is case sensitive)",
