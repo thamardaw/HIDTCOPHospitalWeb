@@ -14,14 +14,15 @@ import {
 } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { Box } from "@mui/system";
-import { useContext, useState } from "react";
-import { AuthContext } from "../../../contexts";
+import {  useState } from "react";
 import { useAxios } from "../../../hooks";
 import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
 import { useEffect } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { BackButton } from "../../../components";
+import { useRecoilValue } from "recoil";
+import { withUser } from "../../../recoil/auth";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -31,7 +32,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const DailyClosingForm = () => {
   const history = useHistory();
-  let { user } = useContext(AuthContext);
+  const user = useRecoilValue(withUser);
   const api = useAxios({ autoSnackbar: true });
   const [bills, setBills] = useState([]);
   const [billLimit, setBillLimit] = useState({

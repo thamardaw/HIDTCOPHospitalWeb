@@ -158,7 +158,6 @@ const InventoryItemTable = () => {
                 </Button>
               )),
               callback: (selected) => {
-                console.log(selected);
                 history.push(`inventory_item/details/${selected[0].id}`);
               },
             },
@@ -176,6 +175,7 @@ const InventoryItemTable = () => {
                 </Button>
               )),
               callback: (selected) => {
+                setSelected(selected);
                 setOpenDeleteDialog(true);
               },
             },

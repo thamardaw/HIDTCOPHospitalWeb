@@ -1,6 +1,5 @@
-import { useContext, useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { CustomTable } from "../../../components";
-import { LoadingContext } from "../../../contexts";
 import { useAxios } from "../../../hooks";
 import {
   Button,
@@ -10,6 +9,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { useHistory } from "react-router-dom";
 
 const headCells = [
   {
@@ -34,22 +34,14 @@ const headCells = [
 
 const TransactionTypeTable = () => {
   const api = useAxios({ autoSnackbar: true });
+  const history = useHistory();
   const [rows, setRows] = useState([]);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selected, setSelected] = useState([]);
-  const { setScreenLoading } = useContext(LoadingContext);
-
-  const handleClickOpenDeleteDialog = (arr) => {
-    setSelected(arr);
-    setOpenDeleteDialog(true);
-  };
-
-  const handleCloseDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-  };
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [isTableLoading, setIsTableLoading] = useState(false);
 
   const getData = async () => {
-    setScreenLoading(true);
+    setIsTableLoading(true);
     const res = await api.get("/api/transaction_types/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -60,7 +52,7 @@ const TransactionTypeTable = () => {
         };
       });
       setRows(data);
-      setScreenLoading(false);
+      setIsTableLoading(false);
     }
     return;
   };
@@ -78,7 +70,7 @@ const TransactionTypeTable = () => {
         listOfId: extractedID,
       });
     }
-    handleCloseDeleteDialog();
+    setOpenDeleteDialog(false);
     setSelected([]);
     getData();
   };
@@ -91,15 +83,81 @@ const TransactionTypeTable = () => {
   return (
     <>
       <CustomTable
-        tableName="Transaction Type"
-        headCells={headCells}
-        rows={rows}
-        onDelete={handleClickOpenDeleteDialog}
-        enableMultipleDelete={false}
+        tableConfig={{
+          headCells: headCells,
+          tableName: "Transaction Type",
+          maxHeight: "62vh",
+          atom: "transactionTypeTableAtom",
+        }}
+        data={rows}
+        isLoading={isTableLoading}
+        toolbarButtons={{
+          whenNoneSelected: [
+            {
+              id: "transaction type table new button",
+              component: memo(({ ...rest }) => (
+                <Button variant="outlined" size="small" {...rest}>
+                  New
+                </Button>
+              )),
+              callback: (selected) => {
+                history.push("transaction_type/form");
+              },
+            },
+          ],
+          whenOneSelected: [
+            {
+              id: "transaction type table edit button",
+              component: memo(({ ...rest }) => (
+                <Button variant="contained" size="small" {...rest}>
+                  Edit
+                </Button>
+              )),
+              callback: (selected) => {
+                history.push(`transaction_type/form/${selected[0].id}`);
+              },
+            },
+            {
+              id: "transaction type table detail button",
+              component: memo(({ ...rest }) => (
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{ marginLeft: "5px" }}
+                  {...rest}
+                >
+                  Details
+                </Button>
+              )),
+              callback: (selected) => {
+                history.push(`transaction_type/details/${selected[0].id}`);
+              },
+            },
+            {
+              id: "transaction type table delete button",
+              component: memo(({ ...rest }) => (
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="error"
+                  sx={{ marginLeft: "5px" }}
+                  {...rest}
+                >
+                  Delete
+                </Button>
+              )),
+              callback: (selected) => {
+                setSelected(selected);
+                setOpenDeleteDialog(true);
+              },
+            },
+          ],
+          whenMoreThanOneSelected: [],
+        }}
       />
       <Dialog
         open={openDeleteDialog}
-        onClose={handleCloseDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -110,7 +168,7 @@ const TransactionTypeTable = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
+          <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
           <Button onClick={deleteItem} autoFocus>
             Ok
           </Button>
