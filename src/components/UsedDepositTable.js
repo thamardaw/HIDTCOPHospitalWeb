@@ -2,6 +2,7 @@ import { Button } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAxios } from "../hooks";
+import { extractID } from "../utils/extractID";
 import { generateID } from "../utils/generateID";
 import CustomTable from "./CustomTable";
 
@@ -66,7 +67,7 @@ const UsedDepositTable = ({ headCells }) => {
                 </Button>
               )),
               callback: (selected) => {
-                history.push(`deposit/details/${selected[0].id}`);
+                history.push(`deposit/details/${extractID(selected[0].id)}`);
               },
             },
           ],

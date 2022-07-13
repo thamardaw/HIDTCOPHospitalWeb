@@ -9,6 +9,7 @@ import {
 import { memo, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAxios } from "../hooks";
+import { extractID } from "../utils/extractID";
 import { generateID } from "../utils/generateID";
 import CustomTable from "./CustomTable";
 
@@ -45,9 +46,7 @@ const ActiveDepositTable = ({ headCells }) => {
     if (selected.length === 0) {
       return;
     }
-    await api.put(
-      `/api/deposit/cancel/${parseInt(selected[0].id.split("-")[1])}`
-    );
+    await api.put(`/api/deposit/cancel/${extractID(selected[0].id)}`);
     setOpenDeleteDialog(false);
     setSelected([]);
     getActiveDeposit();
@@ -86,7 +85,9 @@ const ActiveDepositTable = ({ headCells }) => {
               )),
               callback: (selected) => {
                 history.push({
-                  pathname: `/dashboard/deposit/details/${selected[0].id}`,
+                  pathname: `/dashboard/deposit/details/${extractID(
+                    selected[0].id
+                  )}`,
                   state: {
                     from: "active",
                   },

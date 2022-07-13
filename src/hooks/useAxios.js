@@ -45,7 +45,7 @@ const useAxios = (props) => {
     } else {
       setAuth(null);
       localStorage.removeItem("genesis-auth-tokens");
-      history("/login");
+      history.push("/login");
     }
     return req;
   });
