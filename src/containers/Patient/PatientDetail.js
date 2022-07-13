@@ -13,7 +13,7 @@ const PatientDetail = () => {
   const [details, setDetails] = useState({});
 
   const getData = async () => {
-    const res = await api.get(`/api/patients/${parseInt(id.split("-")[1])}`);
+    const res = await api.get(`/api/patients/${id}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
     }

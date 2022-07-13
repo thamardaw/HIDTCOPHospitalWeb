@@ -31,7 +31,7 @@ const PatientForm = () => {
   };
 
   const getData = async () => {
-    const res = await api.get(`/api/patients/${parseInt(id.split("-")[1])}`);
+    const res = await api.get(`/api/patients/${id}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
     } else {
@@ -53,7 +53,7 @@ const PatientForm = () => {
 
   const update = async () => {
     setLoading(true);
-    const res = await api.put(`/api/patients/${parseInt(id.split("-")[1])}`, {
+    const res = await api.put(`/api/patients/${id}`, {
       name: details.name,
       age: details.age,
       contact_details: details.contact_details,
@@ -231,20 +231,6 @@ const PatientForm = () => {
         >
           Save
         </LoadingButton>
-        {/* <Button
-          variant="contained"
-          size="small"
-          sx={{
-            marginRight: "5px",
-            backgroundColor: "gray",
-            "&:hover": {
-              backgroundColor: "lightgray",
-            },
-          }}
-          onClick={() => history.goBack()}
-        >
-          Cancel
-        </Button> */}
       </Box>
     </Box>
   );
