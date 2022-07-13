@@ -11,6 +11,7 @@ import { useAxios } from "../../hooks";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { BackButton } from "../../components";
+import { MobileDatePicker } from "@mui/x-date-pickers";
 
 const PatientForm = () => {
   const history = useHistory();
@@ -28,6 +29,14 @@ const PatientForm = () => {
 
   const handleChange = (e) => {
     setDetails({ ...details, [e.target.name]: e.target.value });
+  };
+
+  const onDatePicked = (e) => {
+    const date_obj = new Date(e);
+    const v = `${date_obj.getFullYear()}-${
+      date_obj.getMonth() + 1
+    }-${date_obj.getDate()}`;
+    setDetails({ ...details, date_of_birth: v });
   };
 
   const getData = async () => {
@@ -182,7 +191,20 @@ const PatientForm = () => {
           <Box sx={{ width: "30%" }}>
             <Typography variant="p">Date Of Birth</Typography>
           </Box>
-          <TextField
+          <MobileDatePicker
+            inputFormat="yyyy-MM-dd"
+            value={details?.date_of_birth}
+            onChange={onDatePicked}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                sx={{ width: "70%" }}
+                size="small"
+                margin="dense"
+              />
+            )}
+          />
+          {/* <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
@@ -190,7 +212,7 @@ const PatientForm = () => {
             value={details?.date_of_birth || ""}
             name="date_of_birth"
             onChange={handleChange}
-          />
+          /> */}
         </Box>
         <Box
           sx={{

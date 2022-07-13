@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { Box } from "@mui/system";
-import {  useState } from "react";
+import { useState } from "react";
 import { useAxios } from "../../../hooks";
 import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
@@ -23,6 +23,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { BackButton } from "../../../components";
 import { useRecoilValue } from "recoil";
 import { withUser } from "../../../recoil/auth";
+import { MobileDatePicker } from "@mui/x-date-pickers";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -36,8 +37,8 @@ const DailyClosingForm = () => {
   const api = useAxios({ autoSnackbar: true });
   const [bills, setBills] = useState([]);
   const [billLimit, setBillLimit] = useState({
-    from: "",
-    to: "",
+    from: null,
+    to: null,
   });
   const [deposits, setDeposits] = useState([]);
   const [depositLimit, setDepositLimit] = useState({
@@ -52,6 +53,16 @@ const DailyClosingForm = () => {
   const [adjustedAmount, setAdjustedAmount] = useState(0);
   const [adjustedReason, setAdjustedReason] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const onDatePicked = (key) => {
+    return (e) => {
+      const date_obj = new Date(e);
+      const v = `${date_obj.getFullYear()}-${
+        date_obj.getMonth() + 1
+      }-${date_obj.getDate()}`;
+      setBillLimit({ ...billLimit, [key]: v });
+    };
+  };
 
   useEffect(() => {
     setGrandTotal(
@@ -218,7 +229,20 @@ const DailyClosingForm = () => {
             }}
           >
             <Typography>From</Typography>
-            <TextField
+            <MobileDatePicker
+              inputFormat="yyyy-MM-dd"
+              value={billLimit?.from}
+              onChange={onDatePicked("from")}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  sx={{ width: "40%" }}
+                  size="small"
+                  margin="dense"
+                />
+              )}
+            />
+            {/* <TextField
               size="small"
               sx={{ width: "40%" }}
               margin="dense"
@@ -227,9 +251,9 @@ const DailyClosingForm = () => {
               onChange={(e) =>
                 setBillLimit({ ...billLimit, from: e.target.value })
               }
-            />
+            /> */}
             <Typography>To</Typography>
-            <TextField
+            {/* <TextField
               size="small"
               sx={{ width: "40%" }}
               margin="dense"
@@ -238,6 +262,19 @@ const DailyClosingForm = () => {
               onChange={(e) =>
                 setBillLimit({ ...billLimit, to: e.target.value })
               }
+            /> */}
+            <MobileDatePicker
+              inputFormat="yyyy-MM-dd"
+              value={billLimit?.to}
+              onChange={onDatePicked("to")}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  sx={{ width: "40%" }}
+                  size="small"
+                  margin="dense"
+                />
+              )}
             />
           </Box>
           <Button

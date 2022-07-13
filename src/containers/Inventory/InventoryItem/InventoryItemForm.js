@@ -13,6 +13,7 @@ import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { BackButton, CSVUploadDialog } from "../../../components";
 import { useAxios } from "../../../hooks";
+import { MobileDatePicker } from "@mui/x-date-pickers";
 
 const InventoryItemForm = () => {
   const history = useHistory();
@@ -20,6 +21,7 @@ const InventoryItemForm = () => {
   const api = useAxios({ autoSnackbar: true });
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({
+    expiry_date: null,
     pharmacy_item: null,
     ssi: null,
   });
@@ -36,6 +38,14 @@ const InventoryItemForm = () => {
   };
   const handleCloseDialog = () => {
     setOpenDialog(false);
+  };
+
+  const onDatePicked = (e) => {
+    const date_obj = new Date(e);
+    const v = `${date_obj.getFullYear()}-${
+      date_obj.getMonth() + 1
+    }-${date_obj.getDate()}`;
+    setDetails({ ...details, expiry_date: v });
   };
 
   const getPharmacyItemsAndSSI = async () => {
@@ -249,7 +259,20 @@ const InventoryItemForm = () => {
             <Box sx={{ width: "30%" }}>
               <Typography variant="p">Expiry Date</Typography>
             </Box>
-            <TextField
+            <MobileDatePicker
+              inputFormat="yyyy-MM-dd"
+              value={details?.expiry_date}
+              onChange={onDatePicked}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  sx={{ width: "70%" }}
+                  size="small"
+                  margin="dense"
+                />
+              )}
+            />
+            {/* <TextField
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
@@ -257,7 +280,7 @@ const InventoryItemForm = () => {
               value={details?.expiry_date || ""}
               name="expiry_date"
               onChange={handleChange}
-            />
+            /> */}
           </Box>
           <Box
             sx={{
