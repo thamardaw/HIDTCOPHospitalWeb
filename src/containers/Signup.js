@@ -13,40 +13,12 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
-import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
-import { SnackbarContext } from "../contexts";
 import LoadingButton from "@mui/lab/LoadingButton";
-
-// const Container = styled("div")(({ theme }) => ({
-//   display: "flex",
-//   position: "absolute",
-//   top: 0,
-//   bottom: 0,
-//   left: 0,
-//   right: 0,
-//   margin: "auto",
-//   width: "30%",
-//   height: "320px",
-//   [theme.breakpoints.down("md")]: {
-//     width: "50%",
-//   },
-//   [theme.breakpoints.down("sm")]: {
-//     width: "100vw",
-//     height: "100vh",
-//   },
-// }));
-
-// const StyledPaper = styled(Paper)(({ theme }) => ({
-//   height: "100%",
-//   width: "100%",
-//   display: "flex",
-//   padding: theme.spacing(4),
-//   flexDirection: "column",
-//   alignItems: "center",
-// }));
+import { useSetRecoilState } from "recoil";
+import { withAlert } from "../recoil/snackbar";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   position: "absolute",
@@ -83,9 +55,11 @@ const StyledLink = styled(Link)(({ theme }) => ({
   textDecoration: "none",
 }));
 
+const Form = styled("form")(({ theme }) => ({}));
+
 const Signup = () => {
-  const history = useHistory();
-  let { openAlert, message } = useContext(SnackbarContext);
+  const navigate = useHistory();
+  const openAlert = useSetRecoilState(withAlert);
   const [details, setDetails] = useState({
     username: "",
     password: "",
@@ -104,8 +78,7 @@ const Signup = () => {
     setLoading(true);
     e.preventDefault();
     if (details.password !== details.confirmPassword) {
-      message({ status: "error", detail: "Passwords do not match." });
-      openAlert(true);
+      openAlert({ status: "error", detail: "Passwords do not match." });
       setLoading(false);
       return;
     }
@@ -123,19 +96,17 @@ const Signup = () => {
       }
     );
     if (res.status === 200) {
-      message({ status: res.status, detail: res.data.detail });
-      openAlert(true);
-      history.goBack();
+      openAlert({ status: res.status, detail: res.data.detail });
+      navigate(-1);
     } else {
-      message({ status: res.status, detail: res.data.detail });
-      openAlert(true);
+      openAlert({ status: res.status, detail: res.data.detail });
     }
     setLoading(false);
   };
   return (
     <StyledBox>
       <StyledPaper elevation={6}>
-        <form onSubmit={submitHandler}>
+        <Form onSubmit={submitHandler}>
           <FormControl
             fullWidth
             required
@@ -215,7 +186,7 @@ const Signup = () => {
           >
             Sign up
           </LoadingButton>
-        </form>
+        </Form>
         <Button size="small" style={{ marginTop: "10px" }}>
           <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>
             <StyledLink to="/login">Already have an account?</StyledLink>
