@@ -41,40 +41,21 @@ const InventoryTransactionDetail = () => {
       <Divider />
       <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>
         <DetailsRow
-          name="Brand Name"
-          value={details?.inventory_item?.pharmacy_item?.brand_name}
-        />
-        <Divider />
-        <DetailsRow
-          name="Generic Name"
-          value={details?.inventory_item?.pharmacy_item?.generic_name}
-        />
-        <Divider />
-        <DetailsRow
           name="Inventory Item Name"
           value={details?.inventory_item_name}
         />
-        <Divider />
         <DetailsRow name="Batch" value={details?.inventory_item?.batch} />
-        <Divider />
         <DetailsRow
           name="Transaction Type"
           value={details?.transaction_type_name}
         />
-        <Divider />
         <DetailsRow name="Quantity" value={details?.quantity} />
-        <Divider />
         <DetailsRow name="Unit" value={details?.unit} />
-        <Divider />
         <DetailsRow name="Opening Balance" value={details?.opening_balance} />
-        <Divider />
         <DetailsRow name="Closing Balance" value={details?.closing_balance} />
-        <Divider />
         <DetailsRow name="Selling Price" value={details?.selling_price} />
-        <Divider />
         <DetailsRow name="Note" value={details?.note} />
       </Box>
-      <Divider />
     </Box>
   );
 };

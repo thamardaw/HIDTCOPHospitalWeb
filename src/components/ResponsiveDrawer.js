@@ -179,7 +179,7 @@ const ResponsiveDrawer = ({
         </ListItemButton>
         <Collapse in={openInventory} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItemButton
+            {/* <ListItemButton
               size="small"
               sx={{ pl: "25px" }}
               selected={location.pathname.includes("/pharmacy_item")}
@@ -189,7 +189,7 @@ const ResponsiveDrawer = ({
                 <EventNoteIcon />
               </ListItemIcon>
               <ListItemText primary="Pharmacy Item" />
-            </ListItemButton>
+            </ListItemButton> */}
             <ListItemButton
               size="small"
               sx={{ pl: "25px" }}
