@@ -1,21 +1,16 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Tab,
-  Tabs,
-} from "@mui/material";
+import { Button, Tab, Tabs } from "@mui/material";
 import { Box } from "@mui/material";
-import { useCallback, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { CustomTable, TabPanel } from "../../../components";
-import { CacheContext } from "../../../contexts";
-import LoadingContext from "../../../contexts/LoadingContext";
-import { useAxios } from "../../../hooks";
-import { generateID } from "../../../utils/generateID";
+import { useRecoilState } from "recoil";
+import {
+  CancelledBillTable,
+  CompletedBillTable,
+  DraftedBillTable,
+  OutstandingBillTable,
+  TabPanel,
+} from "../../../components";
+
+import tabAtom from "../../../recoil/tab";
 
 const headCells = [
   {
@@ -57,167 +52,12 @@ const headCells = [
 ];
 
 const BillsTable = () => {
-  const api = useAxios({ autoSnackbar: true });
   const history = useHistory();
-  const [draftedRows, setDraftedRows] = useState([]);
-  const [outstandingRows, setOutstandingRows] = useState([]);
-  const [completedRows, setCompletedRows] = useState([]);
-  const [cancelledRows, setCancelledRows] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState([]);
-  // const [tab, setTab] = useState(false);
-  const { setScreenLoading } = useContext(LoadingContext);
-  const { table, viewTab } = useContext(CacheContext);
-  const { resetTable } = table;
-  const { tab, setTab } = viewTab;
+  const [tab, setTab] = useRecoilState(tabAtom("billTabAtom"));
 
   const handleTabChange = (event, newTab) => {
-    resetTable();
     setTab(newTab);
   };
-
-  const handleClickOpen = (arr) => {
-    setSelected(arr);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const toDetailFromOutstanding = (id) => {
-    history.push(
-      `/dashboard/bills/details/${parseInt(id.split("-")[1])}/outstanding`
-    );
-  };
-
-  const toDetailFromDrafted = (id) => {
-    history.push(
-      `/dashboard/bills/details/${parseInt(id.split("-")[1])}/draft`
-    );
-  };
-
-  const toDetailFromCompleted = (id) => {
-    history.push(
-      `/dashboard/bills/details/${parseInt(id.split("-")[1])}/completed`
-    );
-  };
-
-  const toDetailFromCancelled = (id) => {
-    history.push(
-      `/dashboard/bills/details/${parseInt(id.split("-")[1])}/cancelled`
-    );
-  };
-
-  const getDraftedData = useCallback(async () => {
-    setScreenLoading(true);
-    const res = await api.get("/api/bill/drafted");
-    if (res.status === 200) {
-      const data = res.data.map((row) => {
-        const ID = generateID(row.id);
-        return {
-          id: ID,
-          name: row.patient_name,
-          phone: row.patient_phone,
-          address: row.patient_address,
-          totalAmount: row.total_amount,
-          date: row.created_time.split("T")[0],
-          bill_items: row.bill_items,
-        };
-      });
-      setDraftedRows(data);
-      setScreenLoading(false);
-    }
-    return;
-    // eslint-disable-next-line
-  }, []);
-
-  const getOutstandingData = useCallback(async () => {
-    const res = await api.get("/api/bill/outstanding");
-    if (res.status === 200) {
-      const data = res.data.map((row) => {
-        const ID = generateID(row.id);
-        return {
-          id: ID,
-          name: row.patient_name,
-          phone: row.patient_phone,
-          address: row.patient_address,
-          totalAmount: row.total_amount,
-          date: row.created_time.split("T")[0],
-          bill_items: row.bill_items,
-        };
-      });
-      setOutstandingRows(data);
-    }
-    return;
-    // eslint-disable-next-line
-  }, []);
-
-  const getCompletedData = useCallback(async () => {
-    const res = await api.get("/api/bill/completed");
-    if (res.status === 200) {
-      const data = res.data.map((row) => {
-        const ID = generateID(row.id);
-        return {
-          id: ID,
-          name: row.patient_name,
-          phone: row.patient_phone,
-          address: row.patient_address,
-          totalAmount: row.total_amount,
-          date: row.payment[0].updated_time.split("T")[0],
-        };
-      });
-      setCompletedRows(data);
-    }
-    return;
-    // eslint-disable-next-line
-  }, []);
-
-  const getCancelledData = useCallback(async () => {
-    const res = await api.get("/api/bill/cancelled");
-    if (res.status === 200) {
-      const data = res.data.map((row) => {
-        const ID = generateID(row.id);
-        return {
-          id: ID,
-          name: row.patient_name,
-          phone: row.patient_phone,
-          address: row.patient_address,
-          totalAmount: row.total_amount,
-          date: row.created_time.split("T")[0],
-        };
-      });
-      setCancelledRows(data);
-    }
-    return;
-    // eslint-disable-next-line
-  }, []);
-
-  const cancelBill = async () => {
-    if (selected.length === 0) {
-      return;
-    }
-    const [b, inv] = await Promise.all([
-      api.put(`/api/bill/cancel/${parseInt(selected[0].id.split("-")[1])}`),
-      api.post("/api/inventory/returns", [...selected[0]?.bill_items]),
-    ]);
-    if (b.status === 200 && inv.status === 200) {
-      handleClose();
-      setSelected([]);
-      getDraftedData();
-      getOutstandingData();
-      getCompletedData();
-      getCancelledData();
-    }
-  };
-
-  useEffect(() => {
-    getDraftedData();
-    getOutstandingData();
-    getCompletedData();
-    getCancelledData();
-    // eslint-disable-next-line
-  }, []);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -245,71 +85,17 @@ const BillsTable = () => {
         </Tabs>
       </Box>
       <TabPanel value={tab} index={0}>
-        <CustomTable
-          tableName="Bill"
-          headCells={headCells}
-          rows={draftedRows}
-          addCreate={false}
-          onDelete={handleClickOpen}
-          onDetail={toDetailFromDrafted}
-          deleteBtnName="Cancel"
-        />
+        <DraftedBillTable headCells={headCells} />
       </TabPanel>
       <TabPanel value={tab} index={1}>
-        <CustomTable
-          tableName="Bill"
-          headCells={headCells}
-          rows={outstandingRows}
-          onDelete={handleClickOpen}
-          onDetail={toDetailFromOutstanding}
-          addCreate={false}
-          addEdit={false}
-          deleteBtnName="Cancel"
-        />
+        <OutstandingBillTable headCells={headCells} />
       </TabPanel>
       <TabPanel value={tab} index={2}>
-        <CustomTable
-          tableName="Bill"
-          headCells={headCells}
-          rows={completedRows}
-          onDelete={handleClickOpen}
-          onDetail={toDetailFromCompleted}
-          addDelete={false}
-          addCreate={false}
-          addEdit={false}
-        />
+        <CompletedBillTable headCells={headCells} />
       </TabPanel>
       <TabPanel value={tab} index={3}>
-        <CustomTable
-          tableName="Bill"
-          headCells={headCells}
-          rows={cancelledRows}
-          onDelete={handleClickOpen}
-          onDetail={toDetailFromCancelled}
-          addDelete={false}
-          addCreate={false}
-          addEdit={false}
-        />
+        <CancelledBillTable headCells={headCells} />
       </TabPanel>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to cancel the bill?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={cancelBill} autoFocus>
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };

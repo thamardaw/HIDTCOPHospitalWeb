@@ -44,7 +44,7 @@ const CancelledDepositTable = ({ headCells }) => {
         tableConfig={{
           headCells: headCells,
           tableName: "Deposit",
-          maxHeight: "62vh",
+          maxHeight: "60vh",
           atom: "cancelledDepositTableAtom",
         }}
         data={rows}

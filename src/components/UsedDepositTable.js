@@ -45,7 +45,7 @@ const UsedDepositTable = ({ headCells }) => {
         tableConfig={{
           headCells: headCells,
           tableName: "Deposit",
-          maxHeight: "62vh",
+          maxHeight: "60vh",
           atom: "usedDepositTableAtom",
         }}
         data={rows}

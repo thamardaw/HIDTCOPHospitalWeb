@@ -10,3 +10,7 @@ export { default as DeleteDialog } from "./DeleteDialog";
 export { default as ActiveDepositTable } from "./ActiveDepositTable";
 export { default as UsedDepositTable } from "./UsedDepositTable";
 export { default as CancelledDepositTable } from "./CancelledDepositTable";
+export { default as DraftedBillTable } from "./DraftedBillTable";
+export { default as OutstandingBillTable } from "./OutstandingBillTable";
+export { default as CompletedBillTable } from "./CompletedBillTable";
+export { default as CancelledBillTable } from "./CancelledBIllTable";

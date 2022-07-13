@@ -1,13 +1,14 @@
 import { Button, Tab, Tabs } from "@mui/material";
 import { Box } from "@mui/system";
-import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useRecoilState } from "recoil";
 import {
   ActiveDepositTable,
   CancelledDepositTable,
   TabPanel,
   UsedDepositTable,
 } from "../../../components";
+import tabAtom from "../../../recoil/tab";
 
 const headCells = [
   {
@@ -44,7 +45,7 @@ const headCells = [
 
 const DepositTable = () => {
   const history = useHistory();
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useRecoilState(tabAtom("depositTabAtom"));
 
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
