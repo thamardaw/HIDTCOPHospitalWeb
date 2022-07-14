@@ -8,30 +8,12 @@ import {
 } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { CustomTable } from "../../../components";
-import { useAxios } from "../../../hooks";
+import { useAxios } from "../hooks";
+import { extractID } from "../utils/extractID";
+import { generateID } from "../utils/generateID";
+import CustomTable from "./CustomTable";
 
-const headCells = [
-  {
-    id: "id",
-    numeric: false,
-    disablePadding: true,
-    label: "ID",
-  },
-  {
-    id: "name",
-    numeric: false,
-    disablePadding: false,
-    label: "Name",
-  },
-  {
-    id: "description",
-    numeric: false,
-    disablePadding: false,
-    label: "Description",
-  },
-];
-const CategoryTable = () => {
+const ActiveDepositTable = ({ headCells }) => {
   const api = useAxios({ autoSnackbar: true });
   const history = useHistory();
   const [rows, setRows] = useState([]);
@@ -39,15 +21,18 @@ const CategoryTable = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [isTableLoading, setIsTableLoading] = useState(false);
 
-  const getData = useCallback(async () => {
+  const getActiveDeposit = useCallback(async () => {
     setIsTableLoading(true);
-    const res = await api.get("/api/category/");
+    const res = await api.get("/api/deposit/active");
     if (res.status === 200) {
       const data = res.data.map((row) => {
+        const ID = generateID(row.id);
         return {
-          id: row.id,
-          name: row.name,
-          description: row.description,
+          id: ID,
+          patient_name: row.patient.name,
+          patient_id: generateID(row.patient_id, row.patient.created_time),
+          amount: row.amount,
+          date: row.created_time.split("T")[0],
         };
       });
       setRows(data);
@@ -57,24 +42,18 @@ const CategoryTable = () => {
     // eslint-disable-next-line
   }, []);
 
-  const deleteItem = async () => {
+  const cancelDeposit = async () => {
     if (selected.length === 0) {
       return;
-    } else if (selected.length === 1) {
-      await api.delete(`/api/category/${parseInt(selected[0].id)}`);
-    } else if (selected.length > 1) {
-      const listOfId = selected.map((item) => item.id);
-      await api.post(`/api/category/bulk`, {
-        listOfId: listOfId,
-      });
     }
+    await api.put(`/api/deposit/cancel/${extractID(selected[0].id)}`);
     setOpenDeleteDialog(false);
     setSelected([]);
-    getData();
+    getActiveDeposit();
   };
 
   useEffect(() => {
-    getData();
+    getActiveDeposit();
     // eslint-disable-next-line
   }, []);
 
@@ -83,40 +62,17 @@ const CategoryTable = () => {
       <CustomTable
         tableConfig={{
           headCells: headCells,
-          tableName: "Category",
-          maxHeight: "62vh",
-          atom: "categoryTableAtom",
+          tableName: "Deposit",
+          maxHeight: "60vh",
+          atom: "activeDepositTableAtom",
         }}
         data={rows}
         isLoading={isTableLoading}
         toolbarButtons={{
-          whenNoneSelected: [
-            {
-              id: "category table new button",
-              component: memo(({ ...rest }) => (
-                <Button variant="outlined" size="small" {...rest}>
-                  New
-                </Button>
-              )),
-              callback: (selected) => {
-                history.push("category/form");
-              },
-            },
-          ],
+          whenNoneSelected: [],
           whenOneSelected: [
             {
-              id: "category table edit button",
-              component: memo(({ ...rest }) => (
-                <Button variant="contained" size="small" {...rest}>
-                  Edit
-                </Button>
-              )),
-              callback: (selected) => {
-                history.push(`category/form/${selected[0].id}`);
-              },
-            },
-            {
-              id: "category table detail button",
+              id: "active deposit table detail button",
               component: memo(({ ...rest }) => (
                 <Button
                   variant="contained"
@@ -128,11 +84,18 @@ const CategoryTable = () => {
                 </Button>
               )),
               callback: (selected) => {
-                history.push(`category/details/${selected[0].id}`);
+                history.push({
+                  pathname: `/dashboard/deposit/details/${extractID(
+                    selected[0].id
+                  )}`,
+                  state: {
+                    from: "active",
+                  },
+                });
               },
             },
             {
-              id: "category table delete button",
+              id: "active deposit table delete button",
               component: memo(({ ...rest }) => (
                 <Button
                   variant="contained"
@@ -141,7 +104,7 @@ const CategoryTable = () => {
                   sx={{ marginLeft: "5px" }}
                   {...rest}
                 >
-                  Delete
+                  Cancel
                 </Button>
               )),
               callback: (selected) => {
@@ -162,12 +125,12 @@ const CategoryTable = () => {
         <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete?
+            Are you sure you want to cancel the deposit?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
-          <Button onClick={deleteItem} autoFocus>
+          <Button onClick={cancelDeposit} autoFocus>
             Ok
           </Button>
         </DialogActions>
@@ -176,4 +139,4 @@ const CategoryTable = () => {
   );
 };
 
-export default CategoryTable;
+export default ActiveDepositTable;

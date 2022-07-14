@@ -39,7 +39,7 @@ const CategoryDetail = () => {
   };
 
   const cancelDeposit = async () => {
-    await api.put(`/api/deposit/cancel/${parseInt(id.split("-")[1])}`);
+    await api.put(`/api/deposit/cancel/${id}`);
     handleClose();
     history.goBack();
   };
@@ -51,7 +51,7 @@ const CategoryDetail = () => {
   });
 
   const getData = async () => {
-    const res = await api.get(`/api/deposit/${parseInt(id.split("-")[1])}`);
+    const res = await api.get(`/api/deposit/${id}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
     } else {

@@ -11,22 +11,38 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Logout } from "@mui/icons-material";
-import React, { useContext, useState } from "react";
-import { AuthContext } from "../contexts";
+import React, { useState } from "react";
 import BadgeIcon from "@mui/icons-material/Badge";
 import PersonIcon from "@mui/icons-material/Person";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import authAtom, { withUser } from "../recoil/auth";
+import { useHistory } from "react-router-dom";
+import drawerAtom from "../recoil/drawer";
 import { constants } from "../utils/constants";
 
-const Appbar = ({ drawerWidth, handleDrawerToggle }) => {
-  let { user, logoutUser } = useContext(AuthContext);
+const Appbar = ({ drawerWidth }) => {
+  const history = useHistory();
+  const user = useRecoilValue(withUser);
+  const setDrawerOpen = useSetRecoilState(drawerAtom);
+  const setAuth = useSetRecoilState(authAtom);
   const [anchorEl, setAnchorEl] = useState(null);
+
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const logoutUser = () => {
+    setAuth(null);
+    localStorage.removeItem("genesis-auth-tokens");
+    history.push("/login");
+  };
+
   return (
     <>
       <AppBar
@@ -42,7 +58,7 @@ const Appbar = ({ drawerWidth, handleDrawerToggle }) => {
             color="inherit"
             aria-label="open drawer"
             edge="start"
-            onClick={handleDrawerToggle}
+            onClick={() => setDrawerOpen((prev) => !prev)}
             sx={{ mr: 2, display: { md: "none" } }}
           >
             <MenuIcon />
@@ -93,13 +109,13 @@ const Appbar = ({ drawerWidth, handleDrawerToggle }) => {
           <ListItemIcon>
             <PersonIcon fontSize="small" />
           </ListItemIcon>
-          {user.sub}
+          {user?.sub || "Guest"}
         </MenuItem>
         <MenuItem>
           <ListItemIcon>
             <BadgeIcon fontSize="small" />
           </ListItemIcon>
-          {user.role}
+          {user?.role || "None"}
         </MenuItem>
         <Divider />
         <MenuItem onClick={logoutUser}>
