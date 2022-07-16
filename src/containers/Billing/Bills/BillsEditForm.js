@@ -25,11 +25,10 @@ import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/system";
 import { useHistory, useParams } from "react-router-dom";
 import { useAxios } from "../../../hooks";
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton";
-import LoadingContext from "../../../contexts/LoadingContext";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { getComparator, stableSort } from "../../../utils/sorting";
 import { BackButton } from "../../../components";
@@ -53,7 +52,6 @@ const BillsEditForm = () => {
   const [currentQuantity, setCurrentQuantity] = useState(0);
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [loading, setLoading] = useState(false);
-  const { setScreenLoading } = useContext(LoadingContext);
   const [editingItem, setEditingItem] = useState({
     id: 0,
     quantity: 0,
@@ -90,7 +88,6 @@ const BillsEditForm = () => {
   };
 
   const getSalesServiceItem = async () => {
-    setScreenLoading(true);
     const res = await api.get("/api/salesServiceItem/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -102,7 +99,7 @@ const BillsEditForm = () => {
         };
       });
       setSalesServiceItem(data);
-      setScreenLoading(false);
+    
     } else {
       history.goBack();
     }
@@ -119,8 +116,8 @@ const BillsEditForm = () => {
 
   const getData = async () => {
     const [bill, invtxs] = await Promise.all([
-      api.get(`/api/bill/${parseInt(id.split("-")[1])}`),
-      api.get(`/api/inventory/dispense/${parseInt(id.split("-")[1])}`),
+      api.get(`/api/bill/${id}`),
+      api.get(`/api/inventory/dispense/${id}`),
     ]);
     if (bill.status === 200 && invtxs.status === 200) {
       getDepositByPatientId(bill.data.patient.id);
@@ -157,7 +154,7 @@ const BillsEditForm = () => {
     e.preventDefault();
     setLoading(true);
     const res = await api.post(
-      `/api/bill/${parseInt(id.split("-")[1])}/billItem/`,
+      `/api/bill/${id}/billItem/`,
       {
         ...currentSSI,
         sales_service_item_id: parseInt(currentSSI.sales_service_item_id),
@@ -177,7 +174,7 @@ const BillsEditForm = () => {
 
   const removeItem = async (row) => {
     const [item, invtx] = await Promise.all([
-      api.delete(`/api/bill/${parseInt(id.split("-")[1])}/billItem/${row.id}`),
+      api.delete(`/api/bill/${id}/billItem/${row.id}`),
       api.post(`/api/inventory/return`, { ...row }),
     ]);
     if (item.status === 200 && invtx.status === 200) {
@@ -384,7 +381,7 @@ const BillsEditForm = () => {
                     <Typography variant="body">Bill ID</Typography>
                   </Box>
                   <Typography variant="body">
-                    : {generateID(parseInt(id.split("-")[1]))}
+                    : {generateID(parseInt(id))}
                   </Typography>
                 </Box>
                 <Box
