@@ -97,7 +97,7 @@ const DepositForm = () => {
         sx={{
           display: "flex",
           flexDirection: { xs: "column", sm: "column", md: "row" },
-          padding: "10px 0px",
+          padding: "20px 10px",
         }}
       >
         <Box
