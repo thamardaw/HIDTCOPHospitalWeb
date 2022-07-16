@@ -97,7 +97,6 @@ const InventoryItemForm = () => {
     setLoading(false);
   };
 
-
   useEffect(() => {
     if (details?.sales_service_item_id && details?.id) {
       setDetails({

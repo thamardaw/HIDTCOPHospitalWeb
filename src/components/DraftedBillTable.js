@@ -85,7 +85,9 @@ const DraftedBillTable = ({ headCells }) => {
                 </Button>
               )),
               callback: (selected) => {
-                history.push(`patient/form/${extractID(selected[0].id)}`);
+                history.push(
+                  `/dashboard/bills/form/${extractID(selected[0].id)}`
+                );
               },
             },
             {
