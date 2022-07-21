@@ -1,11 +1,6 @@
 import {
   Button,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Divider,
   Paper,
   Table,
@@ -29,6 +24,7 @@ import { useLocation } from "react-router-dom";
 import { getComparator, stableSort } from "../../../utils/sorting";
 import { BackButton } from "../../../components";
 import { constants } from "../../../utils/constants";
+import {DeleteDialog} from "../../../components";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.3rem",
@@ -618,7 +614,7 @@ const BillsDetail = () => {
           </Box>
         </Container>
       </Paper>
-      <Dialog
+      {/* <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
@@ -636,7 +632,14 @@ const BillsDetail = () => {
             Ok
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
+      <DeleteDialog
+      isOpen = {open}
+      handleClose = {() => {handleClose()}}
+      callback = {() => {
+        cancelBill();
+      }}
+      />
     </>
   );
 };

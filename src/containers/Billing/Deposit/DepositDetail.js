@@ -1,10 +1,5 @@
 import {
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Divider,
   Toolbar,
   Typography,
@@ -19,6 +14,7 @@ import { styled } from "@mui/material/styles";
 import { useLocation } from "react-router-dom";
 import { BackButton } from "../../../components";
 import { constants } from "../../../utils/constants";
+import {DeleteDialog} from '../../../components';
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.3rem",
@@ -293,7 +289,7 @@ const CategoryDetail = () => {
       </Box> */}
         <Divider />
       </Box>
-      <Dialog
+      {/* <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
@@ -311,7 +307,14 @@ const CategoryDetail = () => {
             Ok
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
+      <DeleteDialog
+      isOpen = {open}
+      handleClose = {() => handleClose()}
+      callback = {() => {
+        cancelDeposit();
+      }}
+      />
     </>
   );
 };
