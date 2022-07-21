@@ -1,16 +1,10 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
+import {Button} from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAxios } from "../hooks";
 import { extractID } from "../utils/extractID";
 import { generateID } from "../utils/generateID";
+import DeleteDialog from "./DeleteDialog";
 import CustomTable from "./CustomTable";
 
 const OutstandingBillTable = ({ headCells }) => {
@@ -118,25 +112,13 @@ const OutstandingBillTable = ({ headCells }) => {
           whenMoreThanOneSelected: [],
         }}
       />
-      <Dialog
-        open={openDeleteDialog}
-        onClose={() => setOpenDeleteDialog(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to cancel the bill?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
-          <Button onClick={cancelBill} autoFocus>
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DeleteDialog
+      isOpen = {openDeleteDialog}
+      handleClose = {() => setOpenDeleteDialog(false)}
+      callback = {() => {
+        cancelBill();
+      }}
+      />
     </>
   );
 };
