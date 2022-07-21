@@ -1,4 +1,4 @@
-import {Button} from "@mui/material";
+import { Button } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAxios } from "../hooks";
@@ -111,11 +111,13 @@ const ActiveDepositTable = ({ headCells }) => {
         }}
       />
       <DeleteDialog
-      isOpen = {openDeleteDialog}
-      handleClose = {() => setOpenDeleteDialog(false)}
-      callback = {() => {
-        cancelDeposit();
-      }}
+        isOpen={openDeleteDialog}
+        handleClose={() => setOpenDeleteDialog(false)}
+        callbackButtonName="OK"
+        content="You are about to cancel the deposit."
+        callback={() => {
+          cancelDeposit();
+        }}
       />
     </>
   );

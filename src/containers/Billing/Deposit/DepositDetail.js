@@ -1,9 +1,4 @@
-import {
-  Button,
-  Divider,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { Button, Divider, Toolbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
@@ -14,7 +9,7 @@ import { styled } from "@mui/material/styles";
 import { useLocation } from "react-router-dom";
 import { BackButton } from "../../../components";
 import { constants } from "../../../utils/constants";
-import {DeleteDialog} from '../../../components';
+import { DeleteDialog } from "../../../components";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.3rem",
@@ -309,11 +304,13 @@ const CategoryDetail = () => {
         </DialogActions>
       </Dialog> */}
       <DeleteDialog
-      isOpen = {open}
-      handleClose = {() => handleClose()}
-      callback = {() => {
-        cancelDeposit();
-      }}
+        isOpen={open}
+        handleClose={() => handleClose()}
+        callbackButtonName="OK"
+        content="You are about to cancel the deposit."
+        callback={() => {
+          cancelDeposit();
+        }}
       />
     </>
   );

@@ -24,7 +24,7 @@ import { useLocation } from "react-router-dom";
 import { getComparator, stableSort } from "../../../utils/sorting";
 import { BackButton } from "../../../components";
 import { constants } from "../../../utils/constants";
-import {DeleteDialog} from "../../../components";
+import { DeleteDialog } from "../../../components";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.3rem",
@@ -634,11 +634,15 @@ const BillsDetail = () => {
         </DialogActions>
       </Dialog> */}
       <DeleteDialog
-      isOpen = {open}
-      handleClose = {() => {handleClose()}}
-      callback = {() => {
-        cancelBill();
-      }}
+        isOpen={open}
+        handleClose={() => {
+          handleClose();
+        }}
+        callbackButtonName="OK"
+        content="You are about to cancel the bill."
+        callback={() => {
+          cancelBill();
+        }}
       />
     </>
   );
