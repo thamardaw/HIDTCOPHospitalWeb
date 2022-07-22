@@ -44,7 +44,7 @@ const headCells = [
     label: "Total Amount",
   },
   {
-    id: "date",
+    id: "created_date",
     numeric: false,
     disablePadding: false,
     label: "Date",

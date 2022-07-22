@@ -355,7 +355,7 @@ const BillsEditForm = () => {
                 <Button
                   variant="contained"
                   fullWidth
-                  onClick={() => history.replace(`/dashboard/bills/details/${id.split("-")[1]}/draft`)}
+                  onClick={() => history.replace(`/dashboard/bills/details/${id}/draft`)}
                 >
                   Save Bill
                 </Button>

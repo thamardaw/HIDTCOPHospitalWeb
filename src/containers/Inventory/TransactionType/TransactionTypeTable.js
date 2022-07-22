@@ -1,14 +1,7 @@
 import { memo, useEffect, useState } from "react";
-import { CustomTable } from "../../../components";
+import { CustomTable,DeleteDialog } from "../../../components";
 import { useAxios } from "../../../hooks";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
+import {Button} from "@mui/material";
 import { useHistory } from "react-router-dom";
 
 const headCells = [
@@ -155,32 +148,13 @@ const TransactionTypeTable = () => {
           whenMoreThanOneSelected: [],
         }}
       />
-      <Dialog
-        open={openDeleteDialog}
-        onClose={() => setOpenDeleteDialog(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
-          <Button onClick={deleteItem} autoFocus>
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/* <DeleteDialog
+      <DeleteDialog
         isOpen={openDeleteDialog}
         handleClose={() => setOpenDeleteDialog(false)}
         callback={() => {
           deleteItem();
         }}
-      /> */}
+      />
     </>
   );
 };
