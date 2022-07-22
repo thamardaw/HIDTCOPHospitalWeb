@@ -37,7 +37,7 @@ const CategoryDetail = () => {
 
   const handlePrint = useReactToPrint({
     pageStyle:
-      "@media print { body { -webkit-print-color-adjust: exact; } @page { size: A4; margin: 200mm !important }}",
+      "@media print { body { -webkit-print-color-adjust: economy; } @page { size: A4; margin: 200mm !important }}",
     content: () => depositRef.current,
   });
 
@@ -284,25 +284,6 @@ const CategoryDetail = () => {
       </Box> */}
         <Divider />
       </Box>
-      {/* <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to cancel the deposit?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={cancelDeposit} autoFocus>
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog> */}
       <DeleteDialog
         isOpen={open}
         handleClose={() => handleClose()}
