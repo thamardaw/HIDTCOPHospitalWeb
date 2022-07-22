@@ -24,7 +24,8 @@ const CompletedBillTable = ({ headCells }) => {
           phone: row.patient_phone,
           address: row.patient_address,
           totalAmount: row.total_amount,
-          date: row.payment[0].updated_time.split("T")[0],
+          payment_date: row.payment[0].updated_time.split("T")[0],
+          created_date: row.created_time.split("T")[0],
         };
       });
       setRows(data);
@@ -42,7 +43,15 @@ const CompletedBillTable = ({ headCells }) => {
   return (
     <CustomTable
       tableConfig={{
-        headCells: headCells,
+        headCells: [
+          ...headCells,
+          {
+            id: "payment_date",
+            numeric: false,
+            disablePadding: false,
+            label: "Payment Date",
+          },
+        ],
         tableName: "Bill",
         maxHeight: "60vh",
         atom: "completedBillTableAtom",

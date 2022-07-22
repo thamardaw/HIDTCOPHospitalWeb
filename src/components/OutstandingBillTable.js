@@ -27,7 +27,7 @@ const OutstandingBillTable = ({ headCells }) => {
           phone: row.patient_phone,
           address: row.patient_address,
           totalAmount: row.total_amount,
-          date: row.created_time.split("T")[0],
+          created_date: row.created_time.split("T")[0],
           bill_items: row.bill_items,
         };
       });
