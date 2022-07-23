@@ -2,12 +2,12 @@ import {
   Autocomplete,
   Badge,
   Button,
+  CircularProgress,
   Container,
   Divider,
   IconButton,
   Menu,
   MenuItem,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -34,6 +34,12 @@ import { getComparator, stableSort } from "../../../utils/sorting";
 import { BackButton } from "../../../components";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
+// function sleep(delay = 0) {
+//   return new Promise((resolve) => {
+//     setTimeout(resolve, delay);
+//   });
+// }
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#EBEBEB",
@@ -52,6 +58,8 @@ const BillsEditForm = () => {
   const [currentQuantity, setCurrentQuantity] = useState(0);
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
+
   const [editingItem, setEditingItem] = useState({
     id: 0,
     quantity: 0,
@@ -88,6 +96,8 @@ const BillsEditForm = () => {
   };
 
   const getSalesServiceItem = async () => {
+    setDataLoading(true);
+    // await sleep(1e3);
     const res = await api.get("/api/salesServiceItem/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -99,7 +109,7 @@ const BillsEditForm = () => {
         };
       });
       setSalesServiceItem(data);
-    
+      setDataLoading(false);
     } else {
       history.goBack();
     }
@@ -153,15 +163,12 @@ const BillsEditForm = () => {
   const addItem = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const res = await api.post(
-      `/api/bill/${id}/billItem/`,
-      {
-        ...currentSSI,
-        sales_service_item_id: parseInt(currentSSI.sales_service_item_id),
-        quantity: parseInt(currentQuantity),
-        remark: "",
-      }
-    );
+    const res = await api.post(`/api/bill/${id}/billItem/`, {
+      ...currentSSI,
+      sales_service_item_id: parseInt(currentSSI.sales_service_item_id),
+      quantity: parseInt(currentQuantity),
+      remark: "",
+    });
     if (res.status === 200) {
       getData();
       resetFilter();
@@ -215,26 +222,47 @@ const BillsEditForm = () => {
 
   return (
     <>
-      <Paper sx={{ width: "100%", mb: 1 }}>
-        <Toolbar>
-          <BackButton backFunction={() => history.goBack()} />
-          <Typography variant="h6" component="div">
-            Edit Bill
-          </Typography>
-        </Toolbar>
-        <Container sx={{ paddingBottom: "20px" }}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "column", md: "row" },
-              alignItems: "flex-end",
-            }}
-          >
+      <Toolbar
+        sx={{
+          display: "flex",
+          paddingLeft: "12px",
+        }}
+        variant="dense"
+        disableGutters={true}
+      >
+        <BackButton backFunction={() => history.goBack()} />
+        <Typography variant="h6" component="div">
+          Edit Bill
+        </Typography>
+      </Toolbar>
+      <Divider />
+
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", sm: "column", md: "row" },
+          alignItems: "flex-start",
+          padding: "20px 10px",
+        }}
+      >
+        <Box
+          sx={{
+            width: { xs: "100%", md: "35%" },
+          }}
+        >
+          {dataLoading ? (
             <Box
               sx={{
-                width: { xs: "100%", md: "35%" },
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
+              <CircularProgress />
+            </Box>
+          ) : (
+            <>
               <Box
                 sx={{
                   padding: "14px",
@@ -355,317 +383,306 @@ const BillsEditForm = () => {
                 <Button
                   variant="contained"
                   fullWidth
-                  onClick={() => history.replace(`/dashboard/bills/details/${id}/draft`)}
+                  onClick={() =>
+                    history.replace(`/dashboard/bills/details/${id}/draft`)
+                  }
                 >
                   Save Bill
                 </Button>
               </Box>
+            </>
+          )}
+        </Box>
+        <Box
+          sx={{
+            width: { xs: "100%", md: "65%" },
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+          }}
+        >
+          <Container sx={{ paddingTop: { xs: "20px", sm: "0px" } }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="body">Bill ID</Typography>
+              </Box>
+              <Typography variant="body">
+                : {generateID(parseInt(id))}
+              </Typography>
             </Box>
             <Box
               sx={{
-                width: { xs: "100%", md: "65%" },
                 display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              <Container sx={{ paddingTop: { xs: "20px", sm: "0px" } }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box sx={{ width: "30%" }}>
-                    <Typography variant="body">Bill ID</Typography>
-                  </Box>
-                  <Typography variant="body">
-                    : {generateID(parseInt(id))}
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box sx={{ width: "30%" }}>
-                    <Typography variant="body">Patient ID</Typography>
-                  </Box>
-                  <Typography variant="body">
-                    :{" "}
-                    {details?.patient_id &&
-                      generateID(
-                        details?.patient_id,
-                        details?.patient.created_time
-                      )}
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    margin: "5px 0px",
-                  }}
-                >
-                  <Box sx={{ width: "30%" }}>
-                    <Typography variant="body">Patient Name</Typography>
-                  </Box>
-                  <Typography variant="body">
-                    : {details?.patient_name}
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    margin: "5px 0px",
-                  }}
-                >
-                  <Box sx={{ width: "30%" }}>
-                    <Typography variant="body">Patient Phone</Typography>
-                  </Box>
-                  <Typography variant="body">
-                    : {details?.patient_phone}
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    margin: "5px 0px",
-                  }}
-                >
-                  <Box sx={{ width: "30%" }}>
-                    <Typography variant="body">Patient Address</Typography>
-                  </Box>
-                  <Typography variant="body">
-                    : {details?.patient_address}
-                  </Typography>
-                </Box>
-              </Container>
-              <Container sx={{ paddingTop: "10px" }}>
-                <TableContainer sx={{ maxHeight: 220 }}>
-                  <Table
-                    sx={{ minWidth: 380 }}
-                    aria-label="simple table"
-                    size="small"
-                    stickyHeader
-                  >
-                    <TableHead>
-                      <TableRow>
-                        <StyledTableCell>No</StyledTableCell>
-                        <StyledTableCell>
-                          <Box sx={{ display: "flex", alignItems: "center" }}>
-                            Date
-                            <IconButton
-                              size="small"
-                              onClick={(event) => {
-                                setDateFilterAnchorEl(event.currentTarget);
-                              }}
-                            >
-                              <Badge
-                                variant="dot"
-                                invisible={filter.date === ""}
-                                color="primary"
-                              >
-                                <FilterAltIcon fontSize="small" />
-                              </Badge>
-                            </IconButton>
-                          </Box>
-                        </StyledTableCell>
-                        <StyledTableCell>
-                          <Box sx={{ display: "flex", alignItems: "center" }}>
-                            Name
-                            <IconButton
-                              size="small"
-                              onClick={(event) => {
-                                setNameFilterAnchorEl(event.currentTarget);
-                              }}
-                            >
-                              <Badge
-                                variant="dot"
-                                invisible={filter.name === ""}
-                                color="primary"
-                              >
-                                <FilterAltIcon fontSize="small" />
-                              </Badge>
-                            </IconButton>
-                          </Box>
-                        </StyledTableCell>
-                        <StyledTableCell align="right">Price</StyledTableCell>
-                        <StyledTableCell align="right">
-                          Quantity
-                        </StyledTableCell>
-                        <StyledTableCell align="right">UOM</StyledTableCell>
-                        <Tooltip
-                          title={
-                            details?.bill_items &&
-                            details.bill_items.reduce(
-                              (total, num) => total + num.subtotal,
-                              0
-                            )
-                          }
-                          arrow
-                          placement="top"
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="body">Patient ID</Typography>
+              </Box>
+              <Typography variant="body">
+                :{" "}
+                {details?.patient_id &&
+                  generateID(
+                    details?.patient_id,
+                    details?.patient.created_time
+                  )}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "5px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="body">Patient Name</Typography>
+              </Box>
+              <Typography variant="body">: {details?.patient_name}</Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "5px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="body">Patient Phone</Typography>
+              </Box>
+              <Typography variant="body">: {details?.patient_phone}</Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: "5px 0px",
+              }}
+            >
+              <Box sx={{ width: "30%" }}>
+                <Typography variant="body">Patient Address</Typography>
+              </Box>
+              <Typography variant="body">
+                : {details?.patient_address}
+              </Typography>
+            </Box>
+          </Container>
+          <Container sx={{ paddingTop: "10px" }}>
+            <TableContainer sx={{ maxHeight: 220 }}>
+              <Table
+                sx={{ minWidth: 380 }}
+                aria-label="simple table"
+                size="small"
+                stickyHeader
+              >
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell>No</StyledTableCell>
+                    <StyledTableCell>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        Date
+                        <IconButton
+                          size="small"
+                          onClick={(event) => {
+                            setDateFilterAnchorEl(event.currentTarget);
+                          }}
                         >
-                          <StyledTableCell align="right">
-                            SubTotal
-                          </StyledTableCell>
-                        </Tooltip>
-                        <StyledTableCell align="center">
-                          Actions
-                        </StyledTableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {details?.bill_items &&
-                        details.bill_items.map((row, index) => (
-                          <TableRow
-                            key={row.id}
+                          <Badge
+                            variant="dot"
+                            invisible={filter.date === ""}
+                            color="primary"
+                          >
+                            <FilterAltIcon fontSize="small" />
+                          </Badge>
+                        </IconButton>
+                      </Box>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        Name
+                        <IconButton
+                          size="small"
+                          onClick={(event) => {
+                            setNameFilterAnchorEl(event.currentTarget);
+                          }}
+                        >
+                          <Badge
+                            variant="dot"
+                            invisible={filter.name === ""}
+                            color="primary"
+                          >
+                            <FilterAltIcon fontSize="small" />
+                          </Badge>
+                        </IconButton>
+                      </Box>
+                    </StyledTableCell>
+                    <StyledTableCell align="right">Price</StyledTableCell>
+                    <StyledTableCell align="right">Quantity</StyledTableCell>
+                    <StyledTableCell align="right">UOM</StyledTableCell>
+                    <Tooltip
+                      title={
+                        details?.bill_items &&
+                        details.bill_items.reduce(
+                          (total, num) => total + num.subtotal,
+                          0
+                        )
+                      }
+                      arrow
+                      placement="top"
+                    >
+                      <StyledTableCell align="right">SubTotal</StyledTableCell>
+                    </Tooltip>
+                    <StyledTableCell align="center">Actions</StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {details?.bill_items &&
+                    details.bill_items.map((row, index) => (
+                      <TableRow
+                        key={row.id}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell>{row?.created_time.split("T")[0]}</TableCell>
+                        <TableCell>{row?.name}</TableCell>
+                        <TableCell align="right">{row?.price}</TableCell>
+                        <TableCell align="right">{row?.quantity}</TableCell>
+                        <TableCell align="right">{row?.uom}</TableCell>
+                        <TableCell align="right">{row?.subtotal}</TableCell>
+                        <TableCell align="center">
+                          <Box
                             sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
                             }}
                           >
-                            <TableCell component="th" scope="row">
-                              {index + 1}
-                            </TableCell>
-                            <TableCell>
-                              {row?.created_time.split("T")[0]}
-                            </TableCell>
-                            <TableCell>{row?.name}</TableCell>
-                            <TableCell align="right">{row?.price}</TableCell>
-                            <TableCell align="right">{row?.quantity}</TableCell>
-                            <TableCell align="right">{row?.uom}</TableCell>
-                            <TableCell align="right">{row?.subtotal}</TableCell>
-                            <TableCell align="center">
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                <IconButton
-                                  aria-label="edit"
-                                  color="primary"
-                                  onClick={(e) => handleEdit(e, row)}
-                                  sx={{
-                                    padding: "0px",
-                                    margin: "0px",
-                                    marginRight: "5px",
-                                    display: dispensedItems.find(function (
-                                      dt,
-                                      index
-                                    ) {
-                                      if (
-                                        parseInt(dt.note.split(",")[1]) ===
-                                        row.id
-                                      ) {
-                                        return true;
-                                      }
-                                      return false;
-                                    })
-                                      ? "none"
-                                      : "span",
-                                  }}
-                                >
-                                  <ModeEditIcon />
-                                </IconButton>
-                                <IconButton
-                                  aria-label="delete"
-                                  color="error"
-                                  onClick={() => removeItem(row)}
-                                  sx={{ padding: "0px", margin: "0px" }}
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
-                              </Box>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Container>
-              <Container sx={{ paddingTop: { xs: "20px", sm: "5px" } }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                  >
-                    Deposit :
-                  </Typography>
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                  >
-                    {totalDeposit}MMK
-                  </Typography>
-                </Box>
-                <Divider />
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                  >
-                    Total :
-                  </Typography>
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                  >
-                    {details?.total_amount}MMK
-                  </Typography>
-                </Box>
-                <Divider />
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                  >
-                    Unpaid :
-                  </Typography>
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ fontSize: { xs: "14px", sm: "16px" } }}
-                  >
-                    {details?.total_amount &&
-                      details?.total_amount - totalDeposit}
-                    MMK
-                  </Typography>
-                </Box>
-              </Container>
+                            <IconButton
+                              aria-label="edit"
+                              color="primary"
+                              onClick={(e) => handleEdit(e, row)}
+                              sx={{
+                                padding: "0px",
+                                margin: "0px",
+                                marginRight: "5px",
+                                display: dispensedItems.find(function (
+                                  dt,
+                                  index
+                                ) {
+                                  if (
+                                    parseInt(dt.note.split(",")[1]) === row.id
+                                  ) {
+                                    return true;
+                                  }
+                                  return false;
+                                })
+                                  ? "none"
+                                  : "span",
+                              }}
+                            >
+                              <ModeEditIcon />
+                            </IconButton>
+                            <IconButton
+                              aria-label="delete"
+                              color="error"
+                              onClick={() => removeItem(row)}
+                              sx={{ padding: "0px", margin: "0px" }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Container>
+          <Container sx={{ paddingTop: { xs: "20px", sm: "5px" } }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+              >
+                Deposit :
+              </Typography>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+              >
+                {totalDeposit}MMK
+              </Typography>
             </Box>
-          </Box>
-        </Container>
-      </Paper>
+            <Divider />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+              >
+                Total :
+              </Typography>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+              >
+                {details?.total_amount}MMK
+              </Typography>
+            </Box>
+            <Divider />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+              >
+                Unpaid :
+              </Typography>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+              >
+                {details?.total_amount && details?.total_amount - totalDeposit}
+                MMK
+              </Typography>
+            </Box>
+          </Container>
+        </Box>
+      </Box>
+
       <Menu
         anchorEl={anchorEl}
         open={open}

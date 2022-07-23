@@ -94,7 +94,11 @@ const CSVUploadDialog = ({
         }`;
       });
       setErrors(errors);
-    } else if (res.status === 400) {
+    } else if (
+      res.status === 400 &&
+      res.data.detail.match(key) &&
+      res.data.detail.match(value)
+    ) {
       setErrors([
         `${res.data.detail.match(key)[0]} - ${
           res.data.detail.match(value)[0]

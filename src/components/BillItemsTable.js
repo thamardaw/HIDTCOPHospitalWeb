@@ -57,7 +57,7 @@ const BillItemsTable = ({ bill_items, isPrintMode, is_dispensed }) => {
         sx={{
           minWidth: 380,
           [`& .${tableCellClasses.root}`]: {
-            borderBottom: "2px solid black",
+            borderBottom: "none",
           },
         }}
       >
@@ -98,9 +98,11 @@ const BillItemsTable = ({ bill_items, isPrintMode, is_dispensed }) => {
             ).map((row, index) => (
               <TableRow
                 key={index}
-                // sx={{
-                //   "&:last-child td, &:last-child th": { border: 0 },
-                // }}
+                sx={{
+                  "&:last-child td, &:last-child th": {
+                    borderBottom: "4px solid black",
+                  },
+                }}
               >
                 <StyledTableCell
                   maxWidth="75px"

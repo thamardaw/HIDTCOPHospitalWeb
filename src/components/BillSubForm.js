@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  CircularProgress,
   Divider,
   IconButton,
   TextField,
@@ -20,10 +21,13 @@ import billFormAtom, {
 import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil";
 import { LoadingButton } from "@mui/lab";
 
+
+
 const BillSubForm = () => {
   const history = useHistory();
   const api = useAxios({ autoSnackbar: true });
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
   const [patient, setPatient] = useState([]);
   const [salesServiceItem, setSalesServiceItem] = useState([]);
   const setTotalDeposit = useSetRecoilState(withTotalDeposit);
@@ -80,6 +84,8 @@ const BillSubForm = () => {
   };
 
   const getPatientAndSalesServiceItem = async () => {
+    setDataLoading(true);
+    
     const [patient, salesServiceItem] = await Promise.all([
       api.get("/api/patients/"),
       api.get("/api/salesServiceItem/"),
@@ -107,6 +113,7 @@ const BillSubForm = () => {
         };
       });
       setSalesServiceItem(s);
+      setDataLoading(false);
       if (currentPatient) {
         getDepositByPatientId(currentPatient.id);
       }
@@ -120,6 +127,20 @@ const BillSubForm = () => {
     // eslint-disable-next-line
   }, []);
 
+  if (dataLoading)
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+    
   return (
     <>
       <Box
