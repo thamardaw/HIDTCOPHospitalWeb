@@ -1,14 +1,4 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Divider,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { Button, Divider, Toolbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
@@ -19,6 +9,7 @@ import { styled } from "@mui/material/styles";
 import { useLocation } from "react-router-dom";
 import { BackButton} from "../../../components";
 import { constants } from "../../../utils/constants";
+import { DeleteDialog } from "../../../components";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.3rem",
@@ -39,19 +30,19 @@ const CategoryDetail = () => {
   };
 
   const cancelDeposit = async () => {
-    await api.put(`/api/deposit/cancel/${parseInt(id.split("-")[1])}`);
+    await api.put(`/api/deposit/cancel/${id}`);
     handleClose();
     history.goBack();
   };
 
   const handlePrint = useReactToPrint({
     pageStyle:
-      "@media print { body { -webkit-print-color-adjust: exact; } @page { size: A4; margin: 200mm !important }}",
+      "@media print { body { -webkit-print-color-adjust: economy; } @page { size: A4; margin: 200mm !important }}",
     content: () => depositRef.current,
   });
 
   const getData = async () => {
-    const res = await api.get(`/api/deposit/${parseInt(id.split("-")[1])}`);
+    const res = await api.get(`/api/deposit/${id}`);
     if (res.status === 200) {
       setDetails({ ...res.data });
     } else {
@@ -293,25 +284,15 @@ const CategoryDetail = () => {
       </Box> */}
         <Divider />
       </Box>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Alert!</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to cancel the deposit?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={cancelDeposit} autoFocus>
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DeleteDialog
+        isOpen={open}
+        handleClose={() => handleClose()}
+        callbackButtonName="OK"
+        content="You are about to cancel the deposit."
+        callback={() => {
+          cancelDeposit();
+        }}
+      />
     </>
   );
 };

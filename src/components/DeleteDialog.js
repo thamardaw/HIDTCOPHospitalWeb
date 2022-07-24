@@ -11,6 +11,7 @@ function DeleteDialog({
   isOpen,
   handleClose,
   callback,
+  callbackButtonName = "Delete",
   title = "Are you sure?",
   content = "You are about to permanently delete it and will never be able to see it again.",
 }) {
@@ -36,7 +37,7 @@ function DeleteDialog({
           sx={{ width: "40%" }}
           onClick={callback}
         >
-          Delete
+          {callbackButtonName}
         </Button>
       </DialogActions>
     </Dialog>

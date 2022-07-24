@@ -66,7 +66,7 @@ const DepositForm = () => {
     });
     if (res.status === 200) {
       history.replace({
-        pathname: `/dashboard/deposit/details/${generateID(res.data.id)}`,
+        pathname: `/dashboard/deposit/details/${res.data.id}`,
         state: {
           from: "active",
         },
@@ -97,7 +97,7 @@ const DepositForm = () => {
         sx={{
           display: "flex",
           flexDirection: { xs: "column", sm: "column", md: "row" },
-          padding: "10px 0px",
+          padding: "20px 10px",
         }}
       >
         <Box

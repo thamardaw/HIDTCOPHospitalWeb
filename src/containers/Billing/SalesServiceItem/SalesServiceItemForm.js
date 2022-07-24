@@ -9,10 +9,11 @@ import {
 import { Box } from "@mui/system";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { BackButton, CSVUploadDialog } from "../../../components";
-import { AuthContext } from "../../../contexts";
+import { useRecoilValue } from "recoil";
+import { withUser } from "../../../recoil/auth";
 
 const SalesServiceItemForm = () => {
   const history = useHistory();
@@ -28,7 +29,7 @@ const SalesServiceItemForm = () => {
   const [category, setCategory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const { user } = useContext(AuthContext);
+  const user = useRecoilValue(withUser);
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -145,6 +146,10 @@ const SalesServiceItemForm = () => {
               sx={{ width: "70%" }}
               margin="dense"
               value={details?.price || ""}
+              type="number"
+              InputProps={{
+                inputProps: { min: "0", step: "50" },
+              }}
               name="price"
               onChange={handleChange}
             />
