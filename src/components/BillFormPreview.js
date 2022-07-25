@@ -9,7 +9,6 @@ import {
   tableCellClasses,
   TableBody,
   IconButton,
-  Divider,
   Menu,
   MenuItem,
   TextField,
@@ -97,36 +96,18 @@ const BillFormPreview = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="body">Patient ID</Typography>
+            <Typography
+              variant="h6"
+              sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+            >
+              Patient ID
+            </Typography>
           </Box>
-          <Typography variant="body">: {currentPatient?.id}</Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            margin: "5px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="body">Patient Name</Typography>
-          </Box>
-          <Typography variant="body">: {currentPatient?.name}</Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            margin: "5px 0px",
-          }}
-        >
-          <Box sx={{ width: "30%" }}>
-            <Typography variant="body">Patient Phone</Typography>
-          </Box>
-          <Typography variant="body">
-            : {currentPatient?.contactDetails}
+          <Typography
+            variant="h6"
+            sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+          >
+            {currentPatient?.id}
           </Typography>
         </Box>
         <Box
@@ -138,9 +119,65 @@ const BillFormPreview = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="body">Patient Address</Typography>
+            <Typography
+              variant="h6"
+              sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+            >
+              Name
+            </Typography>
           </Box>
-          <Typography variant="body">: {currentPatient?.address}</Typography>
+          <Typography
+            variant="h6"
+            sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+          >
+            {currentPatient?.name}
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            margin: "5px 0px",
+          }}
+        >
+          <Box sx={{ width: "30%" }}>
+            <Typography
+              variant="h6"
+              sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+            >
+              Phone
+            </Typography>
+          </Box>
+          <Typography
+            variant="h6"
+            sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+          >
+            {currentPatient?.contactDetails}
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            margin: "5px 0px",
+          }}
+        >
+          <Box sx={{ width: "30%" }}>
+            <Typography
+              variant="h6"
+              sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+            >
+              Address
+            </Typography>
+          </Box>
+          <Typography
+            variant="h6"
+            sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+          >
+            {currentPatient?.address}
+          </Typography>
         </Box>
       </Container>
       <Container sx={{ paddingTop: "10px" }}>
@@ -228,17 +265,16 @@ const BillFormPreview = () => {
             component="div"
             sx={{ fontSize: { xs: "14px", sm: "16px" } }}
           >
-            Deposit :
+            Total
           </Typography>
           <Typography
             variant="h6"
             component="div"
             sx={{ fontSize: { xs: "14px", sm: "16px" } }}
           >
-            {totalDeposit}MMK
+            {totalAmount}
           </Typography>
         </Box>
-        <Divider />
         <Box
           sx={{
             display: "flex",
@@ -250,17 +286,17 @@ const BillFormPreview = () => {
             component="div"
             sx={{ fontSize: { xs: "14px", sm: "16px" } }}
           >
-            Total :
+            Deposit
           </Typography>
           <Typography
             variant="h6"
             component="div"
             sx={{ fontSize: { xs: "14px", sm: "16px" } }}
           >
-            {totalAmount}MMK
+            {totalDeposit}
           </Typography>
         </Box>
-        <Divider />
+
         <Box
           sx={{
             display: "flex",
@@ -272,14 +308,14 @@ const BillFormPreview = () => {
             component="div"
             sx={{ fontSize: { xs: "14px", sm: "16px" } }}
           >
-            Unpaid :
+            Unpaid
           </Typography>
           <Typography
             variant="h6"
             component="div"
             sx={{ fontSize: { xs: "14px", sm: "16px" } }}
           >
-            {totalAmount - totalDeposit}MMK
+            {totalAmount - totalDeposit}
           </Typography>
         </Box>
       </Container>

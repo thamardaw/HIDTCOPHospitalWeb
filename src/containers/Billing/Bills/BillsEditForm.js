@@ -410,10 +410,10 @@ const BillsEditForm = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="body">Bill ID</Typography>
+                <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>Bill ID</Typography>
               </Box>
-              <Typography variant="body">
-                : {generateID(parseInt(id))}
+              <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>
+              {generateID(parseInt(id))}
               </Typography>
             </Box>
             <Box
@@ -424,10 +424,10 @@ const BillsEditForm = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="body">Patient ID</Typography>
+                <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>Patient ID</Typography>
               </Box>
-              <Typography variant="body">
-                :{" "}
+              <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>
+                
                 {details?.patient_id &&
                   generateID(
                     details?.patient_id,
@@ -444,9 +444,9 @@ const BillsEditForm = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="body">Patient Name</Typography>
+                <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>Name</Typography>
               </Box>
-              <Typography variant="body">: {details?.patient_name}</Typography>
+              <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>{details?.patient_name}</Typography>
             </Box>
             <Box
               sx={{
@@ -457,9 +457,9 @@ const BillsEditForm = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="body">Patient Phone</Typography>
+                <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>Phone</Typography>
               </Box>
-              <Typography variant="body">: {details?.patient_phone}</Typography>
+              <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>{details?.patient_phone}</Typography>
             </Box>
             <Box
               sx={{
@@ -470,10 +470,10 @@ const BillsEditForm = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="body">Patient Address</Typography>
+                <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>Address</Typography>
               </Box>
-              <Typography variant="body">
-                : {details?.patient_address}
+              <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>
+                {details?.patient_address}
               </Typography>
             </Box>
           </Container>
@@ -624,17 +624,16 @@ const BillsEditForm = () => {
                 component="div"
                 sx={{ fontSize: { xs: "14px", sm: "16px" } }}
               >
-                Deposit :
+                Total
               </Typography>
               <Typography
                 variant="h6"
                 component="div"
                 sx={{ fontSize: { xs: "14px", sm: "16px" } }}
               >
-                {totalDeposit}MMK
+                {details?.total_amount}
               </Typography>
             </Box>
-            <Divider />
             <Box
               sx={{
                 display: "flex",
@@ -646,17 +645,17 @@ const BillsEditForm = () => {
                 component="div"
                 sx={{ fontSize: { xs: "14px", sm: "16px" } }}
               >
-                Total :
+                Deposit
               </Typography>
               <Typography
                 variant="h6"
                 component="div"
                 sx={{ fontSize: { xs: "14px", sm: "16px" } }}
               >
-                {details?.total_amount}MMK
+                {totalDeposit}
               </Typography>
             </Box>
-            <Divider />
+            
             <Box
               sx={{
                 display: "flex",
@@ -668,7 +667,7 @@ const BillsEditForm = () => {
                 component="div"
                 sx={{ fontSize: { xs: "14px", sm: "16px" } }}
               >
-                Unpaid :
+                Unpaid
               </Typography>
               <Typography
                 variant="h6"
@@ -676,7 +675,7 @@ const BillsEditForm = () => {
                 sx={{ fontSize: { xs: "14px", sm: "16px" } }}
               >
                 {details?.total_amount && details?.total_amount - totalDeposit}
-                MMK
+                
               </Typography>
             </Box>
           </Container>
