@@ -18,3 +18,4 @@ export { default as BillSubForm } from "./BillSubForm";
 export { default as BillFormPreview } from "./BillFormPreview";
 export { default as BillsDetailInfo } from "./BillsDetailInfo";
 export { default as BillItemsTable } from "./BillItemsTable";
+export { default as BillItemsTableRow } from "./BillItemsTableRow";
