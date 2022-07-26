@@ -20,7 +20,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/system";
 import { useHistory, useParams } from "react-router-dom";
@@ -29,9 +28,8 @@ import { useState, useEffect, useRef } from "react";
 import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { getComparator, stableSort } from "../../../utils/sorting";
-import { BackButton } from "../../../components";
+import { BackButton, BillItemsTableRow } from "../../../components";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 // function sleep(delay = 0) {
@@ -59,16 +57,8 @@ const BillsEditForm = () => {
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [loading, setLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(false);
-
-  const [editingItem, setEditingItem] = useState({
-    id: 0,
-    quantity: 0,
-    price: 0,
-  });
   const quantityRef = useRef();
   const SSIRef = useRef();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
   const [filter, setFilter] = useState({
     date: "",
     name: "",
@@ -78,21 +68,19 @@ const BillsEditForm = () => {
   const dateFilterOpen = Boolean(dateFilterAnchorEl);
   const nameFilterOpen = Boolean(nameFilterAnchorEl);
 
-  const handleEdit = (event, row) => {
-    setEditingItem({
-      ...editingItem,
-      id: row.id,
-      quantity: row.quantity,
-    });
-    setAnchorEl(event.currentTarget);
-  };
-
   const resetFilter = () => {
     setFilter({ date: "", name: "" });
   };
 
-  const handleEditClose = () => {
-    setAnchorEl(null);
+  const isDispensed = (row) => {
+    return Boolean(
+      dispensedItems.find(function (dt, index) {
+        if (parseInt(dt.note.split(",")[1]) === row.id) {
+          return true;
+        }
+        return false;
+      })
+    );
   };
 
   const getSalesServiceItem = async () => {
@@ -148,16 +136,13 @@ const BillsEditForm = () => {
     return;
   };
 
-  const updateItem = async () => {
-    setLoading(true);
+  const updateItem = async (index, row, data) => {
     const res = await api.put(
-      `/api/bill/billItem/${editingItem.id}/?quantity=${editingItem.quantity}`
+      `/api/bill/billItem/${row.id}/?quantity=${data.quantity}`
     );
     if (res.status === 200) {
-      handleEditClose();
       getData();
     }
-    setLoading(false);
   };
 
   const addItem = async (e) => {
@@ -179,7 +164,7 @@ const BillsEditForm = () => {
     SSIRef.current.focus();
   };
 
-  const removeItem = async (row) => {
+  const removeItem = async (index, row) => {
     const [item, invtx] = await Promise.all([
       api.delete(`/api/bill/${id}/billItem/${row.id}`),
       api.post(`/api/inventory/return`, { ...row }),
@@ -410,10 +395,18 @@ const BillsEditForm = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>Bill ID</Typography>
+                <Typography
+                  variant="h6"
+                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                >
+                  Bill ID
+                </Typography>
               </Box>
-              <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>
-              {generateID(parseInt(id))}
+              <Typography
+                variant="h6"
+                sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+              >
+                {generateID(parseInt(id))}
               </Typography>
             </Box>
             <Box
@@ -424,10 +417,17 @@ const BillsEditForm = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>Patient ID</Typography>
+                <Typography
+                  variant="h6"
+                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                >
+                  Patient ID
+                </Typography>
               </Box>
-              <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>
-                
+              <Typography
+                variant="h6"
+                sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+              >
                 {details?.patient_id &&
                   generateID(
                     details?.patient_id,
@@ -444,9 +444,19 @@ const BillsEditForm = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>Name</Typography>
+                <Typography
+                  variant="h6"
+                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                >
+                  Name
+                </Typography>
               </Box>
-              <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>{details?.patient_name}</Typography>
+              <Typography
+                variant="h6"
+                sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+              >
+                {details?.patient_name}
+              </Typography>
             </Box>
             <Box
               sx={{
@@ -457,9 +467,19 @@ const BillsEditForm = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>Phone</Typography>
+                <Typography
+                  variant="h6"
+                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                >
+                  Phone
+                </Typography>
               </Box>
-              <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>{details?.patient_phone}</Typography>
+              <Typography
+                variant="h6"
+                sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+              >
+                {details?.patient_phone}
+              </Typography>
             </Box>
             <Box
               sx={{
@@ -470,9 +490,17 @@ const BillsEditForm = () => {
               }}
             >
               <Box sx={{ width: "30%" }}>
-                <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>Address</Typography>
+                <Typography
+                  variant="h6"
+                  sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+                >
+                  Address
+                </Typography>
               </Box>
-              <Typography variant="h6" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>
+              <Typography
+                variant="h6"
+                sx={{ fontSize: { xs: "14px", sm: "16px" } }}
+              >
                 {details?.patient_address}
               </Typography>
             </Box>
@@ -480,16 +508,24 @@ const BillsEditForm = () => {
           <Container sx={{ paddingTop: "10px" }}>
             <TableContainer sx={{ maxHeight: 220 }}>
               <Table
-                sx={{ minWidth: 380 }}
+                sx={{ minWidth: 500 }}
                 aria-label="simple table"
                 size="small"
                 stickyHeader
               >
                 <TableHead>
                   <TableRow>
-                    <StyledTableCell>No</StyledTableCell>
+                    <StyledTableCell sx={{ minWidth: "16px" }}>
+                      No
+                    </StyledTableCell>
                     <StyledTableCell>
-                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          minWidth: "80px",
+                        }}
+                      >
                         Date
                         <IconButton
                           size="small"
@@ -508,7 +544,13 @@ const BillsEditForm = () => {
                       </Box>
                     </StyledTableCell>
                     <StyledTableCell>
-                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          minWidth: "120px",
+                        }}
+                      >
                         Name
                         <IconButton
                           size="small"
@@ -526,9 +568,15 @@ const BillsEditForm = () => {
                         </IconButton>
                       </Box>
                     </StyledTableCell>
-                    <StyledTableCell align="right">Price</StyledTableCell>
-                    <StyledTableCell align="right">Quantity</StyledTableCell>
-                    <StyledTableCell align="right">UOM</StyledTableCell>
+                    <StyledTableCell sx={{ minWidth: "24px" }}>
+                      Price
+                    </StyledTableCell>
+                    <StyledTableCell padding="none" sx={{ minWidth: "80px" }}>
+                      Qty
+                    </StyledTableCell>
+                    <StyledTableCell sx={{ minWidth: "24px" }}>
+                      UOM
+                    </StyledTableCell>
                     <Tooltip
                       title={
                         details?.bill_items &&
@@ -540,73 +588,85 @@ const BillsEditForm = () => {
                       arrow
                       placement="top"
                     >
-                      <StyledTableCell align="right">SubTotal</StyledTableCell>
+                      <StyledTableCell sx={{ minWidth: "32px" }}>
+                        SubTotal
+                      </StyledTableCell>
                     </Tooltip>
-                    <StyledTableCell align="center">Actions</StyledTableCell>
+                    <StyledTableCell align="center" sx={{ minWidth: "32px" }}>
+                      Actions
+                    </StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {details?.bill_items &&
                     details.bill_items.map((row, index) => (
-                      <TableRow
-                        key={row.id}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {index + 1}
-                        </TableCell>
-                        <TableCell>{row?.created_time.split("T")[0]}</TableCell>
-                        <TableCell>{row?.name}</TableCell>
-                        <TableCell align="right">{row?.price}</TableCell>
-                        <TableCell align="right">{row?.quantity}</TableCell>
-                        <TableCell align="right">{row?.uom}</TableCell>
-                        <TableCell align="right">{row?.subtotal}</TableCell>
-                        <TableCell align="center">
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <IconButton
-                              aria-label="edit"
-                              color="primary"
-                              onClick={(e) => handleEdit(e, row)}
-                              sx={{
-                                padding: "0px",
-                                margin: "0px",
-                                marginRight: "5px",
-                                display: dispensedItems.find(function (
-                                  dt,
-                                  index
-                                ) {
-                                  if (
-                                    parseInt(dt.note.split(",")[1]) === row.id
-                                  ) {
-                                    return true;
-                                  }
-                                  return false;
-                                })
-                                  ? "none"
-                                  : "span",
-                              }}
-                            >
-                              <ModeEditIcon />
-                            </IconButton>
-                            <IconButton
-                              aria-label="delete"
-                              color="error"
-                              onClick={() => removeItem(row)}
-                              sx={{ padding: "0px", margin: "0px" }}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </Box>
-                        </TableCell>
-                      </TableRow>
+                      // <TableRow
+                      //   key={row.id}
+                      //   sx={{
+                      //     "&:last-child td, &:last-child th": { border: 0 },
+                      //   }}
+                      // >
+                      //   <TableCell component="th" scope="row">
+                      //     {index + 1}
+                      //   </TableCell>
+                      //   <TableCell>{row?.created_time.split("T")[0]}</TableCell>
+                      //   <TableCell>{row?.name}</TableCell>
+                      //   <TableCell align="right">{row?.price}</TableCell>
+                      //   <TableCell align="right">{row?.quantity}</TableCell>
+                      //   <TableCell align="right">{row?.uom}</TableCell>
+                      //   <TableCell align="right">{row?.subtotal}</TableCell>
+                      //   <TableCell align="center">
+                      //     <Box
+                      //       sx={{
+                      //         display: "flex",
+                      //         alignItems: "center",
+                      //         justifyContent: "center",
+                      //       }}
+                      //     >
+                      //       <IconButton
+                      //         aria-label="edit"
+                      //         color="primary"
+                      //         onClick={(e) => handleEdit(e, row)}
+                      //         sx={{
+                      //           padding: "0px",
+                      //           margin: "0px",
+                      //           marginRight: "5px",
+                      //           display: dispensedItems.find(function (
+                      //             dt,
+                      //             index
+                      //           ) {
+                      //             if (
+                      //               parseInt(dt.note.split(",")[1]) === row.id
+                      //             ) {
+                      //               return true;
+                      //             }
+                      //             return false;
+                      //           })
+                      //             ? "none"
+                      //             : "span",
+                      //         }}
+                      //       >
+                      //         <ModeEditIcon />
+                      //       </IconButton>
+                      //       <IconButton
+                      //         aria-label="delete"
+                      //         color="error"
+                      //         onClick={() => removeItem(row)}
+                      //         sx={{ padding: "0px", margin: "0px" }}
+                      //       >
+                      //         <DeleteIcon />
+                      //       </IconButton>
+                      //     </Box>
+                      //   </TableCell>
+                      // </TableRow>
+                      <BillItemsTableRow
+                        key={index}
+                        isEditable={!isDispensed(row)}
+                        index={index}
+                        row={row}
+                        onEdit={updateItem}
+                        onDelete={removeItem}
+                      />
                     ))}
                 </TableBody>
               </Table>
@@ -655,7 +715,7 @@ const BillsEditForm = () => {
                 {totalDeposit}
               </Typography>
             </Box>
-            
+
             <Box
               sx={{
                 display: "flex",
@@ -675,73 +735,11 @@ const BillsEditForm = () => {
                 sx={{ fontSize: { xs: "14px", sm: "16px" } }}
               >
                 {details?.total_amount && details?.total_amount - totalDeposit}
-                
               </Typography>
             </Box>
           </Container>
         </Box>
       </Box>
-
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleEditClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: "visible",
-            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-            mt: 1.5,
-            "& .MuiAvatar-root": {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            "&:before": {
-              content: '""',
-              display: "block",
-              position: "absolute",
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: "background.paper",
-              transform: "translateY(-50%) rotate(45deg)",
-              zIndex: 0,
-            },
-          },
-        }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-      >
-        <MenuItem>
-          <TextField
-            label="Quantity"
-            type="number"
-            InputProps={{
-              inputProps: { min: "0", step: "1" },
-            }}
-            size="small"
-            sx={{ width: "120px" }}
-            value={editingItem.quantity}
-            onChange={(e) =>
-              setEditingItem({ ...editingItem, quantity: e.target.value })
-            }
-          />
-        </MenuItem>
-        <MenuItem>
-          <LoadingButton
-            loading={loading}
-            variant="contained"
-            size="small"
-            onClick={updateItem}
-            fullWidth
-          >
-            Save
-          </LoadingButton>
-        </MenuItem>
-      </Menu>
       <Menu
         anchorEl={dateFilterAnchorEl}
         open={dateFilterOpen}
