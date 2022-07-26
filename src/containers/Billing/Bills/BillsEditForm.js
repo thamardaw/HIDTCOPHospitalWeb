@@ -715,7 +715,6 @@ const BillsEditForm = () => {
                 {totalDeposit}
               </Typography>
             </Box>
-
             <Box
               sx={{
                 display: "flex",
