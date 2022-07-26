@@ -8,16 +8,9 @@ import {
   Typography,
   tableCellClasses,
   TableBody,
-  IconButton,
-  Menu,
-  MenuItem,
-  TextField,
-  Button,
   Container,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
   withBillItems,
@@ -25,6 +18,7 @@ import {
   withTotalDeposit,
 } from "../recoil/billForm";
 import { useEffect, useState } from "react";
+import BillItemsTableRow from "./BillItemsTableRow";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -36,45 +30,18 @@ const BillFormPreview = () => {
   const currentPatient = useRecoilValue(withCurrentPatient);
   const totalDeposit = useRecoilValue(withTotalDeposit);
   const [billItems, setBillItems] = useRecoilState(withBillItems);
-  const [editingItem, setEditingItem] = useState({
-    index: 0,
-    quantity: 0,
-    price: 0,
-  });
   const [totalAmount, setTotalAmount] = useState(0);
-  const [anchorEl, setAnchorEl] = useState(null);
 
-  const open = Boolean(anchorEl);
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleEdit = (event, index) => {
-    setEditingItem({
-      ...editingItem,
-      index: index,
-      quantity: billItems[index].quantity,
-    });
-    setAnchorEl(event.currentTarget);
-  };
-
-  const removeItem = (i) => {
-    const copy_billItems = [...billItems];
-    copy_billItems.splice(i, 1);
-    setBillItems(copy_billItems);
-  };
-
-  const updateItem = () => {
+  const updateItem = (index, row, data) => {
     let copy_billItems = JSON.parse(JSON.stringify(billItems));
-    copy_billItems[editingItem.index].quantity = editingItem.quantity;
+    copy_billItems[index].quantity = data.quantity;
     setBillItems(copy_billItems);
-    handleClose();
-    setEditingItem({
-      index: 0,
-      quantity: 0,
-      price: 0,
-    });
+  };
+
+  const removeItem = (index, row) => {
+    const copy_billItems = [...billItems];
+    copy_billItems.splice(index, 1);
+    setBillItems(copy_billItems);
   };
 
   useEffect(() => {
@@ -183,71 +150,88 @@ const BillFormPreview = () => {
       <Container sx={{ paddingTop: "10px" }}>
         <TableContainer sx={{ maxHeight: 260 }}>
           <Table
-            sx={{ minWidth: 380 }}
+            sx={{ minWidth: 500 }}
             aria-label="simple table"
             size="small"
             stickyHeader
           >
             <TableHead>
               <TableRow>
-                <StyledTableCell>No</StyledTableCell>
-                <StyledTableCell>Name</StyledTableCell>
-                <StyledTableCell align="right">Price</StyledTableCell>
-                <StyledTableCell align="right">Quantity</StyledTableCell>
-                <StyledTableCell align="right">UOM</StyledTableCell>
-                <StyledTableCell align="right">SubTotal</StyledTableCell>
-                <StyledTableCell align="center">Actions</StyledTableCell>
+                <StyledTableCell sx={{ minWidth: "16px" }}>No</StyledTableCell>
+                <StyledTableCell sx={{ minWidth: "120px" }}>
+                  Name
+                </StyledTableCell>
+                <StyledTableCell sx={{ minWidth: "24px" }}>
+                  Price
+                </StyledTableCell>
+                <StyledTableCell padding="none" sx={{ minWidth: "80px" }}>
+                  Qty
+                </StyledTableCell>
+                <StyledTableCell sx={{ minWidth: "24px" }}>UOM</StyledTableCell>
+                <StyledTableCell sx={{ minWidth: "32px" }}>
+                  SubTotal
+                </StyledTableCell>
+                <StyledTableCell align="center" sx={{ minWidth: "32px" }}>
+                  Actions
+                </StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {billItems.map((row, index) => (
-                <TableRow
+                // <TableRow
+                //   key={index}
+                //   sx={{
+                //     "&:last-child td, &:last-child th": { border: 0 },
+                //   }}
+                // >
+                //   <TableCell component="th" scope="row">
+                //     {index + 1}
+                //   </TableCell>
+                //   <TableCell>{row.name}</TableCell>
+                //   <TableCell align="right">{row.price}</TableCell>
+                //   <TableCell align="right">{row.quantity}</TableCell>
+                //   <TableCell align="right">{row.uom}</TableCell>
+                //   <TableCell align="right">
+                //     {row.price * row.quantity}
+                //   </TableCell>
+                //   <TableCell align="center">
+                //     <Box
+                //       sx={{
+                //         display: "flex",
+                //         alignItems: "center",
+                //         justifyContent: "center",
+                //       }}
+                //     >
+                //       <IconButton
+                //         aria-label="edit"
+                //         color="primary"
+                //         onClick={(e) => handleEdit(e, index)}
+                //         sx={{
+                //           padding: "0px",
+                //           margin: "0px",
+                //           marginRight: "5px",
+                //         }}
+                //       >
+                //         <ModeEditIcon />
+                //       </IconButton>
+                //       <IconButton
+                //         aria-label="delete"
+                //         color="error"
+                //         onClick={() => removeItem(index)}
+                //         sx={{ padding: "0px", margin: "0px" }}
+                //       >
+                //         <DeleteIcon />
+                //       </IconButton>
+                //     </Box>
+                //   </TableCell>
+                // </TableRow>
+                <BillItemsTableRow
                   key={index}
-                  sx={{
-                    "&:last-child td, &:last-child th": { border: 0 },
-                  }}
-                >
-                  <TableCell component="th" scope="row">
-                    {index + 1}
-                  </TableCell>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell align="right">{row.price}</TableCell>
-                  <TableCell align="right">{row.quantity}</TableCell>
-                  <TableCell align="right">{row.uom}</TableCell>
-                  <TableCell align="right">
-                    {row.price * row.quantity}
-                  </TableCell>
-                  <TableCell align="center">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <IconButton
-                        aria-label="edit"
-                        color="primary"
-                        onClick={(e) => handleEdit(e, index)}
-                        sx={{
-                          padding: "0px",
-                          margin: "0px",
-                          marginRight: "5px",
-                        }}
-                      >
-                        <ModeEditIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-label="delete"
-                        color="error"
-                        onClick={() => removeItem(index)}
-                        sx={{ padding: "0px", margin: "0px" }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Box>
-                  </TableCell>
-                </TableRow>
+                  index={index}
+                  row={row}
+                  onEdit={updateItem}
+                  onDelete={removeItem}
+                />
               ))}
             </TableBody>
           </Table>
@@ -319,65 +303,6 @@ const BillFormPreview = () => {
           </Typography>
         </Box>
       </Container>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: "visible",
-            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-            mt: 1.5,
-            "& .MuiAvatar-root": {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            "&:before": {
-              content: '""',
-              display: "block",
-              position: "absolute",
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: "background.paper",
-              transform: "translateY(-50%) rotate(45deg)",
-              zIndex: 0,
-            },
-          },
-        }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-      >
-        <MenuItem>
-          <TextField
-            label="Quantity"
-            type="number"
-            InputProps={{
-              inputProps: { min: "0", step: "1" },
-            }}
-            size="small"
-            sx={{ width: "120px" }}
-            value={editingItem.quantity}
-            onChange={(e) =>
-              setEditingItem({ ...editingItem, quantity: e.target.value })
-            }
-          />
-        </MenuItem>
-        <MenuItem>
-          <Button
-            variant="contained"
-            size="small"
-            onClick={updateItem}
-            fullWidth
-          >
-            Save
-          </Button>
-        </MenuItem>
-      </Menu>
     </>
   );
 };
