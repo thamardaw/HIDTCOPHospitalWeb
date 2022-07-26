@@ -10,7 +10,6 @@ import { Bills } from "./Billing/Bills";
 import { Deposit } from "./Billing/Deposit";
 import { DailyClosing } from "./Billing/DailyClosing";
 import { InventoryItem } from "./Inventory/InventoryItem";
-import { CacheProvider } from "../contexts/CacheContext";
 import { InventoryTransaction } from "./Inventory/InventoryTransaction";
 // import { PharmacyItem } from "./Inventory/PharmacyItem";
 import { TransactionType } from "./Inventory/TransactionType";
@@ -24,42 +23,41 @@ function Dashboard(props) {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <Appbar drawerWidth={drawerWidth} />
-      <CacheProvider>
-        <ResponsiveDrawer drawerWidth={drawerWidth} />
-        <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            width: `calc(100% - ${drawerWidth}px)`,
-          }}
-        >
-          <Toolbar />
-          <Switch>
-            <Route path={`${path}/patient`} component={Patient} />
-            <Route path={`${path}/uom`} component={Uom} />
-            <Route path={`${path}/category`} component={Category} />
-            <Route
-              path={`${path}/salesServiceItem`}
-              component={SalesServiceItem}
-            />
-            <Route path={`${path}/bills`} component={Bills} />
-            <Route path={`${path}/deposit`} component={Deposit} />
-            <Route path={`${path}/dailyClosing`} component={DailyClosing} />
-            <Route path={`${path}/inventory_item`} component={InventoryItem} />
-            <Route
-              path={`${path}/inventory_transaction`}
-              component={InventoryTransaction}
-            />
-            {/* <Route path={`${path}/pharmacy_item`} component={PharmacyItem} /> */}
-            <Route
-              path={`${path}/transaction_type`}
-              component={TransactionType}
-            />
-            <Redirect to={`${path}/patient`} />
-          </Switch>
-          <Footer />
-        </Box>
-      </CacheProvider>
+
+      <ResponsiveDrawer drawerWidth={drawerWidth} />
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          width: `calc(100% - ${drawerWidth}px)`,
+        }}
+      >
+        <Toolbar />
+        <Switch>
+          <Route path={`${path}/patient`} component={Patient} />
+          <Route path={`${path}/uom`} component={Uom} />
+          <Route path={`${path}/category`} component={Category} />
+          <Route
+            path={`${path}/salesServiceItem`}
+            component={SalesServiceItem}
+          />
+          <Route path={`${path}/bills`} component={Bills} />
+          <Route path={`${path}/deposit`} component={Deposit} />
+          <Route path={`${path}/dailyClosing`} component={DailyClosing} />
+          <Route path={`${path}/inventory_item`} component={InventoryItem} />
+          <Route
+            path={`${path}/inventory_transaction`}
+            component={InventoryTransaction}
+          />
+          {/* <Route path={`${path}/pharmacy_item`} component={PharmacyItem} /> */}
+          <Route
+            path={`${path}/transaction_type`}
+            component={TransactionType}
+          />
+          <Redirect to={`${path}/patient`} />
+        </Switch>
+        <Footer />
+      </Box>
     </Box>
   );
 }
