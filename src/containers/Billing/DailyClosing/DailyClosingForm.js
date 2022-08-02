@@ -1,6 +1,13 @@
 import {
   Button,
   Divider,
+  Table,
+  TableBody,
+  TableCell,
+  tableCellClasses,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Toolbar,
   Typography,
@@ -10,15 +17,19 @@ import { Box } from "@mui/system";
 import { useState } from "react";
 import { useAxios } from "../../../hooks";
 import { generateID } from "../../../utils/generateID";
+import { styled } from "@mui/material/styles";
 import { useEffect } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { BackButton } from "../../../components";
 import { useRecoilValue } from "recoil";
 import { withUser } from "../../../recoil/auth";
 import { MobileDatePicker } from "@mui/x-date-pickers";
-import DailyClosingBillTable from "../../../components/DailyClosingBillTable";
-import DailyClosingDepositTable from "../../../components/DailyClosingDepositTable";
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#EBEBEB",
+  },
+}));
 
 const DailyClosingForm = () => {
   const history = useHistory();
@@ -275,7 +286,43 @@ const DailyClosingForm = () => {
             Confirm
           </Button>
         </Box>
-          <DailyClosingBillTable data={bills} maxHeight={300} marginTop="15px"/>
+        <TableContainer sx={{ maxHeight: 300, marginTop: "15px" }}>
+          <Table sx={{ minWidth: 380 }} size="small" stickyHeader>
+            <TableHead>
+              <TableRow>
+                <StyledTableCell>Date</StyledTableCell>
+                <StyledTableCell>Bill ID</StyledTableCell>
+                <StyledTableCell>Patient ID</StyledTableCell>
+                <StyledTableCell>Patient Name</StyledTableCell>
+                <StyledTableCell>Total Amount</StyledTableCell>
+                <StyledTableCell>Deposit Amount</StyledTableCell>
+                <StyledTableCell>Collected Amount</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {bills.map((row, index) => (
+                <TableRow
+                  key={index}
+                  sx={{
+                    "&:last-child td, &:last-child th": { border: 0 },
+                  }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.date}
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {row.bill_id}
+                  </TableCell>
+                  <TableCell>{row.patient_id}</TableCell>
+                  <TableCell>{row.patient_name}</TableCell>
+                  <TableCell>{row.amount}</TableCell>
+                  <TableCell>{row.deposit_amount}</TableCell>
+                  <TableCell>{row.collected_amount}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
         <Box
           sx={{
             display: "flex",
@@ -336,7 +383,35 @@ const DailyClosingForm = () => {
             Confirm
           </Button>
         </Box>
-          <DailyClosingDepositTable data={deposits} maxHeight={300} marginTop="15px"/>
+        <TableContainer sx={{ maxHeight: 300, marginTop: "15px" }}>
+          <Table sx={{ minWidth: 380 }} size="small" stickyHeader>
+            <TableHead>
+              <TableRow>
+                <StyledTableCell>Deposit ID</StyledTableCell>
+                <StyledTableCell>Patient ID</StyledTableCell>
+                <StyledTableCell>Patient Name</StyledTableCell>
+                <StyledTableCell>Deposit Amount</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {deposits.map((row, index) => (
+                <TableRow
+                  key={index}
+                  sx={{
+                    "&:last-child td, &:last-child th": { border: 0 },
+                  }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.deposit_id}
+                  </TableCell>
+                  <TableCell>{row.patient_id}</TableCell>
+                  <TableCell>{row.patient_name}</TableCell>
+                  <TableCell>{row.amount}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
         <Box
           sx={{
             display: "flex",
