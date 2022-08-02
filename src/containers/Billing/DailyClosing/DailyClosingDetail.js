@@ -98,8 +98,8 @@ const DailyClosingDetail = () => {
           value={details?.opening_balance}
           textVariant="p"
         />
-        <DailyClosingBillTable data={bills} />
-        <DailyClosingDepositTable data={deposits} />
+        <DailyClosingBillTable data={bills} marginTop="15px"/>
+        <DailyClosingDepositTable data={deposits} marginTop="15px"/>
         <DetailsRow name="Total" value={details?.grand_total} textVariant="p" />
         <Divider />
         <DetailsRow
