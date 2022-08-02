@@ -1,12 +1,6 @@
 import {
   Button,
   Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -17,6 +11,8 @@ import { useAxios } from "../../../hooks";
 import { generateID } from "../../../utils/generateID";
 import { useReactToPrint } from "react-to-print";
 import { BackButton, DetailsRow } from "../../../components";
+import DailyClosingBillTable from "../../../components/DailyClosingBillTable";
+import DailyClosingDepositTable from "../../../components/DailyClosingDepositTable";
 
 const DailyClosingDetail = () => {
   const history = useHistory();
@@ -107,68 +103,8 @@ const DailyClosingDetail = () => {
           value={details?.opening_balance}
           textVariant="p"
         />
-        <TableContainer sx={{ marginTop: "15px" }}>
-          <Table sx={{ minWidth: 380 }} size="small">
-            <TableHead sx={{ backgroundColor: "#EBEBEB" }}>
-              <TableRow>
-                <TableCell>Bill ID</TableCell>
-                <TableCell>Patient ID</TableCell>
-                <TableCell>Patient Name</TableCell>
-                <TableCell>Total Amount</TableCell>
-                <TableCell>Deposit Amount</TableCell>
-                <TableCell>Collected Amount</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {bills.map((row) => (
-                <TableRow
-                  key={row.id}
-                  sx={{
-                    "&:last-child td, &:last-child th": { border: 0 },
-                  }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.bill_id}
-                  </TableCell>
-                  <TableCell>{row.patient_id}</TableCell>
-                  <TableCell>{row.patient_name}</TableCell>
-                  <TableCell>{row.total_amount}</TableCell>
-                  <TableCell>{row.deposit_amount}</TableCell>
-                  <TableCell>{row.collected_amount}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TableContainer sx={{ marginTop: "15px" }}>
-          <Table sx={{ minWidth: 380 }} size="small">
-            <TableHead sx={{ backgroundColor: "#EBEBEB" }}>
-              <TableRow>
-                <TableCell>Deposit ID</TableCell>
-                <TableCell>Patient ID</TableCell>
-                <TableCell>Patient Name</TableCell>
-                <TableCell>Deposit Amount</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {deposits.map((row) => (
-                <TableRow
-                  key={row.id}
-                  sx={{
-                    "&:last-child td, &:last-child th": { border: 0 },
-                  }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.deposit_id}
-                  </TableCell>
-                  <TableCell>{row.patient_id}</TableCell>
-                  <TableCell>{row.patient_name}</TableCell>
-                  <TableCell>{row.deposit_amount}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <DailyClosingBillTable data={bills} marginTop="15px" />
+        <DailyClosingDepositTable data={deposits} marginTop="15px" />
         <DetailsRow name="Total" value={details?.grand_total} textVariant="p" />
         <Divider />
         <DetailsRow
