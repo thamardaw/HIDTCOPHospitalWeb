@@ -1,9 +1,4 @@
-import {
-  Button,
-  Divider,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { Button, Divider, Toolbar, Typography } from "@mui/material";
 import { useHistory, useParams } from "react-router-dom";
 import { Box } from "@mui/system";
 import { useEffect, useRef, useState } from "react";
@@ -37,6 +32,9 @@ const DailyClosingDetail = () => {
         const ID = generateID(row.patient.id, row.patient.created_time);
         return {
           id: row.id,
+          date:
+            row.payment[0]?.updated_time &&
+            row.payment[0].updated_time.split("T")[0],
           bill_id: row.id,
           patient_id: ID,
           patient_name: row.patient.name,
