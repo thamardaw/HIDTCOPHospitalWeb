@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useMemo } from "react";
-import { getComparator, stableSort } from "../utils/sorting";
+import { getComparator, stableSort } from "../../utils/sorting";
 
 const StyledTableCell = styled(TableCell)(
   ({ theme, backgroundColor, maxWidth, show }) => ({

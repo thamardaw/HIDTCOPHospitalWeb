@@ -11,7 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import { BackButton, CSVUploadDialog } from "../../../components";
+import { BackButton,CSVUploadDialog } from "../../../components/common";
 import { useAxios } from "../../../hooks";
 import { MobileDatePicker } from "@mui/x-date-pickers";
 
@@ -96,7 +96,6 @@ const InventoryItemForm = () => {
     }
     setLoading(false);
   };
-
 
   useEffect(() => {
     if (details?.sales_service_item_id && details?.id) {

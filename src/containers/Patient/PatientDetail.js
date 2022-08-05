@@ -4,7 +4,7 @@ import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../hooks";
 import { useEffect, useState } from "react";
 import { generateID } from "../../utils/generateID";
-import { BackButton, DetailsRow } from "../../components";
+import { BackButton, DetailsRow } from "../../components/common";
 
 const PatientDetail = () => {
   const history = useHistory();

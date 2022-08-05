@@ -11,13 +11,13 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useAxios } from "../hooks";
-import { generateID } from "../utils/generateID";
+import { useAxios } from "../../hooks";
+import { generateID } from "../../utils/generateID";
 import billFormAtom, {
   withCurrentPatient,
   withBillItems,
   withTotalDeposit,
-} from "../recoil/billForm";
+} from "../../recoil/billForm";
 import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil";
 import { LoadingButton } from "@mui/lab";
 

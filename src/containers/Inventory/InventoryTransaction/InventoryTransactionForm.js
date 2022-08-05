@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { BackButton, CSVUploadDialog } from "../../../components";
+import { BackButton,CSVUploadDialog } from "../../../components/common";
 import { useAxios } from "../../../hooks";
 
 const InventoryTransactionForm = () => {

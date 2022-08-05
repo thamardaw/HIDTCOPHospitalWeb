@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
 import { useEffect, useState } from "react";
-import { BackButton, DetailsRow } from "../../../components";
+import { BackButton, DetailsRow } from "../../../components/common";
 
 const CategoryDetail = () => {
   const history = useHistory();

@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import { useAxios } from "../../../hooks";
 import { generateID } from "../../../utils/generateID";
 import { useReactToPrint } from "react-to-print";
-import { BackButton, DetailsRow } from "../../../components";
-import DailyClosingBillTable from "../../../components/DailyClosingBillTable";
-import DailyClosingDepositTable from "../../../components/DailyClosingDepositTable";
+import { BackButton, DetailsRow } from "../../../components/common";
+import { DailyClosingBillTable } from "../../../components/dailyClosing";
+import { DailyClosingDepositTable } from "../../../components/dailyClosing";
 
 const DailyClosingDetail = () => {
   const history = useHistory();

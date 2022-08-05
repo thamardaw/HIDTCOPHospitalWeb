@@ -25,7 +25,7 @@ import {
   withOrderBy,
   withPage,
   withRowsPerPage,
-} from "../recoil/customTable";
+} from "../../recoil/customTable";
 import { useRecoilState } from "recoil";
 
 const SearchContainer = styled("div")(({ theme }) => ({

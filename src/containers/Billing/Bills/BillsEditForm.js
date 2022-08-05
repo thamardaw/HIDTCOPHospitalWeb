@@ -29,7 +29,8 @@ import { generateID } from "../../../utils/generateID";
 import { styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { getComparator, stableSort } from "../../../utils/sorting";
-import { BackButton, BillItemsTableRow } from "../../../components";
+import { BillItemsTableRow } from "../../../components/bill";
+import { BackButton } from "../../../components/common";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 // function sleep(delay = 0) {
