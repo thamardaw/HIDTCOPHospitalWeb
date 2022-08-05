@@ -58,7 +58,7 @@ const StyledLink = styled(Link)(({ theme }) => ({
 const Form = styled("form")(({ theme }) => ({}));
 
 const Signup = () => {
-  const navigate = useHistory();
+  const history = useHistory();
   const openAlert = useSetRecoilState(withAlert);
   const [details, setDetails] = useState({
     username: "",
@@ -97,7 +97,7 @@ const Signup = () => {
     );
     if (res.status === 200) {
       openAlert({ status: res.status, detail: res.data.detail });
-      navigate(-1);
+      history.goBack();
     } else {
       openAlert({ status: res.status, detail: res.data.detail });
     }
