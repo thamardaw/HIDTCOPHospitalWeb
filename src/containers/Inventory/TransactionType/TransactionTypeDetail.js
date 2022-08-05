@@ -2,7 +2,7 @@ import { Box, Divider, Toolbar, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import { BackButton, DetailsRow } from "../../../components";
+import { BackButton, DetailsRow } from "../../../components/common";
 import { useAxios } from "../../../hooks";
 
 const TransactionTypeDetail = () => {

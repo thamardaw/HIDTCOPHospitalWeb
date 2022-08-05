@@ -1,10 +1,4 @@
-import {
-  Button,
-  Divider,
-  TextField,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { Button, Divider, TextField, Toolbar, Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { Box } from "@mui/system";
 import { useState } from "react";
@@ -12,13 +6,12 @@ import { useAxios } from "../../../hooks";
 import { generateID } from "../../../utils/generateID";
 import { useEffect } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { BackButton } from "../../../components";
+import { BackButton } from "../../../components/common";
 import { useRecoilValue } from "recoil";
 import { withUser } from "../../../recoil/auth";
 import { MobileDatePicker } from "@mui/x-date-pickers";
-import DailyClosingDepositTable from "../../../components/DailyClosingDepositTable";
-import DailyClosingBillTable from "../../../components/DailyClosingBillTable";
-
+import { DailyClosingBillTable } from "../../../components/dailyClosing";
+import { DailyClosingDepositTable } from "../../../components/dailyClosing";
 
 const DailyClosingForm = () => {
   const history = useHistory();
@@ -336,7 +329,11 @@ const DailyClosingForm = () => {
             Confirm
           </Button>
         </Box>
-        <DailyClosingDepositTable data={deposits} maxHeight={300} marginTop="15px"/>
+        <DailyClosingDepositTable
+          data={deposits}
+          maxHeight={300}
+          marginTop="15px"
+        />
         <Box
           sx={{
             display: "flex",

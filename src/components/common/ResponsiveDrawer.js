@@ -25,7 +25,7 @@ import React, { useState } from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import ClassIcon from "@mui/icons-material/Class";
-import drawerAtom from "../recoil/drawer";
+import drawerAtom from "../../recoil/drawer";
 import { useRecoilState } from "recoil";
 
 const ResponsiveDrawer = ({ window, drawerWidth }) => {

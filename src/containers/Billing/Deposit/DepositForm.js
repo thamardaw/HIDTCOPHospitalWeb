@@ -15,7 +15,7 @@ import { useCallback } from "react";
 import { generateID } from "../../../utils/generateID";
 import LoadingButton from "@mui/lab/LoadingButton";
 import AddIcon from "@mui/icons-material/Add";
-import { BackButton } from "../../../components";
+import { BackButton } from "../../../components/common";
 
 const DepositForm = () => {
   const history = useHistory();

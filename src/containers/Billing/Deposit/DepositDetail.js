@@ -7,9 +7,8 @@ import { generateID } from "../../../utils/generateID";
 import { useReactToPrint } from "react-to-print";
 import { styled } from "@mui/material/styles";
 import { useLocation } from "react-router-dom";
-import { BackButton} from "../../../components";
+import { BackButton, DeleteDialog } from "../../../components/common";
 import { constants } from "../../../utils/constants";
-import { DeleteDialog } from "../../../components";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.3rem",
@@ -223,7 +222,7 @@ const CategoryDetail = () => {
                   {details?.amount} MMK
                 </StyledTypography>
               </Box>
-            </Box> 
+            </Box>
           </Box>
         </Box>
         {/* <Box sx={{ flexDirection: "column", padding: "20px 10px" }}>

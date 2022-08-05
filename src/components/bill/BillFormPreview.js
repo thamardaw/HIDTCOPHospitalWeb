@@ -16,7 +16,7 @@ import {
   withBillItems,
   withCurrentPatient,
   withTotalDeposit,
-} from "../recoil/billForm";
+} from "../../recoil/billForm";
 import { useEffect, useState } from "react";
 import BillItemsTableRow from "./BillItemsTableRow";
 

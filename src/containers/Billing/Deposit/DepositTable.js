@@ -2,12 +2,12 @@ import { Button, Tab, Tabs } from "@mui/material";
 import { Box } from "@mui/system";
 import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import { TabPanel } from "../../../components/common";
 import {
   ActiveDepositTable,
   CancelledDepositTable,
-  TabPanel,
   UsedDepositTable,
-} from "../../../components";
+} from "../../../components/deposit";
 import tabAtom from "../../../recoil/tab";
 
 const headCells = [
