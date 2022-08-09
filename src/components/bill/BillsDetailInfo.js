@@ -2,7 +2,6 @@ import { Box, Typography } from "@mui/material";
 import { constants } from "../../utils/constants";
 import { styled } from "@mui/material/styles";
 import { generateID } from "../../utils/generateID";
-import { useEffect, useState } from "react";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.2rem",
@@ -22,13 +21,8 @@ const BillsDetailInfo = ({
   totalDeposit,
   children,
 }) => {
-  const [dateState, setDateState] = useState(new Date());
-
-  useEffect(() => {
-    const intervalId = setInterval(() => setDateState(new Date()), 30000);
-    return () => clearInterval(intervalId);
-  }, []);
-
+  const paymentDate= new Date(payment.updated_time);
+  
   return (
     <>
       <Box sx={{ my: "15px" }}>
@@ -53,7 +47,7 @@ const BillsDetailInfo = ({
           </Box>
           <Box
             sx={{
-              display: "flex",
+              display: stage === "completed" ? "flex":"none",
               flexDirection: "row",
               alignItems: "flex-start",
               margin: "10px 0px",
@@ -63,12 +57,12 @@ const BillsDetailInfo = ({
               <StyledTypography variant="body">Date & Time</StyledTypography>
             </Box>
             <StyledTypography variant="body">
-              {dateState.toLocaleDateString("en-GB", {
+              {paymentDate.toLocaleDateString("en-GB", {
                 day: "numeric",
                 month: "short",
                 year: "numeric",
               })}{" "}
-              {dateState.toLocaleString("en-US", {
+              {paymentDate.toLocaleString("en-US", {
                 hour: "numeric",
                 minute: "numeric",
                 hour12: true,
