@@ -7,3 +7,5 @@ export { default as CancelledBillTable } from "./CancelledBIllTable";
 export { default as CompletedBillTable } from "./CompletedBillTable";
 export { default as DraftedBillTable } from "./DraftedBillTable";
 export { default as OutstandingBillTable } from "./OutstandingBillTable";
+export { default as BillEditSubForm } from "./BillEditSubFrom";
+export { default as BillEditFormPreview } from "./BillEditFormPreview";
