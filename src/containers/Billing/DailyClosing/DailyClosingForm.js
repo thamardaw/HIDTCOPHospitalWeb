@@ -212,7 +212,7 @@ const DailyClosingForm = () => {
           >
             <Typography>From</Typography>
             <MobileDateTimePicker
-              inputFormat="yyyy-MM-dd'T'HH:mm:ss"
+              inputFormat="yyyy-MM-dd HH:mm:ss"
               value={billLimit?.from}
               onChange={onDatePicked("from")}
               // onChange={(v) => setBillLimit({ ...billLimit, from: v })}
@@ -247,7 +247,7 @@ const DailyClosingForm = () => {
               }
             /> */}
             <MobileDateTimePicker
-              inputFormat="yyyy-MM-dd'T'HH:mm:ss"
+              inputFormat="yyyy-MM-dd HH:mm:ss"
               value={billLimit?.to}
               onChange={onDatePicked("to")}
               // onChange={(v) => setBillLimit({ ...billLimit, to: v })}
