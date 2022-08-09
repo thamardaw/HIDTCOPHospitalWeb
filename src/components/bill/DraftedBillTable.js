@@ -1,11 +1,10 @@
 import { Button } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useAxios } from "../hooks";
-import { extractID } from "../utils/extractID";
-import { generateID } from "../utils/generateID";
-import DeleteDialog from "./DeleteDialog";
-import CustomTable from "./CustomTable";
+import { useAxios } from "../../hooks";
+import { extractID } from "../../utils/extractID";
+import { generateID } from "../../utils/generateID";
+import { DeleteDialog, CustomTable } from "../common";
 
 const DraftedBillTable = ({ headCells }) => {
   const api = useAxios({ autoSnackbar: true });

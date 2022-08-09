@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
-import { constants } from "../utils/constants";
+import { constants } from "../../utils/constants";
 import { styled } from "@mui/material/styles";
-import { generateID } from "../utils/generateID";
+import { generateID } from "../../utils/generateID";
 import { useEffect, useState } from "react";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({

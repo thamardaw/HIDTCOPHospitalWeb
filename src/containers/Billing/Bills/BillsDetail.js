@@ -6,12 +6,8 @@ import { useReactToPrint } from "react-to-print";
 import { useAxios } from "../../../hooks";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import {
-  BackButton,
-  BillItemsTable,
-  BillsDetailInfo,
-} from "../../../components";
-import { DeleteDialog } from "../../../components";
+import { BillItemsTable, BillsDetailInfo } from "../../../components/bill";
+import { BackButton, DeleteDialog } from "../../../components/common";
 
 const BillsDetail = () => {
   const api = useAxios({ autoSnackbar: true });

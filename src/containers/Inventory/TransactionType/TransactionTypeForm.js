@@ -11,7 +11,7 @@ import { useHistory, useParams } from "react-router";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useAxios } from "../../../hooks";
-import { BackButton, CSVUploadDialog } from "../../../components";
+import { BackButton,CSVUploadDialog } from "../../../components/common";
 
 const TransactionTypeForm = () => {
   const history = useHistory();

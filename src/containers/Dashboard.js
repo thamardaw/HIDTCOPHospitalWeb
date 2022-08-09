@@ -2,7 +2,7 @@ import { CssBaseline, Toolbar } from "@mui/material";
 import { Box } from "@mui/system";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router";
 import { Patient } from "./Patient";
-import { Appbar, Footer, ResponsiveDrawer } from "../components";
+import { Appbar, Footer, ResponsiveDrawer } from "../components/common";
 import { Uom } from "./Billing/Uom";
 import { Category } from "./Billing/Category";
 import { SalesServiceItem } from "./Billing/SalesServiceItem";
