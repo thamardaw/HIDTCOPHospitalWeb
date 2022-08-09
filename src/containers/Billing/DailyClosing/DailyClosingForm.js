@@ -9,9 +9,10 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { BackButton } from "../../../components/common";
 import { useRecoilValue } from "recoil";
 import { withUser } from "../../../recoil/auth";
-import { MobileDatePicker } from "@mui/x-date-pickers";
+import { MobileDateTimePicker } from "@mui/x-date-pickers";
 import { DailyClosingBillTable } from "../../../components/dailyClosing";
 import { DailyClosingDepositTable } from "../../../components/dailyClosing";
+import dayjs from "dayjs";
 
 const DailyClosingForm = () => {
   const history = useHistory();
@@ -38,11 +39,10 @@ const DailyClosingForm = () => {
 
   const onDatePicked = (key) => {
     return (e) => {
-      const date_obj = new Date(e);
-      const v = `${date_obj.getFullYear()}-${
-        date_obj.getMonth() + 1
-      }-${date_obj.getDate()}`;
-      setBillLimit({ ...billLimit, [key]: v });
+      setBillLimit({
+        ...billLimit,
+        [key]: dayjs(e).format("YYYY-MM-DDTHH:mm:ss"),
+      });
     };
   };
 
@@ -211,10 +211,11 @@ const DailyClosingForm = () => {
             }}
           >
             <Typography>From</Typography>
-            <MobileDatePicker
-              inputFormat="yyyy-MM-dd"
+            <MobileDateTimePicker
+              inputFormat="yyyy-MM-dd'T'HH:mm:ss"
               value={billLimit?.from}
               onChange={onDatePicked("from")}
+              // onChange={(v) => setBillLimit({ ...billLimit, from: v })}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -245,10 +246,11 @@ const DailyClosingForm = () => {
                 setBillLimit({ ...billLimit, to: e.target.value })
               }
             /> */}
-            <MobileDatePicker
-              inputFormat="yyyy-MM-dd"
+            <MobileDateTimePicker
+              inputFormat="yyyy-MM-dd'T'HH:mm:ss"
               value={billLimit?.to}
               onChange={onDatePicked("to")}
+              // onChange={(v) => setBillLimit({ ...billLimit, to: v })}
               renderInput={(params) => (
                 <TextField
                   {...params}
