@@ -4,26 +4,30 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext";
+import { RecoilRoot } from "recoil";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Login, Signup, Dashboard, ResetPassword } from "./containers";
-import PrivateRoute from "./utils/PrivateRoute";
-import { SnackbarProvider } from "./contexts/SnackbarContext";
+import { CustomSnackbar } from "./hocs/CustomSnackbar";
+import PrivateRoute from "./hocs/PrivateRoute";
 
 function App() {
   return (
-    <Router>
-      <SnackbarProvider>
-        <AuthProvider>
-          <Switch>
-            <PrivateRoute path="/dashboard" component={Dashboard} />
-            <Route path="/login" component={Login} />
-            <Route path="/signup" component={Signup} />
-            <Route path="/resetPassword" component={ResetPassword} />
-            <Redirect to="/dashboard" />
-          </Switch>
-        </AuthProvider>
-      </SnackbarProvider>
-    </Router>
+    <RecoilRoot>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <CustomSnackbar>
+          <Router>
+            <Switch>
+              <PrivateRoute path="/dashboard" component={Dashboard} />
+              <Route path="/login" component={Login} />
+              <Route path="/signup" component={Signup} />
+              <Route path="/resetPassword" component={ResetPassword} />
+              <Redirect to="/dashboard" />
+            </Switch>
+          </Router>
+        </CustomSnackbar>
+      </LocalizationProvider>
+    </RecoilRoot>
   );
 }
 

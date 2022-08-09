@@ -11,10 +11,13 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
-import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
-import { AuthContext } from "../contexts";
+import React, { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 import LoadingButton from "@mui/lab/LoadingButton";
+import axios from "axios";
+import { useSetRecoilState } from "recoil";
+import authAtom from "../recoil/auth";
+import { withAlert } from "../recoil/snackbar";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   position: "absolute",
@@ -51,8 +54,12 @@ const StyledLink = styled(Link)(({ theme }) => ({
   textDecoration: "none",
 }));
 
+const Form = styled("form")(({ theme }) => ({}));
+
 const Login = () => {
-  let { loginUser } = useContext(AuthContext);
+  const history = useHistory();
+  const setAuth = useSetRecoilState(authAtom);
+  const openAlert = useSetRecoilState(withAlert);
   const [showPassword, setShowPassword] = useState(false);
   const [details, setDetails] = useState({ username: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -64,14 +71,35 @@ const Login = () => {
   const submitHandler = async (e) => {
     setLoading(true);
     e.preventDefault();
-    await loginUser(details);
+    const formData = new FormData();
+    formData.append("username", details.username);
+    formData.append("password", details.password);
+    const res = await axios.post(
+      `${process.env.REACT_APP_BASE_URL}/api/login`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        validateStatus: function (status) {
+          return status < 500;
+        },
+      }
+    );
+    if (res.status === 200) {
+      setAuth(res.data);
+      localStorage.setItem("genesis-auth-tokens", JSON.stringify(res.data));
+      history.push("/");
+    } else {
+      openAlert({ status: res.status, detail: res.data.detail });
+    }
     setLoading(false);
   };
 
   return (
     <StyledBox>
       <StyledPaper elevation={6}>
-        <form onSubmit={submitHandler}>
+        <Form onSubmit={submitHandler}>
           <FormControl
             fullWidth
             required
@@ -113,7 +141,7 @@ const Login = () => {
           >
             Log in
           </LoadingButton>
-        </form>
+        </Form>
         <Button size="small" style={{ marginTop: "10px" }}>
           <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>
             <StyledLink to="/signup">Don't have an account?</StyledLink>

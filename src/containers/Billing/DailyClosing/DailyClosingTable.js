@@ -1,7 +1,7 @@
-import { Box } from "@mui/system";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { Button } from "@mui/material";
+import { memo, useCallback, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { CustomTable } from "../../../components";
-import LoadingContext from "../../../contexts/LoadingContext";
 import { useAxios } from "../../../hooks";
 
 const headCells = [
@@ -62,13 +62,12 @@ const headCells = [
 ];
 const DailyClosingTable = () => {
   const api = useAxios({ autoSnackbar: true });
+  const history = useHistory();
   const [rows, setRows] = useState([]);
-  const { setScreenLoading } = useContext(LoadingContext);
-
-  const handleClickOpen = (id) => {};
+  const [isTableLoading, setIsTableLoading] = useState(false);
 
   const getData = useCallback(async () => {
-    setScreenLoading(true);
+    setIsTableLoading(true);
     const res = await api.get("/api/dailyClosing/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -85,7 +84,7 @@ const DailyClosingTable = () => {
         };
       });
       setRows(data);
-      setScreenLoading(false);
+      setIsTableLoading(false);
     }
     return;
     // eslint-disable-next-line
@@ -97,16 +96,50 @@ const DailyClosingTable = () => {
   }, []);
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <CustomTable
-        tableName="Daily Closing"
-        headCells={headCells}
-        rows={rows}
-        onDelete={handleClickOpen}
-        addDelete={false}
-        addEdit={false}
-      />
-    </Box>
+    <CustomTable
+      tableConfig={{
+        headCells: headCells,
+        tableName: "Daily Closing",
+        maxHeight: "62vh",
+        atom: "dailyClosingTableAtom",
+      }}
+      data={rows}
+      isLoading={isTableLoading}
+      toolbarButtons={{
+        whenNoneSelected: [
+          {
+            id: "daily closing table new button",
+            component: memo(({ ...rest }) => (
+              <Button variant="outlined" size="small" {...rest}>
+                New
+              </Button>
+            )),
+            callback: (selected) => {
+              history.push("dailyClosing/form");
+            },
+          },
+        ],
+        whenOneSelected: [
+          {
+            id: "daily closing table detail button",
+            component: memo(({ ...rest }) => (
+              <Button
+                variant="contained"
+                size="small"
+                sx={{ marginLeft: "5px" }}
+                {...rest}
+              >
+                Details
+              </Button>
+            )),
+            callback: (selected) => {
+              history.push(`dailyClosing/details/${selected[0].id}`);
+            },
+          },
+        ],
+        whenMoreThanOneSelected: [],
+      }}
+    />
   );
 };
 
