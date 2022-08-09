@@ -8,6 +8,8 @@ import { CustomTable } from "../common";
 
 const CACHE = {};
 
+const CACHE = {};
+
 const CompletedBillTable = ({ headCells }) => {
   const api = useAxios({ autoSnackbar: true });
   const history = useHistory();
