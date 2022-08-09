@@ -251,10 +251,7 @@ const BillsEditForm = () => {
             <>
               <Box
                 sx={{
-                  padding: "14px",
                   width: "100%",
-                  border: "2px solid lightgray",
-                  borderRadius: "10px",
                 }}
               >
                 <form onSubmit={addItem}>

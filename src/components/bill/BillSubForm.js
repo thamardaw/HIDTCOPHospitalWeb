@@ -21,8 +21,6 @@ import billFormAtom, {
 import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil";
 import { LoadingButton } from "@mui/lab";
 
-
-
 const BillSubForm = () => {
   const history = useHistory();
   const api = useAxios({ autoSnackbar: true });
@@ -85,7 +83,7 @@ const BillSubForm = () => {
 
   const getPatientAndSalesServiceItem = async () => {
     setDataLoading(true);
-    
+
     const [patient, salesServiceItem] = await Promise.all([
       api.get("/api/patients/"),
       api.get("/api/salesServiceItem/"),
@@ -140,15 +138,12 @@ const BillSubForm = () => {
         <CircularProgress />
       </Box>
     );
-    
+
   return (
     <>
       <Box
         sx={{
-          padding: "14px",
           width: "100%",
-          border: "2px solid lightgray",
-          borderRadius: "10px",
         }}
       >
         <Box
