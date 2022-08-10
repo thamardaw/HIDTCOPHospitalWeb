@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { constants } from "../../utils/constants";
 import { styled } from "@mui/material/styles";
 import { generateID } from "../../utils/generateID";
+import { useEffect, useState } from "react";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.2rem",
@@ -21,8 +22,12 @@ const BillsDetailInfo = ({
   totalDeposit,
   children,
 }) => {
-  const paymentDate= new Date(payment.updated_time);
-  
+  const [dateState, setDateState] = useState(new Date());
+
+  useEffect(() => {
+    const intervalId = setInterval(() => setDateState(new Date()), 30000);
+    return () => clearInterval(intervalId);
+  }, []);
   return (
     <>
       <Box sx={{ my: "15px" }}>
@@ -47,7 +52,7 @@ const BillsDetailInfo = ({
           </Box>
           <Box
             sx={{
-              display: stage === "completed" ? "flex":"none",
+              display: "flex",
               flexDirection: "row",
               alignItems: "flex-start",
               margin: "10px 0px",
@@ -57,12 +62,36 @@ const BillsDetailInfo = ({
               <StyledTypography variant="body">Date & Time</StyledTypography>
             </Box>
             <StyledTypography variant="body">
-              {paymentDate.toLocaleDateString("en-GB", {
+              {dateState.toLocaleDateString("en-GB", {
                 day: "numeric",
                 month: "short",
                 year: "numeric",
               })}{" "}
-              {paymentDate.toLocaleString("en-US", {
+              {dateState.toLocaleString("en-US", {
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true,
+              })}
+            </StyledTypography>
+          </Box>
+          <Box
+            sx={{
+              display: stage === "completed" ? "flex":"none",
+              flexDirection: "row",
+              alignItems: "flex-start",
+              margin: "10px 0px",
+            }}
+          >
+            <Box sx={{ width: "30%" }}>
+              <StyledTypography variant="body">Payment Date & Time</StyledTypography>
+            </Box>
+            <StyledTypography variant="body">
+              {payment.updated_time && new Date(payment.updated_time).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}{" "}
+              {payment.updated_time && new Date(payment.updated_time).toLocaleString("en-US", {
                 hour: "numeric",
                 minute: "numeric",
                 hour12: true,
