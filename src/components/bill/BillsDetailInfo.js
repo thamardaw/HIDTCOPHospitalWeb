@@ -148,8 +148,10 @@ const BillsDetailInfo = ({
             justifyContent: "space-between",
           }}
         >
-          <StyledTypography variant="body">Total</StyledTypography>
-          <StyledTypography variant="body">
+          <StyledTypography variant="body" sx={{ fontSize: "28px" }}>
+            Total
+          </StyledTypography>
+          <StyledTypography variant="body" sx={{ fontSize: "28px" }}>
             {bill?.total_amount}
           </StyledTypography>
         </Box>
@@ -160,8 +162,10 @@ const BillsDetailInfo = ({
             justifyContent: "space-between",
           }}
         >
-          <StyledTypography variant="body">Deposit</StyledTypography>
-          <StyledTypography variant="body">
+          <StyledTypography variant="body" sx={{ fontSize: "28px" }}>
+            Deposit
+          </StyledTypography>
+          <StyledTypography variant="body" sx={{ fontSize: "28px" }}>
             {stage === "draft" && totalDeposit}
             {(stage === "outstanding" || stage === "completed") &&
               payment?.total_deposit_amount}
@@ -170,8 +174,10 @@ const BillsDetailInfo = ({
         </Box>
         <CustomDivider />
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <StyledTypography variant="body">Unpaid</StyledTypography>
-          <StyledTypography variant="body">
+          <StyledTypography variant="body" sx={{ fontSize: "28px" }}>
+            Unpaid
+          </StyledTypography>
+          <StyledTypography variant="body" sx={{ fontSize: "28px" }}>
             {stage === "draft" && parseInt(bill?.total_amount) - totalDeposit}
             {(stage === "outstanding" || stage === "completed") &&
               payment?.unpaid_amount}
