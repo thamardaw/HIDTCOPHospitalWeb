@@ -28,7 +28,6 @@ const BillsDetailInfo = ({
     const intervalId = setInterval(() => setDateState(new Date()), 30000);
     return () => clearInterval(intervalId);
   }, []);
-
   return (
     <>
       <Box sx={{ my: "15px" }}>
@@ -69,6 +68,30 @@ const BillsDetailInfo = ({
                 year: "numeric",
               })}{" "}
               {dateState.toLocaleString("en-US", {
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true,
+              })}
+            </StyledTypography>
+          </Box>
+          <Box
+            sx={{
+              display: stage === "completed" ? "flex":"none",
+              flexDirection: "row",
+              alignItems: "flex-start",
+              margin: "10px 0px",
+            }}
+          >
+            <Box sx={{ width: "30%" }}>
+              <StyledTypography variant="body">Payment Date & Time</StyledTypography>
+            </Box>
+            <StyledTypography variant="body">
+              {payment?.updated_time && new Date(payment.updated_time).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}{" "}
+              {payment?.updated_time && new Date(payment.updated_time).toLocaleString("en-US", {
                 hour: "numeric",
                 minute: "numeric",
                 hour12: true,
