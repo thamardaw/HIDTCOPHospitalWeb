@@ -3,7 +3,6 @@ import { memo, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { CustomTable } from "../../../components/common";
 import { useAxios } from "../../../hooks";
-import { generateID } from "../../../utils/generateID";
 
 const headCells = [
   {
