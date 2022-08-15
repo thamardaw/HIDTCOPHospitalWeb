@@ -88,6 +88,13 @@ const BillFormPreview = () => {
               textVariant="body"
             />
             <DetailsRow
+              name="Age"
+              value={currentPatient?.age}
+              padding="5px 0px"
+              marginV={0}
+              textVariant="body"
+            />
+            <DetailsRow
               name="Phone"
               value={currentPatient?.contactDetails}
               padding="5px 0px"
