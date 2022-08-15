@@ -5,6 +5,7 @@ import {
   Badge,
   Container,
   IconButton,
+  LinearProgress,
   Menu,
   MenuItem,
   Table,
@@ -40,6 +41,7 @@ const BillEditFormPreview = ({
   id,
   data,
   getData,
+  isLoading,
   isDispensed,
   totalDeposit,
 }) => {
@@ -148,6 +150,13 @@ const BillEditFormPreview = ({
               textVariant="body"
             />
             <DetailsRow
+              name="Age"
+              value={details?.patient?.age}
+              padding="5px 0px"
+              marginV={0}
+              textVariant="body"
+            />
+            <DetailsRow
               name="Phone"
               value={details?.patient_phone}
               padding="5px 0px"
@@ -172,6 +181,7 @@ const BillEditFormPreview = ({
             <Typography fontWeight="bold">Bill Items</Typography>
           </AccordionSummary>
           <AccordionDetails>
+            {isLoading && <LinearProgress />}
             <TableContainer sx={{ maxHeight: 300 }}>
               <Table
                 sx={{ minWidth: 400 }}
