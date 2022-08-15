@@ -186,17 +186,7 @@ const DepositForm = () => {
                   flexDirection: "column",
                   alignItems: "flex-start",
                 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    fullWidth
-                    size="small"
-                    margin="normal"
-                  />
-                )}
-              />
-              <Box size="small" color="primary" sx={{ marginTop: "5px" }}>
+              >
                 <Box sx={{ width: "100%" }}>
                   <Typography variant="p">Amount</Typography>
                 </Box>
