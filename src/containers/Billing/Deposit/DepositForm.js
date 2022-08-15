@@ -196,12 +196,7 @@ const DepositForm = () => {
                   />
                 )}
               />
-              <IconButton
-                size="small"
-                color="primary"
-                sx={{ marginTop: "5px" }}
-                onClick={() => history.push("/dashboard/patient/form")}
-              >
+              <Box size="small" color="primary" sx={{ marginTop: "5px" }}>
                 <Box sx={{ width: "100%" }}>
                   <Typography variant="p">Amount</Typography>
                 </Box>
