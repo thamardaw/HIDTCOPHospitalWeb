@@ -5,6 +5,7 @@ import {
   Badge,
   Container,
   IconButton,
+  LinearProgress,
   Menu,
   MenuItem,
   Table,
@@ -40,6 +41,7 @@ const BillEditFormPreview = ({
   id,
   data,
   getData,
+  isLoading,
   isDispensed,
   totalDeposit,
 }) => {
@@ -172,6 +174,7 @@ const BillEditFormPreview = ({
             <Typography fontWeight="bold">Bill Items</Typography>
           </AccordionSummary>
           <AccordionDetails>
+            {isLoading && <LinearProgress />}
             <TableContainer sx={{ maxHeight: 300 }}>
               <Table
                 sx={{ minWidth: 400 }}

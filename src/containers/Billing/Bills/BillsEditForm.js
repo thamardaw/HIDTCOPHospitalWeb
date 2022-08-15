@@ -20,6 +20,7 @@ const BillsEditForm = () => {
   const [details, setDetails] = useState({});
   const [dispensedItems, setDispensedItems] = useState([]);
   const [totalDeposit, setTotalDeposit] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const isDispensed = (row) => {
     return Boolean(
@@ -41,6 +42,7 @@ const BillsEditForm = () => {
   };
 
   const getData = async () => {
+    setLoading(true);
     const [bill, invtxs] = await Promise.all([
       api.get(`/api/bill/${id}`),
       api.get(`/api/inventory/dispense/${id}`),
@@ -55,6 +57,7 @@ const BillsEditForm = () => {
         ),
       });
       setDispensedItems(invtxs.data);
+      setLoading(false);
     } else {
       history.goBack();
     }
@@ -109,6 +112,7 @@ const BillsEditForm = () => {
           <BillEditFormPreview
             id={id}
             data={details}
+            isLoading={loading}
             getData={getData}
             isDispensed={isDispensed}
             totalDeposit={totalDeposit}
