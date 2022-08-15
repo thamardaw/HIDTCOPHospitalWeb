@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  CircularProgress,
   Container,
   Divider,
   IconButton,
@@ -28,6 +29,7 @@ const DepositForm = () => {
   });
   const [patient, setPatient] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
 
   const getCurrentDate = () => {
     const today = new Date();
@@ -38,6 +40,7 @@ const DepositForm = () => {
   };
 
   const getPatient = useCallback(async () => {
+    setDataLoading(true);
     const res = await api.get("/api/patients/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
@@ -54,6 +57,7 @@ const DepositForm = () => {
         };
       });
       setPatient(data);
+      setDataLoading(false);
     }
     return;
     // eslint-disable-next-line
@@ -106,116 +110,129 @@ const DepositForm = () => {
             width: { xs: "100%", md: "35%" },
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
-          >
-            <Box sx={{ width: "100%" }}>
-              <Typography variant="p">Select Patient</Typography>
-            </Box>
-            {/* <TextField size="small" fullWidth margin="dense" />
-             */}
+          {dataLoading ? (
             <Box
               sx={{
                 width: "100%",
                 display: "flex",
                 alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              <Autocomplete
-                value={details?.patient}
-                options={patient}
-                getOptionLabel={(option) => `${option.name}, ${option.id}`}
-                style={{ width: "90%" }}
-                onChange={(event, newValue) => {
-                  if (newValue) {
-                    setDetails({
-                      ...details,
-                      patient: newValue,
-                      patient_id: parseInt(newValue.id.split("-")[1]),
-                    });
-                  } else {
-                    setDetails({
-                      ...details,
-                      patient: newValue,
-                      patient_id: null,
-                    });
-                  }
+              <CircularProgress />
+            </Box>
+          ) : (
+            <>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
                 }}
-                renderInput={(params) => (
+              >
+                <Box sx={{ width: "100%" }}>
+                  <Typography variant="p">Select Patient</Typography>
+                </Box>
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Autocomplete
+                    value={details?.patient}
+                    options={patient}
+                    getOptionLabel={(option) => `${option.name}, ${option.id}`}
+                    style={{ width: "90%" }}
+                    onChange={(event, newValue) => {
+                      if (newValue) {
+                        setDetails({
+                          ...details,
+                          patient: newValue,
+                          patient_id: parseInt(newValue.id.split("-")[1]),
+                        });
+                      } else {
+                        setDetails({
+                          ...details,
+                          patient: newValue,
+                          patient_id: null,
+                        });
+                      }
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        fullWidth
+                        size="small"
+                        margin="normal"
+                      />
+                    )}
+                  />
+                  <IconButton
+                    size="small"
+                    color="primary"
+                    sx={{ marginTop: "5px" }}
+                    onClick={() => history.push("/dashboard/patient/form")}
+                  >
+                    <AddIcon fontSize="large" />
+                  </IconButton>
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Box sx={{ width: "100%" }}>
+                  <Typography variant="p">Amount</Typography>
+                </Box>
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   <TextField
-                    {...params}
-                    variant="outlined"
+                    // style={{ width: "85%" }}
                     fullWidth
                     size="small"
                     margin="normal"
+                    value={details?.amount || ""}
+                    type="number"
+                    InputProps={{
+                      inputProps: { min: "0", step: "1" },
+                    }}
+                    onChange={(e) =>
+                      setDetails({ ...details, amount: e.target.value })
+                    }
                   />
-                )}
-              />
-              <IconButton
-                size="small"
-                color="primary"
-                sx={{ marginTop: "5px" }}
-                onClick={() => history.push("/dashboard/patient/form")}
-              >
-                <AddIcon fontSize="large" />
-              </IconButton>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
-          >
-            <Box sx={{ width: "100%" }}>
-              <Typography variant="p">Amount</Typography>
-            </Box>
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <TextField
-                // style={{ width: "85%" }}
-                fullWidth
-                size="small"
-                margin="normal"
-                value={details?.amount || ""}
-                type="number"
-                InputProps={{
-                  inputProps: { min: "0", step: "1" },
+                  <Box sx={{ width: "45px" }}></Box>
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  paddingTop: "10px",
+                  display: "flex",
+                  justifyContent: "flex-end",
                 }}
-                onChange={(e) =>
-                  setDetails({ ...details, amount: e.target.value })
-                }
-              />
-              <Box sx={{ width: "45px" }}></Box>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              paddingTop: "10px",
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-          >
-            <LoadingButton
-              loading={loading}
-              variant="contained"
-              size="small"
-              sx={{ marginRight: "5px" }}
-              onClick={createNew}
-            >
-              Save
-            </LoadingButton>
-          </Box>
+              >
+                <LoadingButton
+                  loading={loading}
+                  variant="contained"
+                  size="small"
+                  sx={{ marginRight: "5px" }}
+                  onClick={createNew}
+                >
+                  Save
+                </LoadingButton>
+              </Box>
+            </>
+          )}
         </Box>
         <Box
           sx={{
