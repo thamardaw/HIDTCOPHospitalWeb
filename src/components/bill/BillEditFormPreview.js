@@ -150,6 +150,13 @@ const BillEditFormPreview = ({
               textVariant="body"
             />
             <DetailsRow
+              name="Age"
+              value={details?.patient?.age}
+              padding="5px 0px"
+              marginV={0}
+              textVariant="body"
+            />
+            <DetailsRow
               name="Phone"
               value={details?.patient_phone}
               padding="5px 0px"
