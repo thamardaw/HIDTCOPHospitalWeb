@@ -186,6 +186,21 @@ const DepositForm = () => {
                   flexDirection: "column",
                   alignItems: "flex-start",
                 }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    margin="normal"
+                  />
+                )}
+              />
+              <IconButton
+                size="small"
+                color="primary"
+                sx={{ marginTop: "5px" }}
+                onClick={() => history.push("/dashboard/patient/form")}
               >
                 <Box sx={{ width: "100%" }}>
                   <Typography variant="p">Amount</Typography>
