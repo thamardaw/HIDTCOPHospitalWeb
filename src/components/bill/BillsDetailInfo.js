@@ -76,26 +76,25 @@ const BillsDetailInfo = ({
           </Box>
           <Box
             sx={{
-              display: stage === "completed" ? "flex":"none",
+              display: stage === "completed" ? "flex" : "none",
               flexDirection: "row",
               alignItems: "flex-start",
               margin: "10px 0px",
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <StyledTypography variant="body">Payment Date & Time</StyledTypography>
+              <StyledTypography variant="body">
+                Payment Date & Time
+              </StyledTypography>
             </Box>
             <StyledTypography variant="body">
-              {payment?.updated_time && new Date(payment.updated_time).toLocaleDateString("en-GB", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              })}{" "}
-              {payment?.updated_time && new Date(payment.updated_time).toLocaleString("en-US", {
-                hour: "numeric",
-                minute: "numeric",
-                hour12: true,
-              })}
+              {payment?.updated_time?.split("T")[0]}{" "}
+              {payment?.updated_time &&
+                new Date(payment.updated_time).toLocaleString("en-US", {
+                  hour: "numeric",
+                  minute: "numeric",
+                  hour12: true,
+                })}
             </StyledTypography>
           </Box>
           <Box
