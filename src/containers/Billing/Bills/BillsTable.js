@@ -2,13 +2,13 @@ import { Button, Tab, Tabs } from "@mui/material";
 import { Box } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import { TabPanel } from "../../../components/common";
 import {
   CancelledBillTable,
   CompletedBillTable,
   DraftedBillTable,
   OutstandingBillTable,
-  TabPanel,
-} from "../../../components";
+} from "../../../components/bill";
 
 import tabAtom from "../../../recoil/tab";
 

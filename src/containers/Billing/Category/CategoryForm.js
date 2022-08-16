@@ -4,7 +4,7 @@ import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { BackButton } from "../../../components";
+import { BackButton } from "../../../components/common";
 
 const CategoryForm = () => {
   const history = useHistory();

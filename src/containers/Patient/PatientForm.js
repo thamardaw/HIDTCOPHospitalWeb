@@ -1,16 +1,18 @@
 import {
   Divider,
-  MenuItem,
   TextField,
   Toolbar,
   Typography,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../hooks";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { BackButton } from "../../components";
+import { BackButton } from "../../components/common";
 import { MobileDatePicker } from "@mui/x-date-pickers";
 
 const PatientForm = () => {
@@ -165,21 +167,18 @@ const PatientForm = () => {
           <Box sx={{ width: "30%" }}>
             <Typography variant="p">Gender</Typography>
           </Box>
-          {/* <TextField size="small" sx={{ width: "70%" }} margin="dense" /> */}
-          <TextField
-            select
-            fullWidth
+          <RadioGroup
+            row="true"
             label="Gender"
-            size="small"
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.gender || ""}
             name="gender"
             onChange={handleChange}
           >
-            <MenuItem value="male">Male</MenuItem>
-            <MenuItem value="female">Female</MenuItem>
-          </TextField>
+            <FormControlLabel control={<Radio />} label="Male" value="male" />
+            <FormControlLabel control={<Radio />} label="Female" value="female" />
+          </RadioGroup>
         </Box>
         <Box
           sx={{

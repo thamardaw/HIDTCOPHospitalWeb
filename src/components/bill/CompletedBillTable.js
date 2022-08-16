@@ -1,10 +1,12 @@
 import { Button } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useAxios } from "../hooks";
-import { extractID } from "../utils/extractID";
-import { generateID } from "../utils/generateID";
-import CustomTable from "./CustomTable";
+import { useAxios } from "../../hooks";
+import { extractID } from "../../utils/extractID";
+import { generateID } from "../../utils/generateID";
+import { CustomTable } from "../common";
+
+const CACHE = {};
 
 const CompletedBillTable = ({ headCells }) => {
   const api = useAxios({ autoSnackbar: true });
@@ -13,6 +15,9 @@ const CompletedBillTable = ({ headCells }) => {
   const [isTableLoading, setIsTableLoading] = useState(false);
 
   const getCompletedData = useCallback(async () => {
+    if (CACHE["Bills"] !== undefined) {
+      setRows(CACHE["Bills"]);
+    }
     setIsTableLoading(true);
     const res = await api.get("/api/bill/completed");
     if (res.status === 200) {
@@ -28,6 +33,7 @@ const CompletedBillTable = ({ headCells }) => {
           created_date: row.created_time.split("T")[0],
         };
       });
+      CACHE["Bills"] = data;
       setRows(data);
       setIsTableLoading(false);
     }

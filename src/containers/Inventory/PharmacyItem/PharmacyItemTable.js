@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { CustomTable, DeleteDialog } from "../../../components";
+import { CustomTable } from "../../../components/customTable";
+import { DeleteDialog } from "../../../components/common";
 import { LoadingContext } from "../../../contexts";
 import { useAxios } from "../../../hooks";
 

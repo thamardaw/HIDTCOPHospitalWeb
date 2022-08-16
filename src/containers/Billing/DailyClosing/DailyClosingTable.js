@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { CustomTable } from "../../../components";
+import { CustomTable } from "../../../components/common";
 import { useAxios } from "../../../hooks";
 
 const headCells = [

@@ -15,10 +15,10 @@ import React, { useState } from "react";
 import BadgeIcon from "@mui/icons-material/Badge";
 import PersonIcon from "@mui/icons-material/Person";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import authAtom, { withUser } from "../recoil/auth";
+import authAtom, { withUser } from "../../recoil/auth";
 import { useHistory } from "react-router-dom";
-import drawerAtom from "../recoil/drawer";
-import { constants } from "../utils/constants";
+import drawerAtom from "../../recoil/drawer";
+import { constants } from "../../utils/constants";
 
 const Appbar = ({ drawerWidth }) => {
   const history = useHistory();

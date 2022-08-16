@@ -1,9 +1,7 @@
-import {
-  Button,
-} from "@mui/material";
+import { Button } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { CustomTable,DeleteDialog } from "../../../components";
+import { DeleteDialog,CustomTable } from "../../../components/common";
 import { useAxios } from "../../../hooks";
 
 const headCells = [
@@ -149,11 +147,11 @@ const CategoryTable = () => {
         }}
       />
       <DeleteDialog
-      isOpen={openDeleteDialog}
-      handleClose={() => setOpenDeleteDialog(false)}
-      callback={() => {
-        deleteItem();
-      }} 
+        isOpen={openDeleteDialog}
+        handleClose={() => setOpenDeleteDialog(false)}
+        callback={() => {
+          deleteItem();
+        }}
       />
     </>
   );

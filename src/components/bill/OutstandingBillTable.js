@@ -1,13 +1,12 @@
 import { Button } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useAxios } from "../hooks";
-import { extractID } from "../utils/extractID";
-import { generateID } from "../utils/generateID";
-import DeleteDialog from "./DeleteDialog";
-import CustomTable from "./CustomTable";
+import { useAxios } from "../../hooks";
+import { extractID } from "../../utils/extractID";
+import { generateID } from "../../utils/generateID";
+import { DeleteDialog, CustomTable } from "../common";
 
-const ActiveDepositTable = ({ headCells }) => {
+const OutstandingBillTable = ({ headCells }) => {
   const api = useAxios({ autoSnackbar: true });
   const history = useHistory();
   const [rows, setRows] = useState([]);
@@ -15,18 +14,20 @@ const ActiveDepositTable = ({ headCells }) => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [isTableLoading, setIsTableLoading] = useState(false);
 
-  const getActiveDeposit = useCallback(async () => {
+  const getOutstandingData = useCallback(async () => {
     setIsTableLoading(true);
-    const res = await api.get("/api/deposit/active");
+    const res = await api.get("/api/bill/outstanding");
     if (res.status === 200) {
       const data = res.data.map((row) => {
         const ID = generateID(row.id);
         return {
           id: ID,
-          patient_name: row.patient.name,
-          patient_id: generateID(row.patient_id, row.patient.created_time),
-          amount: row.amount,
-          date: row.created_time.split("T")[0],
+          name: row.patient_name,
+          phone: row.patient_phone,
+          address: row.patient_address,
+          totalAmount: row.total_amount,
+          created_date: row.created_time.split("T")[0],
+          bill_items: row.bill_items,
         };
       });
       setRows(data);
@@ -36,18 +37,21 @@ const ActiveDepositTable = ({ headCells }) => {
     // eslint-disable-next-line
   }, []);
 
-  const cancelDeposit = async () => {
-    if (selected.length === 0) {
-      return;
+  const cancelBill = async () => {
+    if (selected.length === 0) return;
+    const [b, inv] = await Promise.all([
+      api.put(`/api/bill/cancel/${extractID(selected[0].id)}`),
+      api.post("/api/inventory/returns", [...selected[0]?.bill_items]),
+    ]);
+    if (b.status === 200 && inv.status === 200) {
+      setOpenDeleteDialog(false);
+      setSelected([]);
+      getOutstandingData();
     }
-    await api.put(`/api/deposit/cancel/${extractID(selected[0].id)}`);
-    setOpenDeleteDialog(false);
-    setSelected([]);
-    getActiveDeposit();
   };
 
   useEffect(() => {
-    getActiveDeposit();
+    getOutstandingData();
     // eslint-disable-next-line
   }, []);
 
@@ -56,9 +60,9 @@ const ActiveDepositTable = ({ headCells }) => {
       <CustomTable
         tableConfig={{
           headCells: headCells,
-          tableName: "Deposit",
+          tableName: "Bill",
           maxHeight: "60vh",
-          atom: "activeDepositTableAtom",
+          atom: "outstandingBillTableAtom",
         }}
         data={rows}
         isLoading={isTableLoading}
@@ -66,7 +70,7 @@ const ActiveDepositTable = ({ headCells }) => {
           whenNoneSelected: [],
           whenOneSelected: [
             {
-              id: "active deposit table detail button",
+              id: "outstanding bill table detail button",
               component: memo(({ ...rest }) => (
                 <Button
                   variant="contained"
@@ -78,18 +82,15 @@ const ActiveDepositTable = ({ headCells }) => {
                 </Button>
               )),
               callback: (selected) => {
-                history.push({
-                  pathname: `/dashboard/deposit/details/${extractID(
+                history.push(
+                  `/dashboard/bills/details/${extractID(
                     selected[0].id
-                  )}`,
-                  state: {
-                    from: "active",
-                  },
-                });
+                  )}/outstanding`
+                );
               },
             },
             {
-              id: "active deposit table delete button",
+              id: "outstanding bill table delete button",
               component: memo(({ ...rest }) => (
                 <Button
                   variant="contained"
@@ -114,13 +115,13 @@ const ActiveDepositTable = ({ headCells }) => {
         isOpen={openDeleteDialog}
         handleClose={() => setOpenDeleteDialog(false)}
         callbackButtonName="OK"
-        content="You are about to cancel the deposit."
+        content="You are about to cancel the bill."
         callback={() => {
-          cancelDeposit();
+          cancelBill();
         }}
       />
     </>
   );
 };
 
-export default ActiveDepositTable;
+export default OutstandingBillTable;

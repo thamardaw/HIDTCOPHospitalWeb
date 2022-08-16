@@ -11,7 +11,7 @@ import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { BackButton, CSVUploadDialog } from "../../../components";
+import { BackButton,CSVUploadDialog } from "../../../components/common";
 import { useRecoilValue } from "recoil";
 import { withUser } from "../../../recoil/auth";
 
