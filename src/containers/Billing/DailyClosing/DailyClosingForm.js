@@ -212,14 +212,14 @@ const DailyClosingForm = () => {
           >
             <Typography>From</Typography>
             <MobileDateTimePicker
-              inputFormat="yyyy-MM-dd HH:mm:ss"
+              inputFormat="yyyy-MM-dd HH:mm:ss a"
               value={billLimit?.from}
               onChange={onDatePicked("from")}
               // onChange={(v) => setBillLimit({ ...billLimit, from: v })}
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  sx={{ width: "40%" }}
+                  sx={{ width: "45%" }}
                   size="small"
                   margin="dense"
                 />
@@ -247,14 +247,14 @@ const DailyClosingForm = () => {
               }
             /> */}
             <MobileDateTimePicker
-              inputFormat="yyyy-MM-dd HH:mm:ss"
+              inputFormat="yyyy-MM-dd HH:mm:ss a"
               value={billLimit?.to}
               onChange={onDatePicked("to")}
               // onChange={(v) => setBillLimit({ ...billLimit, to: v })}
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  sx={{ width: "40%" }}
+                  sx={{ width: "45%" }}
                   size="small"
                   margin="dense"
                 />
@@ -296,7 +296,7 @@ const DailyClosingForm = () => {
             <Typography>From</Typography>
             <TextField
               size="small"
-              sx={{ width: "40%" }}
+              sx={{ width: "45%" }}
               margin="dense"
               type="number"
               InputProps={{
@@ -310,7 +310,7 @@ const DailyClosingForm = () => {
             <Typography>To</Typography>
             <TextField
               size="small"
-              sx={{ width: "40%" }}
+              sx={{ width: "45%" }}
               margin="dense"
               type="number"
               InputProps={{
