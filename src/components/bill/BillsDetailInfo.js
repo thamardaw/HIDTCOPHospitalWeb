@@ -88,7 +88,7 @@ const BillsDetailInfo = ({
               </StyledTypography>
             </Box>
             <StyledTypography variant="body">
-              {payment?.updated_time.split("T")[0]}{" "}
+              {payment?.updated_time?.split("T")[0]}{" "}
               {payment?.updated_time &&
                 new Date(payment.updated_time).toLocaleString("en-US", {
                   hour: "numeric",
