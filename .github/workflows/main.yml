@@ -50,3 +50,15 @@ jobs:
             TITLE_SHORT=KTM
             TITLE_LONG=Kan Taw Mon Specialist Clinic
           tags: jasoniv/kdm-bill:latest
+      - name: Build and push docker image aye thaw dar
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          build-args: |
+            BASE_URL=http://192.168.100.100:8000
+            THEME=
+            TITLE=Aye Thaw Dar
+            TITLE_SHORT=ATD
+            TITLE_LONG=Aye Thaw Dar Specialist Clinic
+          tags: jasoniv/atd-bill:latest
