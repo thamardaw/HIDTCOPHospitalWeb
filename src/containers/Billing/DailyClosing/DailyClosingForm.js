@@ -168,7 +168,7 @@ const DailyClosingForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Opening Balance</Typography>
+            <Typography variant="p">Opening Balance*</Typography>
           </Box>
           <TextField
             size="small"
@@ -345,7 +345,7 @@ const DailyClosingForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Total</Typography>
+            <Typography variant="p">Total*</Typography>
           </Box>
           <TextField
             size="small"
@@ -363,7 +363,7 @@ const DailyClosingForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Actual Amount</Typography>
+            <Typography variant="p">Actual Amount*</Typography>
           </Box>
           <TextField
             size="small"
@@ -385,7 +385,7 @@ const DailyClosingForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Adjustment</Typography>
+            <Typography variant="p">Adjustment*</Typography>
           </Box>
           <TextField
             size="small"
@@ -408,7 +408,7 @@ const DailyClosingForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Remark</Typography>
+            <Typography variant="p">Remark*</Typography>
           </Box>
           <TextField
             size="small"

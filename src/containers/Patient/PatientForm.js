@@ -108,7 +108,7 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Name</Typography>
+            <Typography variant="p">Name*</Typography>
           </Box>
           <TextField
             size="small"
@@ -127,7 +127,7 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Age</Typography>
+            <Typography variant="p">Age*</Typography>
           </Box>
           <TextField
             size="small"
@@ -146,7 +146,7 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Contact Details</Typography>
+            <Typography variant="p">Contact Details*</Typography>
           </Box>
           <TextField
             size="small"
@@ -165,7 +165,7 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Gender</Typography>
+            <Typography variant="p">Gender*</Typography>
           </Box>
           <RadioGroup
             row="true"
@@ -221,7 +221,7 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Address</Typography>
+            <Typography variant="p">Address*</Typography>
           </Box>
           <TextField
             size="small"

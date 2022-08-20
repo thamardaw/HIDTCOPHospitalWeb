@@ -82,7 +82,7 @@ const CategoryForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Name</Typography>
+            <Typography variant="p">Name*</Typography>
           </Box>
           <TextField
             size="small"
@@ -101,7 +101,7 @@ const CategoryForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Description</Typography>
+            <Typography variant="p">Description*</Typography>
           </Box>
           <TextField
             size="small"

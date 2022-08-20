@@ -98,7 +98,7 @@ const TransactionTypeForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Name</Typography>
+              <Typography variant="p">Name*</Typography>
             </Box>
             <TextField
               size="small"
@@ -117,7 +117,7 @@ const TransactionTypeForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Type</Typography>
+              <Typography variant="p">Type*</Typography>
             </Box>
             <TextField
               select

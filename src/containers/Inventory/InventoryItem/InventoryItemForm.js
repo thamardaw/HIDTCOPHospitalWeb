@@ -178,7 +178,7 @@ const InventoryItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Name</Typography>
+              <Typography variant="p">Name*</Typography>
             </Box>
             <TextField
               size="small"
@@ -197,7 +197,7 @@ const InventoryItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Balance</Typography>
+              <Typography variant="p">Balance*</Typography>
             </Box>
             <TextField
               size="small"
@@ -216,7 +216,7 @@ const InventoryItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Unit</Typography>
+              <Typography variant="p">Unit*</Typography>
             </Box>
             <TextField
               size="small"
@@ -290,7 +290,7 @@ const InventoryItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Batch</Typography>
+              <Typography variant="p">Batch*</Typography>
             </Box>
             <TextField
               size="small"
@@ -309,7 +309,7 @@ const InventoryItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Purchasing Price</Typography>
+              <Typography variant="p">Purchasing Price*</Typography>
             </Box>
             <TextField
               size="small"

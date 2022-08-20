@@ -120,7 +120,7 @@ const SalesServiceItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Name</Typography>
+              <Typography variant="p">Name*</Typography>
             </Box>
             <TextField
               size="small"
@@ -139,7 +139,7 @@ const SalesServiceItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Price</Typography>
+              <Typography variant="p">Price*</Typography>
             </Box>
             <TextField
               size="small"
@@ -162,7 +162,7 @@ const SalesServiceItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">UOM</Typography>
+              <Typography variant="p">UOM*</Typography>
             </Box>
             <TextField
               select
@@ -190,7 +190,7 @@ const SalesServiceItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Category</Typography>
+              <Typography variant="p">Category*</Typography>
             </Box>
             <TextField
               select
