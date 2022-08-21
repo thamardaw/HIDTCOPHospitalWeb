@@ -20,8 +20,8 @@ const SalesServiceItemForm = () => {
   const { id } = useParams();
   const api = useAxios({ autoSnackbar: true });
   const [details, setDetails] = useState({
-    name: "",
-    price: "",
+    name: null,
+    price: null,
     uom_id: null,
     category_id: null,
   });
@@ -126,7 +126,7 @@ const SalesServiceItemForm = () => {
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.name || ""}
+              value={details?.name}
               name="name"
               onChange={handleChange}
             />
@@ -145,7 +145,7 @@ const SalesServiceItemForm = () => {
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.price || ""}
+              value={details?.price}
               type="number"
               InputProps={{
                 inputProps: { min: "0", step: "50" },

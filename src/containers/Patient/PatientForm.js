@@ -21,9 +21,9 @@ const PatientForm = () => {
   const api = useAxios({ autoSnackbar: true });
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({
-    name: "",
-    age: "",
-    contact_details: "",
+    name: null,
+    age: null,
+    contact_details: null,
     gender: "",
     date_of_birth: null,
     address: "",
@@ -114,7 +114,7 @@ const PatientForm = () => {
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.name || ""}
+            value={details?.name}
             name="name"
             onChange={handleChange}
           />
@@ -133,7 +133,7 @@ const PatientForm = () => {
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.age || ""}
+            value={details?.age}
             name="age"
             onChange={handleChange}
           />
@@ -152,7 +152,7 @@ const PatientForm = () => {
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.contact_details || ""}
+            value={details?.contact_details}
             name="contact_details"
             onChange={handleChange}
           />

@@ -11,8 +11,8 @@ const CategoryForm = () => {
   const { id } = useParams();
   const api = useAxios({ autoSnackbar: true });
   const [details, setDetails] = useState({
-    name: "",
-    description: "",
+    name: null,
+    description: null,
   });
   const [loading, setLoading] = useState(false);
 

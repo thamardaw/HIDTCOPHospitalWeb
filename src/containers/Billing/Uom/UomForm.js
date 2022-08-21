@@ -11,8 +11,8 @@ const UomForm = () => {
   const { id } = useParams();
   const api = useAxios({ autoSnackbar: true });
   const [details, setDetails] = useState({
-    name: "",
-    description: "",
+    name: null,
+    description: null,
   });
   const [loading, setLoading] = useState(false);
 
@@ -88,7 +88,7 @@ const UomForm = () => {
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.name || ""}
+            value={details?.name}
             name="name"
             onChange={handleChange}
           />
@@ -107,7 +107,7 @@ const UomForm = () => {
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.description || ""}
+            value={details?.description}
             name="description"
             onChange={handleChange}
           />

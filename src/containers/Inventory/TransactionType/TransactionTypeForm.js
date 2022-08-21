@@ -19,8 +19,8 @@ const TransactionTypeForm = () => {
   const api = useAxios({ autoSnackbar: true });
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({
-    name: "",
-    type: "",
+    name: null,
+    type: null,
   });
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -104,7 +104,7 @@ const TransactionTypeForm = () => {
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.name || ""}
+              value={details?.name}
               name="name"
               onChange={handleChange}
             />
@@ -126,7 +126,7 @@ const TransactionTypeForm = () => {
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.type || ""}
+              value={details?.type}
               name="type"
               onChange={handleChange}
             >
