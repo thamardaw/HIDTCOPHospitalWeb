@@ -3,4 +3,5 @@ export const constants = {
   name_long: process.env.REACT_APP_TITLE_LONG || "Genesis Hospital",
   name_symbol: process.env.REACT_APP_TITLE_SHORT || "GH",
   primary_color: process.env.REACT_APP_THEME || "#1976d2",
+  demo_name: process.env.REACT_APP_IS_DEMO || "DEMO APP DATA"
 };
