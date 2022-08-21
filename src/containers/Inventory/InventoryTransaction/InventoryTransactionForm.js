@@ -55,8 +55,8 @@ const InventoryTransactionForm = () => {
     );
     const res = await api.post("/api/inventory_transactions/", {
       ...details,
-      transaction_type_name: txt.name,
-      transaction_type: txt.type,
+      transaction_type_name: txt?.name,
+      transaction_type: txt?.type,
     });
     if (res.status === 200) {
       history.goBack();
