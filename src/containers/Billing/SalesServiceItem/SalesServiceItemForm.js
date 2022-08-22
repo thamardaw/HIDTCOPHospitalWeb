@@ -171,7 +171,7 @@ const SalesServiceItemForm = () => {
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.uom_id || ""}
+              value={details?.uom_id}
               name="uom_id"
               onChange={handleChange}
             >
@@ -199,7 +199,7 @@ const SalesServiceItemForm = () => {
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.category_id || ""}
+              value={details?.category_id}
               name="category_id"
               onChange={handleChange}
             >

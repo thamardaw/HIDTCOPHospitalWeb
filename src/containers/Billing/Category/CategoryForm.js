@@ -88,7 +88,7 @@ const CategoryForm = () => {
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.name || ""}
+            value={details?.name}
             name="name"
             onChange={handleChange}
           />
@@ -107,7 +107,7 @@ const CategoryForm = () => {
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.description || ""}
+            value={details?.description}
             name="description"
             onChange={handleChange}
           />

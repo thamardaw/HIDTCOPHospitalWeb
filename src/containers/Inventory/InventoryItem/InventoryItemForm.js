@@ -184,7 +184,7 @@ const InventoryItemForm = () => {
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.name || ""}
+              value={details?.name}
               name="name"
               onChange={handleChange}
             />
@@ -203,7 +203,7 @@ const InventoryItemForm = () => {
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.balance || ""}
+              value={details?.balance}
               name="balance"
               onChange={handleChange}
             />
@@ -222,7 +222,7 @@ const InventoryItemForm = () => {
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.unit || ""}
+              value={details?.unit}
               name="unit"
               onChange={handleChange}
             />
@@ -296,7 +296,7 @@ const InventoryItemForm = () => {
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.batch || ""}
+              value={details?.batch}
               name="batch"
               onChange={handleChange}
             />
@@ -315,7 +315,7 @@ const InventoryItemForm = () => {
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.purchasing_price || ""}
+              value={details?.purchasing_price}
               name="purchasing_price"
               onChange={handleChange}
             />

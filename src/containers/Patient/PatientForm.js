@@ -24,9 +24,9 @@ const PatientForm = () => {
     name: null,
     age: null,
     contact_details: null,
-    gender: "",
+    gender: null,
     date_of_birth: null,
-    address: "",
+    address: null,
   });
 
   const handleChange = (e) => {
