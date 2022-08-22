@@ -55,8 +55,8 @@ const InventoryTransactionForm = () => {
     );
     const res = await api.post("/api/inventory_transactions/", {
       ...details,
-      transaction_type_name: txt.name,
-      transaction_type: txt.type,
+      transaction_type_name: txt?.name,
+      transaction_type: txt?.type,
     });
     if (res.status === 200) {
       history.goBack();
@@ -93,7 +93,7 @@ const InventoryTransactionForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Inventory Item</Typography>
+              <Typography variant="p">Inventory Item*</Typography>
             </Box>
             <Autocomplete
               options={inventoryItems}
@@ -136,7 +136,7 @@ const InventoryTransactionForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Transaction Type</Typography>
+              <Typography variant="p">Transaction Type*</Typography>
             </Box>
             <TextField
               select
@@ -164,7 +164,7 @@ const InventoryTransactionForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Quantity</Typography>
+              <Typography variant="p">Quantity*</Typography>
             </Box>
             <TextField
               size="small"

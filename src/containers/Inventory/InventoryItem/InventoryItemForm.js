@@ -178,13 +178,13 @@ const InventoryItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Name</Typography>
+              <Typography variant="p">Name*</Typography>
             </Box>
             <TextField
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.name || ""}
+              value={details?.name}
               name="name"
               onChange={handleChange}
             />
@@ -197,13 +197,13 @@ const InventoryItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Balance</Typography>
+              <Typography variant="p">Balance*</Typography>
             </Box>
             <TextField
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.balance || ""}
+              value={details?.balance}
               name="balance"
               onChange={handleChange}
             />
@@ -216,13 +216,13 @@ const InventoryItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Unit</Typography>
+              <Typography variant="p">Unit*</Typography>
             </Box>
             <TextField
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.unit || ""}
+              value={details?.unit}
               name="unit"
               onChange={handleChange}
             />
@@ -290,13 +290,13 @@ const InventoryItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Batch</Typography>
+              <Typography variant="p">Batch*</Typography>
             </Box>
             <TextField
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.batch || ""}
+              value={details?.batch}
               name="batch"
               onChange={handleChange}
             />
@@ -309,13 +309,13 @@ const InventoryItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Purchasing Price</Typography>
+              <Typography variant="p">Purchasing Price*</Typography>
             </Box>
             <TextField
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.purchasing_price || ""}
+              value={details?.purchasing_price}
               name="purchasing_price"
               onChange={handleChange}
             />

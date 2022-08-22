@@ -21,12 +21,12 @@ const PatientForm = () => {
   const api = useAxios({ autoSnackbar: true });
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({
-    name: "",
-    age: "",
-    contact_details: "",
-    gender: "",
+    name: null,
+    age: null,
+    contact_details: null,
+    gender: null,
     date_of_birth: null,
-    address: "",
+    address: null,
   });
 
   const handleChange = (e) => {
@@ -108,13 +108,13 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Name</Typography>
+            <Typography variant="p">Name*</Typography>
           </Box>
           <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.name || ""}
+            value={details?.name}
             name="name"
             onChange={handleChange}
           />
@@ -127,13 +127,13 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Age</Typography>
+            <Typography variant="p">Age*</Typography>
           </Box>
           <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.age || ""}
+            value={details?.age}
             name="age"
             onChange={handleChange}
           />
@@ -146,13 +146,13 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Contact Details</Typography>
+            <Typography variant="p">Contact Details*</Typography>
           </Box>
           <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.contact_details || ""}
+            value={details?.contact_details}
             name="contact_details"
             onChange={handleChange}
           />
@@ -165,7 +165,7 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Gender</Typography>
+            <Typography variant="p">Gender*</Typography>
           </Box>
           <RadioGroup
             row="true"
@@ -221,7 +221,7 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Address</Typography>
+            <Typography variant="p">Address*</Typography>
           </Box>
           <TextField
             size="small"
