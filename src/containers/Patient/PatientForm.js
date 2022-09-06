@@ -29,6 +29,17 @@ const PatientForm = () => {
     address: null,
   });
 
+  const calculateAge = (dateOfBirth) => {
+    if (!dateOfBirth) return;
+    let today = new Date();
+    let birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    let month = today.getMonth() - birthDate.getMonth();
+    if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
   const handleChange = (e) => {
     setDetails({ ...details, [e.target.name]: e.target.value });
   };
@@ -38,7 +49,7 @@ const PatientForm = () => {
     const v = `${date_obj.getFullYear()}-${
       date_obj.getMonth() + 1
     }-${date_obj.getDate()}`;
-    setDetails({ ...details, date_of_birth: v });
+    setDetails({ ...details, date_of_birth: v, age: calculateAge(v) });
   };
 
   const getData = async () => {
@@ -177,7 +188,11 @@ const PatientForm = () => {
             onChange={handleChange}
           >
             <FormControlLabel control={<Radio />} label="Male" value="male" />
-            <FormControlLabel control={<Radio />} label="Female" value="female" />
+            <FormControlLabel
+              control={<Radio />}
+              label="Female"
+              value="female"
+            />
           </RadioGroup>
         </Box>
         <Box
