@@ -64,7 +64,7 @@ const Appbar = ({ drawerWidth }) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            {constants.name}
+            {constants.demo_name}
           </Typography>
           <IconButton sx={{ color: "white" }} onClick={handleClick}>
             <AccountCircleIcon />
