@@ -225,6 +225,16 @@ const ResponsiveDrawer = ({ window, drawerWidth }) => {
           </ListItemIcon>
           <ListItemText primary="Patient" />
         </ListItemButton>
+        <ListItemButton
+          size="small"
+          selected={location.pathname.includes("user")}
+          onClick={handleClick(`${url}/user`)}
+        >
+          <ListItemIcon>
+            <PeopleIcon />
+          </ListItemIcon>
+          <ListItemText primary="User" />
+        </ListItemButton>
       </List>
     </>
   );

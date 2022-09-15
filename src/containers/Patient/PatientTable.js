@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { DeleteDialog,CustomTable } from "../../components/common";
+import { DeleteDialog, CustomTable } from "../../components/common";
 import { useAxios } from "../../hooks";
 import { extractID } from "../../utils/extractID";
 import { generateID } from "../../utils/generateID";
