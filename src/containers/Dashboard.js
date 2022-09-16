@@ -13,6 +13,7 @@ import { InventoryItem } from "./Inventory/InventoryItem";
 import { InventoryTransaction } from "./Inventory/InventoryTransaction";
 // import { PharmacyItem } from "./Inventory/PharmacyItem";
 import { TransactionType } from "./Inventory/TransactionType";
+import { User } from "./User";
 
 const drawerWidth = 240;
 
@@ -34,6 +35,7 @@ function Dashboard(props) {
       >
         <Toolbar />
         <Switch>
+          <Route path={`${path}/user`} component={User} />
           <Route path={`${path}/patient`} component={Patient} />
           <Route path={`${path}/uom`} component={Uom} />
           <Route path={`${path}/category`} component={Category} />
