@@ -6,7 +6,7 @@ import { withUser } from "../../../recoil/auth";
 const Uom = () => {
   const { path } = useRouteMatch();
   const user = useRecoilValue(withUser);
-  if (["Admin"].includes(user.role)) return <Redirect to={"/"} />;
+  if (!["Admin"].includes(user.role)) return <Redirect to={"/"} />;
   return (
     <Switch>
       <Route path={`${path}`} component={UomTable} exact />
