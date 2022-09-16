@@ -2,7 +2,7 @@ import { CssBaseline, Toolbar } from "@mui/material";
 import { Box } from "@mui/system";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router";
 import { Patient } from "./Patient";
-import { Appbar, Footer, ResponsiveDrawer } from "../components";
+import { Appbar, Footer, ResponsiveDrawer } from "../components/common";
 import { Uom } from "./Billing/Uom";
 import { Category } from "./Billing/Category";
 import { SalesServiceItem } from "./Billing/SalesServiceItem";
@@ -13,6 +13,7 @@ import { InventoryItem } from "./Inventory/InventoryItem";
 import { InventoryTransaction } from "./Inventory/InventoryTransaction";
 // import { PharmacyItem } from "./Inventory/PharmacyItem";
 import { TransactionType } from "./Inventory/TransactionType";
+import { User } from "./User";
 
 const drawerWidth = 240;
 
@@ -34,6 +35,7 @@ function Dashboard(props) {
       >
         <Toolbar />
         <Switch>
+          <Route path={`${path}/user`} component={User} />
           <Route path={`${path}/patient`} component={Patient} />
           <Route path={`${path}/uom`} component={Uom} />
           <Route path={`${path}/category`} component={Category} />

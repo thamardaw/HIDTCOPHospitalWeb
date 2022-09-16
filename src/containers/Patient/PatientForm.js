@@ -1,16 +1,18 @@
 import {
   Divider,
-  MenuItem,
   TextField,
   Toolbar,
   Typography,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../hooks";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { BackButton } from "../../components";
+import { BackButton } from "../../components/common";
 import { MobileDatePicker } from "@mui/x-date-pickers";
 
 const PatientForm = () => {
@@ -19,14 +21,25 @@ const PatientForm = () => {
   const api = useAxios({ autoSnackbar: true });
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({
-    name: "",
-    age: "",
-    contact_details: "",
-    gender: "",
+    name: null,
+    age: null,
+    contact_details: null,
+    gender: null,
     date_of_birth: null,
-    address: "",
+    address: null,
   });
 
+  const calculateAge = (dateOfBirth) => {
+    if (!dateOfBirth) return;
+    let today = new Date();
+    let birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    let month = today.getMonth() - birthDate.getMonth();
+    if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
   const handleChange = (e) => {
     setDetails({ ...details, [e.target.name]: e.target.value });
   };
@@ -36,7 +49,7 @@ const PatientForm = () => {
     const v = `${date_obj.getFullYear()}-${
       date_obj.getMonth() + 1
     }-${date_obj.getDate()}`;
-    setDetails({ ...details, date_of_birth: v });
+    setDetails({ ...details, date_of_birth: v, age: calculateAge(v) });
   };
 
   const getData = async () => {
@@ -106,13 +119,13 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Name</Typography>
+            <Typography variant="p">Name*</Typography>
           </Box>
           <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.name || ""}
+            value={details?.name}
             name="name"
             onChange={handleChange}
           />
@@ -125,13 +138,13 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Age</Typography>
+            <Typography variant="p">Age*</Typography>
           </Box>
           <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.age || ""}
+            value={details?.age}
             name="age"
             onChange={handleChange}
           />
@@ -144,13 +157,13 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Contact Details</Typography>
+            <Typography variant="p">Contact Details*</Typography>
           </Box>
           <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.contact_details || ""}
+            value={details?.contact_details}
             name="contact_details"
             onChange={handleChange}
           />
@@ -163,23 +176,24 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Gender</Typography>
+            <Typography variant="p">Gender*</Typography>
           </Box>
-          {/* <TextField size="small" sx={{ width: "70%" }} margin="dense" /> */}
-          <TextField
-            select
-            fullWidth
+          <RadioGroup
+            row="true"
             label="Gender"
-            size="small"
             sx={{ width: "70%" }}
             margin="dense"
             value={details?.gender || ""}
             name="gender"
             onChange={handleChange}
           >
-            <MenuItem value="male">Male</MenuItem>
-            <MenuItem value="female">Female</MenuItem>
-          </TextField>
+            <FormControlLabel control={<Radio />} label="Male" value="male" />
+            <FormControlLabel
+              control={<Radio />}
+              label="Female"
+              value="female"
+            />
+          </RadioGroup>
         </Box>
         <Box
           sx={{
@@ -222,7 +236,7 @@ const PatientForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Address</Typography>
+            <Typography variant="p">Address*</Typography>
           </Box>
           <TextField
             size="small"

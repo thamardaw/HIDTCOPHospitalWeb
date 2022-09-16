@@ -1,8 +1,8 @@
 import { Button } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { CustomTable } from "../../../components/common";
-import { useAxios } from "../../../hooks";
+import { CustomTable } from "../../components/common";
+import { useAxios } from "../../hooks";
 
 const headCells = [
   {
@@ -12,55 +12,19 @@ const headCells = [
     label: "ID",
   },
   {
-    id: "opening_balance",
+    id: "username",
     numeric: false,
     disablePadding: false,
-    label: "Opening Balance",
+    label: "Username",
   },
   {
-    id: "bill_total",
+    id: "role",
     numeric: false,
     disablePadding: false,
-    label: "Bill Total",
-  },
-  {
-    id: "deposit_total",
-    numeric: false,
-    disablePadding: false,
-    label: "Deposit Total",
-  },
-  {
-    id: "grand_total",
-    numeric: false,
-    disablePadding: false,
-    label: "Grand Total",
-  },
-  {
-    id: "actual_amount",
-    numeric: false,
-    disablePadding: false,
-    label: "Actual Amount",
-  },
-  {
-    id: "adjusted_amount",
-    numeric: false,
-    disablePadding: false,
-    label: "Adjusted Amount",
-  },
-  {
-    id: "adjusted_reason",
-    numeric: false,
-    disablePadding: false,
-    label: "Reason",
-  },
-  {
-    id: "date",
-    numeric: false,
-    disablePadding: false,
-    label: "Date",
+    label: "Role",
   },
 ];
-const DailyClosingTable = () => {
+const UserTable = () => {
   const api = useAxios({ autoSnackbar: true });
   const history = useHistory();
   const [rows, setRows] = useState([]);
@@ -68,22 +32,9 @@ const DailyClosingTable = () => {
 
   const getData = useCallback(async () => {
     setIsTableLoading(true);
-    const res = await api.get("/api/dailyClosing/");
+    const res = await api.get("/api/user/");
     if (res.status === 200) {
-      const data = res.data.map((row) => {
-        return {
-          id: row.id,
-          opening_balance: row.opening_balance,
-          bill_total: row.bill_total,
-          deposit_total: row.deposit_total,
-          grand_total: row.grand_total,
-          actual_amount: row.actual_amount,
-          adjusted_amount: row.adjusted_amount,
-          adjusted_reason: row.adjusted_reason,
-          date: row.created_time.split("T")[0],
-        };
-      });
-      setRows(data);
+      setRows(res.data);
       setIsTableLoading(false);
     }
     return;
@@ -99,29 +50,40 @@ const DailyClosingTable = () => {
     <CustomTable
       tableConfig={{
         headCells: headCells,
-        tableName: "Daily Closing",
+        tableName: "User",
         maxHeight: "62vh",
-        atom: "dailyClosingTableAtom",
+        atom: "userTableAtom",
       }}
       data={rows}
       isLoading={isTableLoading}
       toolbarButtons={{
         whenNoneSelected: [
           {
-            id: "daily closing table new button",
+            id: "user table new button",
             component: memo(({ ...rest }) => (
               <Button variant="outlined" size="small" {...rest}>
                 New
               </Button>
             )),
             callback: (selected) => {
-              history.push("dailyClosing/form");
+              history.push("user/form");
             },
           },
         ],
         whenOneSelected: [
           {
-            id: "daily closing table detail button",
+            id: "user table edit button",
+            component: memo(({ ...rest }) => (
+              <Button variant="contained" size="small" {...rest}>
+                Edit
+              </Button>
+            )),
+            callback: (selected) => {
+              history.push(`user/form/${selected[0].id}`);
+            },
+          },
+          {
+            id: "user table detail button",
             component: memo(({ ...rest }) => (
               <Button
                 variant="contained"
@@ -133,7 +95,7 @@ const DailyClosingTable = () => {
               </Button>
             )),
             callback: (selected) => {
-              history.push(`dailyClosing/details/${selected[0].id}`);
+              history.push(`user/details/${selected[0].id}`);
             },
           },
         ],
@@ -143,4 +105,4 @@ const DailyClosingTable = () => {
   );
 };
 
-export default DailyClosingTable;
+export default UserTable;

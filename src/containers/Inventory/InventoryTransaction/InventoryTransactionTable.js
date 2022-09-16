@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { memo, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { CustomTable } from "../../../components";
+import { CustomTable } from "../../../components/common";
 import { useAxios } from "../../../hooks";
 
 const headCells = [
@@ -60,6 +60,12 @@ const headCells = [
     label: "Selling Price",
   },
   {
+    id: "dateAndTime",
+    numeric: false,
+    disablePadding: false,
+    label: "Date And Time",
+  },
+  {
     id: "note",
     numeric: false,
     disablePadding: false,
@@ -78,6 +84,13 @@ const InventoryTransactionTable = () => {
     const res = await api.get("/api/inventory_transactions/");
     if (res.status === 200) {
       const data = res.data.map((row) => {
+        const dateAndTime = `${row.created_time.split("T")[0]} ${new Date(
+          row.created_time
+        ).toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        })}`;
         return {
           id: row.id,
           name: row?.inventory_item?.name || "",
@@ -88,6 +101,7 @@ const InventoryTransactionTable = () => {
           opening_balance: row?.opening_balance || "",
           closing_balance: row?.closing_balance || "",
           selling_price: row?.selling_price || "",
+          dateAndTime: dateAndTime,
           note: row?.note || "",
         };
       });

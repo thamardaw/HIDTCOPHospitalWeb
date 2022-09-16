@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
-import { constants } from "../utils/constants";
+import { constants } from "../../utils/constants";
 import { styled } from "@mui/material/styles";
-import { generateID } from "../utils/generateID";
+import { generateID } from "../../utils/generateID";
 import { useEffect, useState } from "react";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
@@ -28,7 +28,6 @@ const BillsDetailInfo = ({
     const intervalId = setInterval(() => setDateState(new Date()), 30000);
     return () => clearInterval(intervalId);
   }, []);
-
   return (
     <>
       <Box sx={{ my: "15px" }}>
@@ -73,6 +72,29 @@ const BillsDetailInfo = ({
                 minute: "numeric",
                 hour12: true,
               })}
+            </StyledTypography>
+          </Box>
+          <Box
+            sx={{
+              display: stage === "completed" ? "flex" : "none",
+              flexDirection: "row",
+              alignItems: "flex-start",
+              margin: "10px 0px",
+            }}
+          >
+            <Box sx={{ width: "30%" }}>
+              <StyledTypography variant="body">
+                Payment Date & Time
+              </StyledTypography>
+            </Box>
+            <StyledTypography variant="body">
+              {payment?.updated_time?.split("T")[0]}{" "}
+              {payment?.updated_time &&
+                new Date(payment.updated_time).toLocaleString("en-US", {
+                  hour: "numeric",
+                  minute: "numeric",
+                  hour12: true,
+                })}
             </StyledTypography>
           </Box>
           <Box
@@ -148,8 +170,10 @@ const BillsDetailInfo = ({
             justifyContent: "space-between",
           }}
         >
-          <StyledTypography variant="body">Total</StyledTypography>
-          <StyledTypography variant="body">
+          <StyledTypography variant="body" sx={{ fontSize: "28px" }}>
+            Total
+          </StyledTypography>
+          <StyledTypography variant="body" sx={{ fontSize: "28px" }}>
             {bill?.total_amount}
           </StyledTypography>
         </Box>
@@ -160,8 +184,10 @@ const BillsDetailInfo = ({
             justifyContent: "space-between",
           }}
         >
-          <StyledTypography variant="body">Deposit</StyledTypography>
-          <StyledTypography variant="body">
+          <StyledTypography variant="body" sx={{ fontSize: "28px" }}>
+            Deposit
+          </StyledTypography>
+          <StyledTypography variant="body" sx={{ fontSize: "28px" }}>
             {stage === "draft" && totalDeposit}
             {(stage === "outstanding" || stage === "completed") &&
               payment?.total_deposit_amount}
@@ -170,8 +196,10 @@ const BillsDetailInfo = ({
         </Box>
         <CustomDivider />
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <StyledTypography variant="body">Unpaid</StyledTypography>
-          <StyledTypography variant="body">
+          <StyledTypography variant="body" sx={{ fontSize: "28px" }}>
+            Unpaid
+          </StyledTypography>
+          <StyledTypography variant="body" sx={{ fontSize: "28px" }}>
             {stage === "draft" && parseInt(bill?.total_amount) - totalDeposit}
             {(stage === "outstanding" || stage === "completed") &&
               payment?.unpaid_amount}

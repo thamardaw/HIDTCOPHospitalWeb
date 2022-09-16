@@ -11,7 +11,7 @@ import { useHistory, useParams } from "react-router";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useAxios } from "../../../hooks";
-import { BackButton, CSVUploadDialog } from "../../../components";
+import { BackButton,CSVUploadDialog } from "../../../components/common";
 
 const TransactionTypeForm = () => {
   const history = useHistory();
@@ -19,8 +19,8 @@ const TransactionTypeForm = () => {
   const api = useAxios({ autoSnackbar: true });
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({
-    name: "",
-    type: "",
+    name: null,
+    type: null,
   });
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -98,13 +98,13 @@ const TransactionTypeForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Name</Typography>
+              <Typography variant="p">Name*</Typography>
             </Box>
             <TextField
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.name || ""}
+              value={details?.name}
               name="name"
               onChange={handleChange}
             />
@@ -117,7 +117,7 @@ const TransactionTypeForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Type</Typography>
+              <Typography variant="p">Type*</Typography>
             </Box>
             <TextField
               select
@@ -126,7 +126,7 @@ const TransactionTypeForm = () => {
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.type || ""}
+              value={details?.type}
               name="type"
               onChange={handleChange}
             >

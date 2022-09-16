@@ -4,15 +4,15 @@ import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { BackButton } from "../../../components";
+import { BackButton } from "../../../components/common";
 
 const UomForm = () => {
   const history = useHistory();
   const { id } = useParams();
   const api = useAxios({ autoSnackbar: true });
   const [details, setDetails] = useState({
-    name: "",
-    description: "",
+    name: null,
+    description: null,
   });
   const [loading, setLoading] = useState(false);
 
@@ -82,13 +82,13 @@ const UomForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Name</Typography>
+            <Typography variant="p">Name*</Typography>
           </Box>
           <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.name || ""}
+            value={details?.name}
             name="name"
             onChange={handleChange}
           />
@@ -101,13 +101,13 @@ const UomForm = () => {
           }}
         >
           <Box sx={{ width: "30%" }}>
-            <Typography variant="p">Description</Typography>
+            <Typography variant="p">Description*</Typography>
           </Box>
           <TextField
             size="small"
             sx={{ width: "70%" }}
             margin="dense"
-            value={details?.description || ""}
+            value={details?.description}
             name="description"
             onChange={handleChange}
           />

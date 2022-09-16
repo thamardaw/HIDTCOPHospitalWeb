@@ -1,7 +1,7 @@
 import { memo, useEffect, useState } from "react";
-import { CustomTable,DeleteDialog } from "../../../components";
+import { DeleteDialog,CustomTable } from "../../../components/common";
 import { useAxios } from "../../../hooks";
-import {Button} from "@mui/material";
+import { Button } from "@mui/material";
 import { useHistory } from "react-router-dom";
 
 const headCells = [

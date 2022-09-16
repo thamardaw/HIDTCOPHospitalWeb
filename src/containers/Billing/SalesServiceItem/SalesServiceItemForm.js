@@ -11,7 +11,7 @@ import { useHistory, useParams } from "react-router";
 import { useAxios } from "../../../hooks";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { BackButton, CSVUploadDialog } from "../../../components";
+import { BackButton,CSVUploadDialog } from "../../../components/common";
 import { useRecoilValue } from "recoil";
 import { withUser } from "../../../recoil/auth";
 
@@ -20,8 +20,8 @@ const SalesServiceItemForm = () => {
   const { id } = useParams();
   const api = useAxios({ autoSnackbar: true });
   const [details, setDetails] = useState({
-    name: "",
-    price: "",
+    name: null,
+    price: null,
     uom_id: null,
     category_id: null,
   });
@@ -120,13 +120,13 @@ const SalesServiceItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Name</Typography>
+              <Typography variant="p">Name*</Typography>
             </Box>
             <TextField
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.name || ""}
+              value={details?.name}
               name="name"
               onChange={handleChange}
             />
@@ -139,13 +139,13 @@ const SalesServiceItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Price</Typography>
+              <Typography variant="p">Price*</Typography>
             </Box>
             <TextField
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.price || ""}
+              value={details?.price}
               type="number"
               InputProps={{
                 inputProps: { min: "0", step: "50" },
@@ -162,7 +162,7 @@ const SalesServiceItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">UOM</Typography>
+              <Typography variant="p">UOM*</Typography>
             </Box>
             <TextField
               select
@@ -171,7 +171,7 @@ const SalesServiceItemForm = () => {
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.uom_id || ""}
+              value={details?.uom_id}
               name="uom_id"
               onChange={handleChange}
             >
@@ -190,7 +190,7 @@ const SalesServiceItemForm = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography variant="p">Category</Typography>
+              <Typography variant="p">Category*</Typography>
             </Box>
             <TextField
               select
@@ -199,7 +199,7 @@ const SalesServiceItemForm = () => {
               size="small"
               sx={{ width: "70%" }}
               margin="dense"
-              value={details?.category_id || ""}
+              value={details?.category_id}
               name="category_id"
               onChange={handleChange}
             >

@@ -1,10 +1,10 @@
 import { Button } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useAxios } from "../hooks";
-import { extractID } from "../utils/extractID";
-import { generateID } from "../utils/generateID";
-import CustomTable from "./CustomTable";
+import { useAxios } from "../../hooks";
+import { extractID } from "../../utils/extractID";
+import { generateID } from "../../utils/generateID";
+import { CustomTable } from "../common";
 
 const CancelledDepositTable = ({ headCells }) => {
   const api = useAxios({ autoSnackbar: true });
