@@ -13,6 +13,7 @@ import { InventoryItem } from "./Inventory/InventoryItem";
 import { InventoryTransaction } from "./Inventory/InventoryTransaction";
 // import { PharmacyItem } from "./Inventory/PharmacyItem";
 import { TransactionType } from "./Inventory/TransactionType";
+import { PaymentType } from "./Billing/PaymentType";
 
 const drawerWidth = 240;
 
@@ -41,6 +42,7 @@ function Dashboard(props) {
             path={`${path}/salesServiceItem`}
             component={SalesServiceItem}
           />
+          <Route path={`${path}/paymentType`} component={PaymentType} />
           <Route path={`${path}/bills`} component={Bills} />
           <Route path={`${path}/deposit`} component={Deposit} />
           <Route path={`${path}/dailyClosing`} component={DailyClosing} />

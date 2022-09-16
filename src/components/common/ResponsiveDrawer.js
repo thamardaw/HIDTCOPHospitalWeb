@@ -21,7 +21,7 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
-import React, { useState } from "react";
+import PaymentsIcon from '@mui/icons-material/Payments';import React, { useState } from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import ClassIcon from "@mui/icons-material/Class";
@@ -72,7 +72,8 @@ const ResponsiveDrawer = ({ window, drawerWidth }) => {
             location.pathname.includes("dailyClosing") ||
             location.pathname.includes("uom") ||
             location.pathname.includes("category") ||
-            location.pathname.includes("salesServiceItem")
+            location.pathname.includes("salesServiceItem") ||
+            location.pathname.includes("paymentType")
           }
           onClick={openBillingAccordionList}
         >
@@ -149,6 +150,17 @@ const ResponsiveDrawer = ({ window, drawerWidth }) => {
                 <EventNoteIcon />
               </ListItemIcon>
               <ListItemText primary="Sales & Service Item" />
+            </ListItemButton>
+            <ListItemButton
+              size="small"
+              sx={{ pl: "25px" }}
+              selected={location.pathname.includes("paymentType")}
+              onClick={handleClick(`${url}/paymentType`)}
+            >
+              <ListItemIcon>
+                <PaymentsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Payment Type" />
             </ListItemButton>
           </List>
         </Collapse>
