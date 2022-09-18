@@ -30,13 +30,7 @@ const PaymentTypeTable = () => {
     setIsTableLoading(true);
     const res = await api.get("/api/payment_types/");
     if (res.status === 200) {
-      const data = res.data.map((row) => {
-        return {
-          id: row.id,
-          name: row.name
-        };
-      });
-      setRows(data);
+      setRows(res.data);
       setIsTableLoading(false);
     }
     return;

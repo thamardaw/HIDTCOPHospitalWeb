@@ -9,7 +9,7 @@ const PaymentTypeDetail = () => {
   const { id } = useParams();
   const history = useHistory();
   const api = useAxios({ autoSnackbar: true });
-  const [details, setDetails] = useState();
+  const [details, setDetails] = useState({});
 
 
   const getData = async () => {

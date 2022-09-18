@@ -24,6 +24,10 @@ const PaymentTypeForm = () => {
   const handleChange = (e) => {
     setDetails({ ...details, [e.target.name]: e.target.value });
   };
+  const handleChangeBoolean = (e) => {
+    console.log(e.target.checked);
+    setDetails({ ...details, [e.target.name]: e.target.checked });
+  };
   const getData = async () => {
     const res = await api.get(`/api/payment_types/${parseInt(id)}`);
     if (res.status === 200) {
@@ -35,8 +39,7 @@ const PaymentTypeForm = () => {
   const createNew = async () => {
     setLoading(true);
     const res = await api.post(`/api/payment_types/`, {
-      name: details.name,
-      is_default: details.is_default,
+      ...details,
     });
     if (res.status === 200) {
       history.goBack();
@@ -46,8 +49,7 @@ const PaymentTypeForm = () => {
   const update = async () => {
     setLoading(true);
     const res = await api.put(`/api/payment_types/${parseInt(id)}`, {
-      name: details.name,
-      is_default: details.is_default,
+      ...details,
     });
     if (res.status === 200) {
       history.goBack();
@@ -94,7 +96,11 @@ const PaymentTypeForm = () => {
             <Box sx={{ width: "30%" }}>
               <Typography variant="p">Is Default</Typography>
             </Box>
-            <Checkbox sx={{ width: "0" }} value={details?.is_default} name="is_default" onChange={handleChange} />
+            <Checkbox 
+            sx={{ width: "0" }} 
+            checked={details?.is_default} 
+            name="is_default" 
+            onChange={handleChangeBoolean}/>
           </Box>
         </Box>
         <Divider />
