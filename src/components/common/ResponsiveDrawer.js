@@ -22,17 +22,21 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import PaymentsIcon from '@mui/icons-material/Payments';import React, { useState } from "react";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import React, { useState } from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import ClassIcon from "@mui/icons-material/Class";
 import drawerAtom from "../../recoil/drawer";
-import { useRecoilState } from "recoil";
+import { withUser } from "../../recoil/auth";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 const ResponsiveDrawer = ({ window, drawerWidth }) => {
   const container =
     window !== undefined ? () => window().document.body : undefined;
   const location = useLocation();
   const history = useHistory();
+  const user = useRecoilValue(withUser);
   const { url } = useRouteMatch();
   const [openBilling, setBillingOpen] = useState(true);
   const [openInventory, setOpenInventory] = useState(true);
@@ -120,7 +124,10 @@ const ResponsiveDrawer = ({ window, drawerWidth }) => {
             </ListItemButton>
             <ListItemButton
               size="small"
-              sx={{ pl: "25px" }}
+              sx={{
+                pl: "25px",
+                display: !["Admin"].includes(user.role) && "none",
+              }}
               selected={location.pathname.includes("uom")}
               onClick={handleClick(`${url}/uom`)}
             >
@@ -131,7 +138,10 @@ const ResponsiveDrawer = ({ window, drawerWidth }) => {
             </ListItemButton>
             <ListItemButton
               size="small"
-              sx={{ pl: "25px" }}
+              sx={{
+                pl: "25px",
+                display: !["Admin"].includes(user.role) && "none",
+              }}
               selected={location.pathname.includes("category")}
               onClick={handleClick(`${url}/category`)}
             >
@@ -236,6 +246,17 @@ const ResponsiveDrawer = ({ window, drawerWidth }) => {
             <PeopleIcon />
           </ListItemIcon>
           <ListItemText primary="Patient" />
+        </ListItemButton>
+        <ListItemButton
+          size="small"
+          sx={{ display: !["Admin"].includes(user.role) && "none" }}
+          selected={location.pathname.includes("user")}
+          onClick={handleClick(`${url}/user`)}
+        >
+          <ListItemIcon>
+            <AccountBoxIcon />
+          </ListItemIcon>
+          <ListItemText primary="User" />
         </ListItemButton>
       </List>
     </>
