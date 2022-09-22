@@ -21,7 +21,7 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
-import PaymentsIcon from '@mui/icons-material/Payments';import React, { useState } from "react";
+import PaymentsIcon from '@mui/icons-material/Payments';
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import React, { useState } from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
