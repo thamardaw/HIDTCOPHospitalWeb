@@ -44,7 +44,7 @@ const PaymentTypeDetail = () => {
       <Divider />
       <Box sx={{ flexDireaction: "column", padding: "20px 10px" }}>
         <DetailsRow name="Name" value={details?.name} />
-        <DetailsRow name="Is Default" value={details?.is_default} />
+        <DetailsRow name="Is Default" value={details?.is_default?.toString()} />
       </Box>
     </Box>
   );

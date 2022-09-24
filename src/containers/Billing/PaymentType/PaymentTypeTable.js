@@ -42,11 +42,6 @@ const PaymentTypeTable = () => {
       return;
     } else if (selected.length === 1) {
       await api.delete(`/api/payment_types/${parseInt(selected[0].id)}`);
-    } else if (selected.length > 1) {
-      const listOfId = selected.map((item) => item.id);
-      await api.post(`/api/payment_types/bulk`, {
-        listOfId: listOfId,
-      });
     }
     setOpenDeleteDialog(false);
     setSelected([]);
