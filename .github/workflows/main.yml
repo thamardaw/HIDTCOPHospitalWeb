@@ -38,6 +38,20 @@ jobs:
           tags: |
             jasoniv/hidtcophospitalweblocal:latest
 
+      - name: Build and push docker image hidtcop-dev
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          build-args: |
+            BASE_URL=http://18.142.67.151:8000
+            THEME=
+            TITLE=HIDTCOP
+            TITLE_SHORT=HTP
+            TITLE_LONG=HIDTCOP
+          tags: |
+            jasoniv/hidtcophospitaldevsvr:latest
+
       - name: Build and push docker image dagon lin
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
