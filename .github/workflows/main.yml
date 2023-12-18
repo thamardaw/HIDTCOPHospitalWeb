@@ -84,7 +84,7 @@ jobs:
           context: .
           push: true
           build-args: |
-            BASE_URL=http://192.168.100.100:8000
+            BASE_URL=http://192.168.99.100:8000
             THEME=
             TITLE=Aye Thaw Dar
             TITLE_SHORT=ATD
